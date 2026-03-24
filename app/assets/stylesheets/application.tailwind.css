@@ -1,0 +1,5 @@
+/*
+ * Tailwind v4 + tailwindcss-rails 4.x compiles from app/assets/tailwind/application.css
+ * (bin/rails tailwindcss:build). This path is kept for IMPLEMENTATION_PLAN / docs parity.
+ * Edit app/assets/tailwind/application.css for @import "tailwindcss" and @theme.
+ */

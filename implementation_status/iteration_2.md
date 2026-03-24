@@ -4,6 +4,7 @@
 |-----------|--------|
 | 2.1 Gemfile: `hotwire-rails`, `turbo-rails`, `stimulus-rails` | выполнено |
 | 2.2 Установка Hotwire (`hotwire:install` или эквивалент) | выполнено |
+| 2.3 Tailwind: `tailwindcss-rails`, сборка, файл стилей | выполнено |
 
 ## Подзадача 2.1
 
@@ -28,3 +29,19 @@ docker compose run --rm web bash -lc "bin/rails turbo:install:importmap && bin/r
 ```
 
 Выполнено: оба инсталлятора отработали с `unchanged` / `identical` — конфигурация после `rails new` уже соответствовала Hotwire (Turbo + Stimulus + importmap).
+
+## Подзадача 2.3
+
+**Гем:** в `Gemfile` указан `tailwindcss-rails` (в lock — 4.4.0 с Tailwind CSS 4.2.1).
+
+**Сборка:** в Docker проверено:
+
+```bash
+docker compose run --rm web bash -lc "bin/rails tailwindcss:build"
+```
+
+Вывод: `Done in …ms`, артефакт `app/assets/builds/tailwind.css` обновляется.
+
+**Файл из плана `app/assets/stylesheets/application.tailwind.css`:** добавлен в репозиторий (указатель на канонический вход для гема 4.x). Реальный вход для CLI — `app/assets/tailwind/application.css` (`@import "tailwindcss"`), см. `lib/tailwindcss/commands.rb` в геме `tailwindcss-rails`.
+
+**Подключение в браузере:** `stylesheet_link_tag :app` (Propshaft) подмешивает все `app/assets/**/*.css`, включая `builds/tailwind.css` и стили из `app/assets/stylesheets/`.
