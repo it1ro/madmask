@@ -24,5 +24,9 @@ RUN gem install bundler --no-document
 
 WORKDIR /app
 
+COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 # Shell keeps the container alive when no command is passed; compose will override.
 CMD ["bash"]
