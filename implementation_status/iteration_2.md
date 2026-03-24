@@ -5,6 +5,7 @@
 | 2.1 Gemfile: `hotwire-rails`, `turbo-rails`, `stimulus-rails` | выполнено |
 | 2.2 Установка Hotwire (`hotwire:install` или эквивалент) | выполнено |
 | 2.3 Tailwind: `tailwindcss-rails`, сборка, файл стилей | выполнено |
+| 2.4 Фоновая сборка Tailwind (`tailwindcss:watch` / Procfile) | выполнено |
 
 ## Подзадача 2.1
 
@@ -45,3 +46,17 @@ docker compose run --rm web bash -lc "bin/rails tailwindcss:build"
 **Файл из плана `app/assets/stylesheets/application.tailwind.css`:** добавлен в репозиторий (указатель на канонический вход для гема 4.x). Реальный вход для CLI — `app/assets/tailwind/application.css` (`@import "tailwindcss"`), см. `lib/tailwindcss/commands.rb` в геме `tailwindcss-rails`.
 
 **Подключение в браузере:** `stylesheet_link_tag :app` (Propshaft) подмешивает все `app/assets/**/*.css`, включая `builds/tailwind.css` и стили из `app/assets/stylesheets/`.
+
+## Подзадача 2.4
+
+**Цель плана:** держать пересборку CSS в фоне во время разработки.
+
+**Procfile:** в `Procfile.dev` процесс `css` запускает `bin/rails tailwindcss:watch` рядом с `web` (`bin/rails server`). Старт обоих процессов: `./bin/dev` (Foreman читает `Procfile.dev`).
+
+**Проверка в Docker** (один прогон watch; контейнер завершился по таймауту):
+
+```bash
+docker compose run --rm web bash -lc "bin/rails tailwindcss:watch"
+```
+
+Для постоянного watch до появления отдельного сервиса в compose (п. 2.5) — второй терминал с той же командой или `bin/dev` внутри контейнера с проброшенным портом.
