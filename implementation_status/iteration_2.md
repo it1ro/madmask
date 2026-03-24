@@ -6,6 +6,7 @@
 | 2.2 Установка Hotwire (`hotwire:install` или эквивалент) | выполнено |
 | 2.3 Tailwind: `tailwindcss-rails`, сборка, файл стилей | выполнено |
 | 2.4 Фоновая сборка Tailwind (`tailwindcss:watch` / Procfile) | выполнено |
+| 2.5 Сервис `tailwind` в `docker-compose.yml` (`tailwindcss:watch`) | выполнено |
 
 ## Подзадача 2.1
 
@@ -59,4 +60,18 @@ docker compose run --rm web bash -lc "bin/rails tailwindcss:build"
 docker compose run --rm web bash -lc "bin/rails tailwindcss:watch"
 ```
 
-Для постоянного watch до появления отдельного сервиса в compose (п. 2.5) — второй терминал с той же командой или `bin/dev` внутри контейнера с проброшенным портом.
+Альтернатива без отдельного сервиса: второй терминал с той же командой или `bin/dev` внутри контейнера; для Compose см. п. 2.5.
+
+## Подзадача 2.5
+
+**Сервис в Compose:** добавлен сервис `tailwind` (тот же образ и тома, что у `web`), команда по умолчанию — `bin/rails tailwindcss:watch`. Entrypoint по-прежнему выполняет `bundle install` и `db:prepare` перед `exec`.
+
+**Запуск обоих процессов:**
+
+```bash
+docker compose up
+```
+
+или явно: `docker compose up web tailwind`.
+
+**Только watch (без Puma):** `docker compose up tailwind` или `docker compose run --rm tailwind`.

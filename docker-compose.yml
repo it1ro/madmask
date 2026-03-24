@@ -32,5 +32,30 @@ services:
           sleep infinity
         fi
 
+  # Rebuilds CSS on file changes; runs alongside `web` so the server container is not blocked.
+  tailwind:
+    build:
+      context: .
+      network: host
+    network_mode: host
+    working_dir: /app
+    environment:
+      RAILS_ENV: development
+      RACK_ENV: development
+      RAILS_LOG_TO_STDOUT: "true"
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    command:
+      - bash
+      - -lc
+      - |
+        if [[ -f bin/rails ]]; then
+          exec bin/rails tailwindcss:watch
+        else
+          echo "Rails app missing — run rails new in /app or docker compose run --rm web bash"
+          sleep infinity
+        fi
+
 volumes:
   bundle_cache:
