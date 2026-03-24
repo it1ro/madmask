@@ -9,7 +9,21 @@ services:
       RAILS_LOG_TO_STDOUT: "true"
     volumes:
       - .:/app
+      - bundle_cache:/usr/local/bundle
     ports:
       - "3000:3000"
     stdin_open: true
     tty: true
+    command:
+      - bash
+      - -lc
+      - |
+        if [[ -f bin/rails ]]; then
+          exec bin/rails server -b 0.0.0.0 -p 3000
+        else
+          echo "Rails app missing — run rails new in /app or docker compose run --rm web bash"
+          sleep infinity
+        fi
+
+volumes:
+  bundle_cache:

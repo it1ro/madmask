@@ -3,7 +3,7 @@
 | Подзадача | Статус |
 |-----------|--------|
 | 0.1 Dockerfile (Ruby 3.2-slim, SQLite, Bundler) | выполнено |
-| 0.2 docker-compose.yml: `web`, `.:/app`, порт 3000 | выполнено |
+| 0.2 docker-compose.yml: `web`, `.:/app`, том `bundle_cache` → `/usr/local/bundle`, порт 3000 | выполнено |
 | 0.3 Переменные окружения разработки | выполнено |
 | 0.4 entrypoint.sh (БД при старте) | выполнено |
 | 0.5 Проверка Ruby/Rails в контейнере | выполнено |
