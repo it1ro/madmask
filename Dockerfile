@@ -22,6 +22,10 @@ RUN apt-get update -qq && \
 # Ensure Bundler is available explicitly (base image may ship an older pin).
 RUN gem install bundler --no-document
 
+# Rails CLI for `rails new` inside the container before the app Gemfile exists (iteration 1).
+# Pinned to match RubyGems stable release (bump intentionally when upgrading the stack).
+RUN gem install rails --no-document -v "8.1.3"
+
 WORKDIR /app
 
 COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
