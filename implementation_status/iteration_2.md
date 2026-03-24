@@ -7,6 +7,26 @@
 | 2.3 Tailwind: `tailwindcss-rails`, сборка, файл стилей | выполнено |
 | 2.4 Фоновая сборка Tailwind (`tailwindcss:watch` / Procfile) | выполнено |
 | 2.5 Сервис `tailwind` в `docker-compose.yml` (`tailwindcss:watch`) | выполнено |
+| 2.6 Проверка: приложение открывается со стилями Tailwind | выполнено |
+
+## Подзадача 2.6
+
+**Цель:** убедиться, что в браузере подключается скомпилированный CSS Tailwind и классы из разметки попадают в сборку.
+
+**Проверено:**
+
+1. **Артефакт сборки** — в `app/assets/builds/tailwind.css` присутствуют утилиты, используемые в `application.html.erb` (например `.container`, `.mx-auto`, `.mt-28`, `.flex`, `.px-5`).
+2. **Сборка в Docker:** `docker compose run --rm web bash -lc "bin/rails tailwindcss:build"` завершается успешно (`Done in …ms`).
+3. **Подключение в layout:** рендер с `layout: "application"` даёт теги вида  
+   `href="/assets/tailwind-<digest>.css"` (и связанные `application*.css` через Propshaft).
+
+**Команда для повторной проверки рендера:**
+
+```bash
+docker compose run --rm web bash -lc 'bin/rails runner "puts ApplicationController.render(inline: %q(<p>x</p>), layout: %q(application)).lines.grep(/stylesheet|tailwind/)"'
+```
+
+**Ручная проверка в браузере:** `docker compose up` (сервисы `web` и `tailwind`), открыть любую страницу с layout (например после настройки `root` или временно через `rails/info` в dev) — ожидаются отступы/контейнер согласно классам в `<body>`.
 
 ## Подзадача 2.1
 
