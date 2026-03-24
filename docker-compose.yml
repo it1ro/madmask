@@ -1,6 +1,15 @@
+# Build: `build.network: host` avoids BuildKit bridge/veth failures on some Linux setups.
+# Runtime: `network_mode: host` avoids attaching the container to compose’s default bridge
+# (same veth error can appear at `docker compose up`, not only during build).
+# If build still fails: DOCKER_BUILDKIT=0 docker compose build && docker compose up
+# Note: `network_mode: host` is intended for Linux dev. Docker Desktop (Mac/Windows) does
+# not support true host networking; use bridge + ports there if needed.
 services:
   web:
-    build: .
+    build:
+      context: .
+      network: host
+    network_mode: host
     working_dir: /app
     environment:
       RAILS_ENV: development
@@ -10,8 +19,6 @@ services:
     volumes:
       - .:/app
       - bundle_cache:/usr/local/bundle
-    ports:
-      - "3000:3000"
     stdin_open: true
     tty: true
     command:
