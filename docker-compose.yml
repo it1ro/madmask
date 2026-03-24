@@ -2,6 +2,11 @@ services:
   web:
     build: .
     working_dir: /app
+    environment:
+      RAILS_ENV: development
+      RACK_ENV: development
+      # Twelve-Factor friendly logging when running Rails/Puma in the container
+      RAILS_LOG_TO_STDOUT: "true"
     volumes:
       - .:/app
     ports:
