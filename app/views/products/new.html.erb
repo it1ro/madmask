@@ -1,0 +1,18 @@
+<% content_for :title, "Новый товар — Madmask" %>
+
+<section class="py-4 md:py-8" aria-labelledby="new-product-heading">
+  <h1
+    id="new-product-heading"
+    class="text-3xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-4xl"
+    style="font-family: var(--font-cinzel)"
+  >
+    Новый товар
+  </h1>
+  <p class="mt-2 text-[var(--color-text-secondary)]">
+    <%= link_to "← К каталогу", products_path, class: "text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>
+  </p>
+
+  <div class="mt-8 max-w-2xl rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6">
+    <%= render "form", product: @product, form_html: { data: { turbo: false } } %>
+  </div>
+</section>

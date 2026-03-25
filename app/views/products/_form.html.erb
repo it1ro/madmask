@@ -1,0 +1,90 @@
+<%# locals: product:, form_html: (optional) %>
+<% form_html = local_assigns.fetch(:form_html, {}) %>
+<%= form_with model: product, html: { class: "space-y-4", novalidate: true }.merge(form_html) do |f| %>
+  <% if product.errors.any? %>
+    <div
+      class="rounded-lg border border-[var(--color-category-horror)]/50 bg-[var(--color-bg-secondary)] px-4 py-3 text-sm text-[var(--color-text-secondary)]"
+      role="alert"
+    >
+      <p class="font-medium text-[var(--color-text-primary)]">Исправьте ошибки:</p>
+      <ul class="mt-2 list-inside list-disc">
+        <% product.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "Название", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.text_field :name,
+      required: true,
+      autocomplete: "off",
+      class:
+        "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+  </div>
+
+  <div>
+    <%= f.label :description, "Описание", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.text_area :description,
+      rows: 4,
+      class:
+        "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div>
+      <%= f.label :price, "Цена", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+      <%= f.number_field :price,
+        step: "0.01",
+        min: 0,
+        required: true,
+        style: "font-family: var(--font-jetbrains)",
+        class:
+          "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+    </div>
+
+    <div>
+      <%= f.label :category, "Категория", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+      <%= f.select :category,
+        Product::CATEGORIES.map { |c| [product_category_label(c), c] },
+        { include_blank: "Выберите…" },
+        required: true,
+        class:
+          "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :model_url, "URL 3D-модели (GLB/GLTF)", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.url_field :model_url,
+      placeholder: "https://",
+      class:
+        "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+  </div>
+
+  <div>
+    <%= f.label :cover_image, "Обложка", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.file_field :cover_image,
+      accept: "image/*",
+      class:
+        "block w-full text-sm text-[var(--color-text-secondary)] file:mr-4 file:rounded-md file:border-0 file:bg-[var(--color-accent-2)] file:px-4 file:py-2 file:text-[var(--color-text-primary)] file:hover:bg-[var(--color-accent-1)]" %>
+    <% if product.cover_image.attached? %>
+      <p class="mt-2 text-xs text-[var(--color-text-muted)]">Сейчас: <%= product.cover_image.filename %></p>
+    <% end %>
+  </div>
+
+  <div class="flex flex-wrap gap-3 pt-2">
+    <%= f.submit (product.persisted? ? "Сохранить" : "Добавить товар"),
+      class:
+        "inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-lg border border-transparent bg-[var(--color-accent-2)] px-5 py-2 text-sm font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 motion-reduce:transition-none",
+      style: "font-family: var(--font-orbitron)" %>
+    <% if product.persisted? %>
+      <%= link_to "Отмена",
+        product_path(product),
+        data: { turbo_frame: dom_id(product) },
+        class:
+          "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[var(--color-border)] px-5 py-2 text-sm text-[var(--color-text-secondary)] transition hover:border-[var(--color-accent-glow)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" %>
+    <% end %>
+  </div>
+<% end %>

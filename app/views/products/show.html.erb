@@ -1,0 +1,75 @@
+<% content_for :title, "#{@product.name} — Madmask" %>
+
+<article class="py-4 md:py-8">
+  <p class="mb-6">
+    <%= link_to "← К каталогу",
+      products_path,
+      class:
+        "inline-flex min-h-[44px] items-center text-sm text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>
+  </p>
+
+  <div class="grid gap-8 lg:grid-cols-2 lg:gap-12">
+    <div
+      class="relative aspect-square w-full max-w-xl overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] lg:max-w-none"
+    >
+      <% if @product.cover_image.attached? %>
+        <%= image_tag @product.cover_image,
+          class: "h-full w-full object-cover",
+          alt: @product.name %>
+      <% else %>
+        <div class="flex h-full w-full items-center justify-center text-[var(--color-text-muted)]">
+          Нет обложки
+        </div>
+      <% end %>
+    </div>
+
+    <div>
+      <p class="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)]" style="font-family: var(--font-orbitron)">
+        <%= product_category_label(@product.category) %>
+      </p>
+      <h1
+        class="mt-2 text-3xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-4xl"
+        style="font-family: var(--font-cinzel)"
+      >
+        <%= @product.name %>
+      </h1>
+      <p class="mt-4 text-2xl text-[var(--color-text-accent)]" style="font-family: var(--font-jetbrains)">
+        <%= number_to_currency(@product.price, unit: "₽", separator: ",", delimiter: " ", format: "%n %u") %>
+      </p>
+
+      <% if @product.description.present? %>
+        <div class="mt-6 max-w-prose whitespace-pre-line text-[var(--color-text-secondary)] leading-relaxed">
+          <%= @product.description %>
+        </div>
+      <% end %>
+
+      <% if @product.model_url.present? %>
+        <p class="mt-6 text-sm text-[var(--color-text-muted)]">
+          3D-модель:
+          <%= link_to @product.model_url,
+            @product.model_url,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            class: "break-all text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" %>
+        </p>
+      <% end %>
+
+      <div class="mt-10 flex flex-wrap gap-4">
+        <%= link_to "Редактировать",
+          edit_product_path(@product),
+          data: { turbo_frame: "_top" },
+          class:
+            "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[var(--color-accent-1)] px-5 py-2 text-sm font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2",
+          style: "font-family: var(--font-orbitron)" %>
+        <%= button_to "Удалить",
+          product_path(@product),
+          method: :delete,
+          data: { turbo_confirm: "Удалить «#{@product.name}»?" },
+          form: { data: { turbo: false } },
+          class:
+            "inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-lg border border-[var(--color-category-horror)]/50 bg-transparent px-5 py-2 text-sm text-[var(--color-category-horror)] transition hover:bg-[var(--color-category-horror)]/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2",
+          style: "font-family: var(--font-orbitron)" %>
+      </div>
+    </div>
+  </div>
+</article>
