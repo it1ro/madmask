@@ -4,8 +4,10 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "main",
+    "counterMain",
     "dialog",
     "lightboxImage",
+    "counterLightbox",
     "prevButton",
     "nextButton",
     "thumbStrip",
@@ -17,11 +19,12 @@ export default class extends Controller {
   }
 
   connect() {
-    this.currentIndex = 0
+    this.currentIndex = this.resolveCurrentIndexFromDom()
     this.previousActiveElement = null
     this.boundKeydown = this.onKeydown.bind(this)
     this.boundThumbStripScroll = this.updateThumbScrollButtons.bind(this)
     this.boundWindowResize = this.updateThumbScrollButtons.bind(this)
+    this.updateCounters()
     this.updateNavVisibility()
     this.setupThumbStripObservers()
   }
@@ -63,6 +66,7 @@ export default class extends Controller {
     el.setAttribute("aria-selected", "true")
 
     this.maybeScrollStripForNeighborVisibility(el)
+    this.updateCounters()
   }
 
   /** One thumbnail width + flex gap (px). */
@@ -124,6 +128,7 @@ export default class extends Controller {
     this.previousActiveElement = document.activeElement
     this.currentIndex = this.resolveCurrentIndexFromDom()
     this.applySlideToLightbox()
+    this.updateCounters()
 
     this.dialogTarget.classList.remove("hidden")
     this.dialogTarget.classList.add("flex", "items-center", "justify-center")
@@ -258,6 +263,7 @@ export default class extends Controller {
     this.applySlideToLightbox()
     this.syncMainWithLightboxSlide()
     this.syncThumbnailsAria()
+    this.updateCounters()
   }
 
   showNext(event) {
@@ -267,6 +273,7 @@ export default class extends Controller {
     this.applySlideToLightbox()
     this.syncMainWithLightboxSlide()
     this.syncThumbnailsAria()
+    this.updateCounters()
   }
 
   applySlideToLightbox() {
@@ -333,6 +340,15 @@ export default class extends Controller {
       this.nextButtonTarget.toggleAttribute("hidden", !multi)
       this.nextButtonTarget.disabled = !multi
     }
+  }
+
+  updateCounters() {
+    const total = Array.isArray(this.slidesValue) ? this.slidesValue.length : 0
+    const current = total > 0 ? this.currentIndex + 1 : 0
+    const text = `${current} / ${total}`
+
+    if (this.hasCounterMainTarget) this.counterMainTarget.textContent = text
+    if (this.hasCounterLightboxTarget) this.counterLightboxTarget.textContent = text
   }
 
   resolveCurrentIndexFromDom() {

@@ -10,6 +10,7 @@
 | Главное фото | `srcset`/`sizes` 800w/1200w; миниатюры: `data-thumb-main-url`, `data-thumb-srcset`, aria «Выбрать кадр N»; контейнер на всю ширину карточки, `img` `absolute inset-0 object-cover` — без пустых полей в рамке 4:3 |
 | Много миниатюр | Левая колонка и обёртка галереи — `min-w-0`; ряд — `flex-1 min-w-0` + `overscroll-x-contain`; кнопки ‹ › по видимости прокрутки; крупный hit-area; по клику на миниатюру — если сосед слева/справа не полностью в полосе, `scrollBy` на шаг «миниатюра+gap» (`maybeScrollStripForNeighborVisibility`) |
 | Галерея JS | `product_gallery_controller.js` — миниатюры → главный кадр; lightbox по клику на главное фото (вариант до 2400px), стрелки (крупные hit-target) и клавиши ←/→, клик по увеличенному фото — следующий кадр; Escape и фон — закрытие; `data-product-gallery-slides-value` через `tag.div` |
+| Индикатор фото | В галерее показывается `N / total` в карточном режиме (над главным кадром) и в lightbox (сверху слева), обновляется при перелистывании |
 | WebGL | Оверлей спиннер + прогресс (`loader.load` onProgress); скрытие по готовности/fallback; панель ошибки + «Повторить»; `role="figure"` + `sr-only` описание рядом с `#canvas-container` |
 | Правая колонка | `reveal-on-scroll` + `.product-show-info` / `--revealed` |
 
