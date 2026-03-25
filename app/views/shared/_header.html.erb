@@ -3,18 +3,21 @@
   role="banner"
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
-    <%= link_to root_path, class: "group flex items-center rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" do %>
+    <%= link_to root_path,
+      class:
+        "header-brand-link group flex min-h-[44px] min-w-[44px] items-center rounded-md px-2 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 motion-reduce:transition-none" do %>
       <%= image_tag "/images/madmask-logo.png",
         alt: "Madmask",
         width: 1024,
         height: 1024,
-        class: "h-8 w-auto shrink-0 object-contain transition-[filter] duration-200 md:h-9 group-hover:drop-shadow-[0_0_12px_var(--color-accent-glow)]" %>
+        class:
+          "header-brand-logo h-8 w-auto shrink-0 object-contain transition-[filter] duration-200 md:h-9 group-hover:drop-shadow-[0_0_12px_var(--color-accent-glow)] motion-reduce:transition-none motion-reduce:group-hover:drop-shadow-none" %>
     <% end %>
 
-    <nav class="flex flex-wrap items-center gap-4 md:gap-6" aria-label="Основная навигация">
-      <%= link_to "Каталог", products_path, class: "site-nav-link #{"site-nav-link--active" if request.path.start_with?("/products")}" %>
+    <nav class="flex flex-wrap items-center gap-2 md:gap-6" aria-label="Основная навигация">
+      <%= link_to "Каталог", products_path, class: "site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 #{"site-nav-link--active" if request.path.start_with?("/products")}" %>
       <span
-        class="cursor-default text-xs uppercase tracking-[0.12em] text-[var(--color-text-secondary)] opacity-50"
+        class="inline-flex min-h-[44px] max-w-[5.5rem] cursor-default items-center text-xs uppercase tracking-[0.12em] text-[var(--color-text-muted)]"
         style="font-family: var(--font-orbitron)"
         title="Скоро"
       >
