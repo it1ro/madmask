@@ -283,7 +283,16 @@ export default class extends Controller {
 
     for (const p of this.particles) {
       const t = Math.max(0, p.life)
-      const a = p.alpha * t
+      let a = p.alpha * t
+
+      // Soft edge fading: particles are clipped by canvas bounds.
+      // Fade them out gradually before the boundary to avoid "hard" disappearance.
+      const w = this.cssWidth
+      const h = this.cssHeight
+      const distToEdge = Math.min(p.x, w - p.x, p.y, h - p.y)
+      const fadeMargin = Math.max(46, p.radius * 3.5)
+      const edgeSoft = Math.pow(clamp(distToEdge / fadeMargin, 0, 1), 1.12)
+      a *= edgeSoft
 
       // Outer glow layer.
       this.ctx.beginPath()
