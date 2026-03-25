@@ -40,3 +40,89 @@
     </div>
   </section>
 </div>
+
+<%# Categories 2b.5 — genre chips; links include category for future catalog filters %>
+<section class="categories-section" aria-labelledby="categories-heading">
+  <h2 id="categories-heading" class="categories-section__title">
+    Жанры коллекции
+  </h2>
+  <p class="categories-section__lead">
+    Жанровые линии и&nbsp;индивидуальный заказ — маски по&nbsp;твоим вводным, отдельно от&nbsp;готовых позиций в&nbsp;каталоге.
+  </p>
+  <ul class="categories-grid">
+    <li>
+      <%= link_to products_path(category: "fantasy"), class: "category-card category-card--fantasy" do %>
+        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path
+            d="M12 2l2.2 6.8L21 9.5l-5.5 4 2.1 6.7L12 17.8 6.4 20.2l2.1-6.7L3 9.5l6.8-.7L12 2z"
+            stroke="currentColor"
+            stroke-width="1.25"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="category-card__label">Fantasy</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to products_path(category: "horror"), class: "category-card category-card--horror" do %>
+        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path
+            d="M12 4c-3.2 0-5.5 2.1-5.5 5v2.2L8 13v3h8v-3l1.5-1.8V9c0-2.9-2.3-5-5.5-5z"
+            stroke="currentColor"
+            stroke-width="1.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path d="M9 11h.01M15 11h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M10 15.5h4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+        </svg>
+        <span class="category-card__label">Horror</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to products_path(category: "sci-fi"), class: "category-card category-card--scifi" do %>
+        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.25" />
+          <ellipse
+            cx="12"
+            cy="12"
+            rx="9"
+            ry="3"
+            stroke="currentColor"
+            stroke-width="1.25"
+            transform="rotate(-18 12 12)"
+          />
+          <path d="M12 2v3M12 19v3M4.5 12h-2M21.5 12h-2" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+        </svg>
+        <span class="category-card__label">Sci‑fi</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to products_path(category: "cyberpunk"), class: "category-card category-card--cyberpunk" do %>
+        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="5" y="7" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.25" />
+          <path d="M9 11h2v2H9v-2zm4 0h2v2h-2v-2z" fill="currentColor" />
+          <path d="M12 2v3M12 19v3M4 12H2M22 12h-2" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+        </svg>
+        <span class="category-card__label">Cyberpunk</span>
+      <% end %>
+    </li>
+    <li>
+      <%= link_to products_path(category: "custom"),
+        class: "category-card category-card--custom",
+        aria: { label: "Custom — маски на индивидуальный заказ" } do %>
+        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path
+            d="M17 3a2.85 2.85 0 00-4 4L7 13v4h4l6-6a2.85 2.85 0 004-4l-1-1"
+            stroke="currentColor"
+            stroke-width="1.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path d="M6 21h12" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+        </svg>
+        <span class="category-card__label">Custom</span>
+      <% end %>
+    </li>
+  </ul>
+</section>
