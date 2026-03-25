@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: Eldritch Visage
+  description: Handcrafted mask for cosmic horror cosplay.
+  price: 129.99
+  category: horror
+  model_url: /models/sample.glb
+
+two:
+  name: Neon Phantom
+  description: Cyberpunk-inspired wearable art.
+  price: 149.00
+  category: cyberpunk
+  model_url: /models/sample2.glb
