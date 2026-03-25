@@ -1,0 +1,35 @@
+/* Madmask design tokens — DESIGN_GUIDELINES.md §2 (single source for :root variables) */
+
+:root {
+  --color-bg-primary: #0a050f;
+  --color-bg-secondary: #120b1a;
+  --color-surface: #1e1528;
+  --color-border: #2c1f3a;
+
+  --color-text-primary: #f0e9f0;
+  --color-text-secondary: #b9a9c9;
+  /* Muted UI copy — WCAG AA on --color-bg-primary (~4.98:1) */
+  --color-text-muted: #8578a0;
+  --color-text-accent: #e85d5d;
+  /* Form / validation errors (optional semantic token) */
+  --color-danger: #e85d5d;
+
+  --color-accent-1: #8b5f9e;
+  --color-accent-2: #5d3a6b;
+  --color-accent-glow: #b76fe0;
+  --color-accent-cyber: #00c8b0;
+  --color-accent-cyber-glow: #66fcf1;
+
+  /* Product categories — DESIGN_GUIDELINES.md §2 */
+  --color-category-fantasy: #9b6bb5;
+  --color-category-horror: #b22234;
+  --color-category-scifi: #4a90d9;
+  --color-category-cyberpunk: #00c8b0;
+  /* Bespoke / made-to-order — distinct warm gold */
+  --color-category-custom: #c9a03d;
+
+  --font-cinzel: "Cinzel", serif;
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-jetbrains: "JetBrains Mono", ui-monospace, monospace;
+}

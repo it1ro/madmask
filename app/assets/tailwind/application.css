@@ -1,36 +1,52 @@
+@import "../stylesheets/madmask_design_tokens.css";
 @import "tailwindcss";
 
-/* Design tokens — DESIGN_GUIDELINES.md §2 */
-:root {
-  --color-bg-primary: #0a050f;
-  --color-bg-secondary: #120b1a;
-  --color-surface: #1e1528;
-  --color-border: #2c1f3a;
+/* Tailwind v4 theme tokens → utilities (CSS vars: madmask_design_tokens.css) — IMPLEMENTATION_PLAN iteration 6 */
+@theme {
+  --font-heading: var(--font-cinzel);
+  --font-ui: var(--font-orbitron);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
 
-  --color-text-primary: #f0e9f0;
-  --color-text-secondary: #b9a9c9;
-  /* Muted UI copy — WCAG AA on --color-bg-primary (~4.98:1) */
-  --color-text-muted: #8578a0;
-  --color-text-accent: #e85d5d;
+  --color-page: var(--color-bg-primary);
+  --color-card: var(--color-bg-secondary);
+  --color-panel: var(--color-surface);
+  --color-line: var(--color-border);
+  --color-ink: var(--color-text-primary);
+  --color-ink-muted: var(--color-text-secondary);
+  --color-ink-faint: var(--color-text-muted);
+  --color-price: var(--color-text-accent);
+  --color-accent: var(--color-accent-1);
+  --color-accent-deep: var(--color-accent-2);
+  --color-glow: var(--color-accent-glow);
+  --color-cyber: var(--color-accent-cyber);
+  --color-cyber-bright: var(--color-accent-cyber-glow);
 
-  --color-accent-1: #8b5f9e;
-  --color-accent-2: #5d3a6b;
-  --color-accent-glow: #b76fe0;
-  --color-accent-cyber: #00c8b0;
-  --color-accent-cyber-glow: #66fcf1;
+  --shadow-glow: 0 0 12px var(--color-accent-glow);
+  --shadow-glow-lg: 0 0 18px var(--color-accent-glow);
+  --shadow-card: 0 0 20px rgba(0, 0, 0, 0.25);
+}
 
-  /* Product categories — DESIGN_GUIDELINES.md §2 */
-  --color-category-fantasy: #9b6bb5;
-  --color-category-horror: #b22234;
-  --color-category-scifi: #4a90d9;
-  --color-category-cyberpunk: #00c8b0;
-  /* Bespoke / made-to-order — distinct warm gold */
-  --color-category-custom: #c9a03d;
+/* Main content fade-in after Turbo navigation — iteration 6 */
+.page-main {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  --font-cinzel: "Cinzel", serif;
-  --font-orbitron: "Orbitron", sans-serif;
-  --font-inter: "Inter", system-ui, sans-serif;
-  --font-jetbrains: "JetBrains Mono", ui-monospace, monospace;
+.page-main.page-main--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-main {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 html {

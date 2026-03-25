@@ -1,12 +1,12 @@
 <%# locals: product: %>
 <%= turbo_frame_tag dom_id(product) do %>
   <article
-    class="group relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-5 shadow-[0_0_20px_rgba(0,0,0,0.25)] transition duration-200 hover:-translate-y-1.5 hover:shadow-[0_0_18px_var(--color-accent-glow)] motion-reduce:transform-none motion-reduce:transition-none"
+    class="group relative overflow-hidden rounded-2xl border border-line bg-card p-5 shadow-card transition duration-200 hover:-translate-y-1.5 hover:shadow-[0_0_18px_var(--color-accent-glow),inset_0_0_0_1px_rgba(183,111,224,0.12)] motion-reduce:transform-none motion-reduce:transition-none"
     style="--product-cat: <%= product_category_css_var(product.category) %>"
   >
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
       <div
-        class="relative h-36 w-full shrink-0 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] sm:h-32 sm:w-32"
+        class="relative h-36 w-full shrink-0 overflow-hidden rounded-xl border border-line bg-panel sm:h-32 sm:w-32"
       >
         <% hero = product.hero_image %>
         <% if hero.present? %>
@@ -15,7 +15,7 @@
             alt: "" %>
         <% else %>
           <div
-            class="flex h-full w-full items-center justify-center text-xs text-[var(--color-text-muted)]"
+            class="flex h-full w-full items-center justify-center text-xs text-ink-faint"
             aria-hidden="true"
           >
             Нет обложки
@@ -25,27 +25,24 @@
 
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap items-start justify-between gap-2">
-          <h2
-            class="text-lg font-semibold tracking-wide text-[var(--color-text-primary)] md:text-xl"
-            style="font-family: var(--font-cinzel)"
-          >
-            <%= link_to product.name, product_path(product), class: "hover:text-[var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>
+          <h2 class="font-heading text-lg font-semibold tracking-wide text-ink md:text-xl">
+            <%= link_to product.name, product_path(product), class: "hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 rounded-sm" %>
           </h2>
           <span
-            class="inline-flex shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium uppercase tracking-wider text-[var(--color-bg-primary)]"
-            style="font-family: var(--font-orbitron); background: var(--product-cat)"
+            class="inline-flex shrink-0 rounded-full px-2.5 py-0.5 font-ui text-xs font-medium uppercase tracking-wider text-page"
+            style="background: var(--product-cat)"
           >
             <%= product_category_label(product.category) %>
           </span>
         </div>
 
         <% if product.description.present? %>
-          <p class="mt-2 line-clamp-2 text-sm text-[var(--color-text-secondary)]">
+          <p class="mt-2 line-clamp-2 text-sm text-ink-muted">
             <%= product.description %>
           </p>
         <% end %>
 
-        <p class="mt-3 text-lg text-[var(--color-text-accent)]" style="font-family: var(--font-jetbrains)">
+        <p class="mt-3 font-mono text-lg text-price">
           <%= number_to_currency(product.price, unit: "₽", separator: ",", delimiter: " ", format: "%n %u") %>
         </p>
 
@@ -54,21 +51,18 @@
             product_path(product),
             data: { turbo_frame: "_top" },
             class:
-              "inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[var(--color-accent-1)] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2",
-            style: "font-family: var(--font-orbitron)" %>
+              "font-ui inline-flex min-h-[40px] items-center justify-center rounded-lg border border-accent px-4 py-2 text-xs font-medium uppercase tracking-wide text-ink transition hover:bg-accent-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
           <%= link_to "Редактировать",
             edit_admin_product_path(product),
             data: { turbo_frame: dom_id(product) },
             class:
-              "inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[var(--color-border)] px-4 py-2 text-xs text-[var(--color-text-secondary)] transition hover:border-[var(--color-accent-cyber)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2",
-            style: "font-family: var(--font-orbitron)" %>
+              "font-ui inline-flex min-h-[40px] items-center justify-center rounded-lg border border-line px-4 py-2 text-xs text-ink-muted transition hover:border-cyber hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
           <%= button_to "Удалить",
             admin_product_path(product),
             method: :delete,
             form: { data: { turbo_confirm: "Удалить «#{product.name}»?" } },
             class:
-              "inline-flex min-h-[40px] cursor-pointer items-center justify-center rounded-lg border border-transparent bg-transparent px-4 py-2 text-xs text-[var(--color-category-horror)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2",
-            style: "font-family: var(--font-orbitron)" %>
+              "font-ui inline-flex min-h-[40px] cursor-pointer items-center justify-center rounded-lg border border-transparent bg-transparent px-4 py-2 text-xs text-[var(--color-category-horror)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
         </div>
       </div>
     </div>

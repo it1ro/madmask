@@ -33,7 +33,13 @@
   <body class="flex min-h-screen flex-col antialiased">
     <a href="#main-content" class="skip-link">Перейти к содержимому</a>
     <%= render "shared/header" %>
-    <main id="main-content" tabindex="-1" class="mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-24 md:px-6 md:pt-28">
+    <main
+      id="main-content"
+      tabindex="-1"
+      class="page-main mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-24 md:px-6 md:pt-28"
+      data-controller="page-transition"
+      data-page-transition-visible-class="page-main--visible"
+    >
       <%= yield %>
     </main>
     <%= render "shared/footer" %>

@@ -1,5 +1,7 @@
 /*
- * Tailwind v4 + tailwindcss-rails 4.x compiles from app/assets/tailwind/application.css
- * (bin/rails tailwindcss:build). This path is kept for IMPLEMENTATION_PLAN / docs parity.
- * Edit app/assets/tailwind/application.css for @import "tailwindcss" and @theme.
+ * IMPLEMENTATION_PLAN §6.1 — color CSS variables from DESIGN_GUIDELINES.md.
+ *
+ * tailwindcss-rails 4.x compiles from app/assets/tailwind/application.css; this file is loaded
+ * by Propshaft alongside app/assets/builds/tailwind.css. Shared tokens live in one place:
  */
+@import "./madmask_design_tokens.css";

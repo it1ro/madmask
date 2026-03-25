@@ -7,18 +7,13 @@
   >
     Редактировать <%= @product.name %>
   </h1>
-  <p class="mb-6 text-[var(--color-text-secondary)]">
-    <%= link_to "← К админке", admin_products_path, class: "text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>
+  <p class="mb-6 text-ink-muted">
+    <%= link_to "← К админке", admin_products_path, class: "text-cyber underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 rounded-sm" %>
   </p>
 
   <%= turbo_frame_tag dom_id(@product) do %>
-    <div
-      class="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 shadow-[0_0_24px_rgba(0,0,0,0.35)]"
-    >
-      <h2
-        class="mb-4 text-xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-2xl"
-        style="font-family: var(--font-cinzel)"
-      >
+    <div class="rounded-2xl border border-line bg-card p-6 shadow-[0_0_24px_rgba(0,0,0,0.35)]">
+      <h2 class="font-heading mb-4 text-xl font-semibold tracking-wide text-ink md:text-2xl">
         Редактировать
       </h2>
       <%= render "form", product: @product %>

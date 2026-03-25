@@ -1,17 +1,26 @@
-# Итерация 6: Галерея изображений и UI карточки
+# Итерация 6: дизайн и анимации (IMPLEMENTATION_PLAN)
 
 ## Статус
 
 | Подзадача | Результат |
 |-----------|-----------|
-| Модель | `has_many_attached :gallery_images`; валидации типа (JPEG/PNG/GIF/WebP/AVIF), размер ≤ 5 МБ, максимум 10 файлов; `hero_image`, `gallery_extra_count`, `preview_images_ordered` |
-| Админка | `gallery_images: []` в strong params; `purge_requested_gallery_images` по `ActiveStorage::Attachment.find_signed`; форма — multiple upload, чекбоксы удаления по `signed_id` |
-| Страница товара | Секция фото сверху (главный кадр + лента миниатюр, `product_gallery` Stimulus); блок 3D ниже; якорь `#product-3d-preview` сохранён |
-| Каталог | `hero_image` + вариант превью; бейдж `+N` при `gallery_extra_count > 0`; hover `hover:-translate-y-1.5` |
-| Тесты | Расширен `test/models/product_test.rb`; прогон: `docker compose run --rm web bin/rails test` |
+| 6.1 — CSS-переменные цветов | `app/assets/stylesheets/madmask_design_tokens.css` (`:root`); подключено в `app/assets/stylesheets/application.tailwind.css` (п. плана) и импортируется в `app/assets/tailwind/application.css` перед `@import "tailwindcss"` |
+| Токены + Tailwind v4 `@theme` | В `app/assets/tailwind/application.css`: `@theme` мапит семантические утилиты (`font-heading`, `font-ui`, `text-ink`, `bg-card`, `border-line`, `shadow-glow` / `shadow-card`, и т.д.) поверх CSS-переменных из `madmask_design_tokens.css` |
+| Полировка публичных вьюх | Каталог, карточка товара, show (ключевые блоки), header/footer переведены на утилиты темы; hover карточки: подъём 6px + комбинированная тень (внешнее свечение + лёгкий inset) |
+| Главная — секция товаров | `PagesController#home`: `@featured_products = Product.order(created_at: :desc).limit(4)`; блок «Новинки» с `render "products/product"` и CTA «Весь каталог» (если есть товары) |
+| Fade-in при навигации | Stimulus `page_transition_controller.js` + классы `.page-main` / `.page-main--visible` на `<main>`; `turbo:load` + `turbo:before-cache`; `prefers-reduced-motion: reduce` — без сдвига, контент видим без анимации |
+| Админка | Формы, списки, new/edit — `border-line`, `bg-card` / `bg-panel`, кнопки с `font-ui`, фокус `outline-glow` |
+| WebGL спиннер | Уже был (`.webgl-preview__*`); без изменений по сути |
+
+## Связанная работа (другая тема)
+
+Реализация **галереи изображений** (модель, админка, lightbox) ведётся отдельно и не отменяет пункты дизайн-итерации выше; при необходимости см. историю коммитов / `IMPLEMENTATION_PLAN` по галерее.
 
 ## Команды проверки
 
 ```bash
+docker compose run --rm web bin/rails tailwindcss:build
 docker compose run --rm web bin/rails test
 ```
+
+Визуально: главная (hero, новинки при наличии товаров, категории), каталог, карточка товара, админка.

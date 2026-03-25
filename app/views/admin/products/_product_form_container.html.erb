@@ -1,12 +1,9 @@
 <%# locals: product: %>
 <div
   id="product_form_container"
-  class="rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-6 shadow-[0_0_24px_rgba(0,0,0,0.35)]"
+  class="rounded-2xl border border-line bg-card p-6 shadow-[0_0_24px_rgba(0,0,0,0.35)]"
 >
-  <h2
-    class="mb-4 text-xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-2xl"
-    style="font-family: var(--font-cinzel)"
-  >
+  <h2 class="font-heading mb-4 text-xl font-semibold tracking-wide text-ink md:text-2xl">
     Новый товар
   </h2>
   <%= render "form", product: product %>

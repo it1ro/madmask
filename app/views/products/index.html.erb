@@ -3,32 +3,25 @@
 <section class="py-4 md:py-8" aria-labelledby="catalog-heading">
   <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
     <div>
-      <h1
-        id="catalog-heading"
-        class="text-3xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-4xl"
-        style="font-family: var(--font-cinzel)"
-      >
+      <h1 id="catalog-heading" class="font-heading text-3xl font-semibold tracking-wide text-ink md:text-4xl">
         Каталог
       </h1>
-      <p class="mt-2 max-w-xl text-[var(--color-text-secondary)]">
+      <p class="mt-2 max-w-xl text-ink-muted">
         Маски и артефакты коллекции. Управление товарами — в
-        <%= link_to "админ-панели", admin_root_path, class: "text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>.
+        <%= link_to "админ-панели", admin_root_path, class: "text-cyber underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 rounded-sm" %>.
       </p>
     </div>
   </div>
 
   <div class="mt-10">
-    <h2
-      class="mb-4 text-lg font-semibold tracking-wide text-[var(--color-text-primary)]"
-      style="font-family: var(--font-cinzel)"
-    >
+    <h2 class="font-heading mb-4 text-lg font-semibold tracking-wide text-ink">
       Все товары
     </h2>
     <div id="products" class="flex flex-col gap-5">
       <% if @products.any? %>
         <%= render partial: "products/product", collection: @products, as: :product %>
       <% else %>
-        <p id="products_empty" class="rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-bg-secondary)]/60 px-6 py-10 text-center text-[var(--color-text-muted)]">
+        <p id="products_empty" class="rounded-xl border border-dashed border-line bg-card/60 px-6 py-10 text-center text-ink-faint">
           Пока нет товаров.
         </p>
       <% end %>

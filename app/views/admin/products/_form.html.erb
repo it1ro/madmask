@@ -3,10 +3,10 @@
 <%= form_with model: [:admin, product], html: { class: "space-y-4", novalidate: true }.merge(form_html) do |f| %>
   <% if product.errors.any? %>
     <div
-      class="rounded-lg border border-[var(--color-category-horror)]/50 bg-[var(--color-bg-secondary)] px-4 py-3 text-sm text-[var(--color-text-secondary)]"
+      class="rounded-lg border border-[var(--color-category-horror)]/50 bg-card px-4 py-3 text-sm text-ink-muted"
       role="alert"
     >
-      <p class="font-medium text-[var(--color-text-primary)]">Исправьте ошибки:</p>
+      <p class="font-medium text-ink">Исправьте ошибки:</p>
       <ul class="mt-2 list-inside list-disc">
         <% product.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
@@ -16,98 +16,97 @@
   <% end %>
 
   <div>
-    <%= f.label :name, "Название", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.label :name, "Название", class: "mb-1 block text-sm font-medium text-ink-muted" %>
     <%= f.text_field :name,
       required: true,
       autocomplete: "off",
       class:
-        "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+        "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
   </div>
 
   <div>
-    <%= f.label :description, "Описание", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.label :description, "Описание", class: "mb-1 block text-sm font-medium text-ink-muted" %>
     <%= f.text_area :description,
       rows: 4,
       class:
-        "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+        "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
   </div>
 
   <div class="grid gap-4 sm:grid-cols-2">
     <div>
-      <%= f.label :price, "Цена", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+      <%= f.label :price, "Цена", class: "mb-1 block text-sm font-medium text-ink-muted" %>
       <%= f.number_field :price,
         step: "0.01",
         min: 0,
         required: true,
-        style: "font-family: var(--font-jetbrains)",
         class:
-          "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+          "font-mono w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
     </div>
 
     <div>
-      <%= f.label :category, "Категория", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+      <%= f.label :category, "Категория", class: "mb-1 block text-sm font-medium text-ink-muted" %>
       <%= f.select :category,
         Product::CATEGORIES.map { |c| [product_category_label(c), c] },
         { include_blank: "Выберите…" },
         required: true,
         class:
-          "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+          "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
     </div>
   </div>
 
   <div>
-    <%= f.label :model_file, "3D-модель (файл)", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.label :model_file, "3D-модель (файл)", class: "mb-1 block text-sm font-medium text-ink-muted" %>
     <%= f.file_field :model_file,
       accept: ".glb,.gltf",
       class:
-        "block w-full text-sm text-[var(--color-text-secondary)] file:mr-4 file:rounded-md file:border-0 file:bg-[var(--color-accent-2)] file:px-4 file:py-2 file:text-[var(--color-text-primary)] file:hover:bg-[var(--color-accent-1)]" %>
+        "block w-full text-sm text-ink-muted file:mr-4 file:rounded-md file:border-0 file:bg-accent-deep file:px-4 file:py-2 file:text-ink file:hover:bg-accent" %>
     <% if product.model_file.attached? %>
-      <p class="mt-2 text-xs text-[var(--color-text-muted)]">
+      <p class="mt-2 text-xs text-ink-faint">
         Сейчас: <%= product.model_file.filename %>
       </p>
-      <label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-[var(--color-text-secondary)]">
-        <%= check_box_tag "product[remove_model_file]", "1", false, class: "rounded border-[var(--color-border)]" %>
+      <label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-ink-muted">
+        <%= check_box_tag "product[remove_model_file]", "1", false, class: "rounded border-line" %>
         <span>Удалить загруженный файл (3D-превью будет недоступно до новой загрузки)</span>
       </label>
     <% end %>
-    <p class="mt-1 text-xs text-[var(--color-text-muted)]">
+    <p class="mt-1 text-xs text-ink-faint">
       Загрузите GLB или GLTF для интерактивного превью. Без файла отображается заглушка.
     </p>
   </div>
 
   <div>
-    <%= f.label :cover_image, "Обложка", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.label :cover_image, "Обложка", class: "mb-1 block text-sm font-medium text-ink-muted" %>
     <%= f.file_field :cover_image,
       accept: "image/*",
       class:
-        "block w-full text-sm text-[var(--color-text-secondary)] file:mr-4 file:rounded-md file:border-0 file:bg-[var(--color-accent-2)] file:px-4 file:py-2 file:text-[var(--color-text-primary)] file:hover:bg-[var(--color-accent-1)]" %>
+        "block w-full text-sm text-ink-muted file:mr-4 file:rounded-md file:border-0 file:bg-accent-deep file:px-4 file:py-2 file:text-ink file:hover:bg-accent" %>
     <% if product.cover_image.attached? %>
-      <p class="mt-2 text-xs text-[var(--color-text-muted)]">Сейчас: <%= product.cover_image.filename %></p>
+      <p class="mt-2 text-xs text-ink-faint">Сейчас: <%= product.cover_image.filename %></p>
     <% end %>
   </div>
 
   <div>
-    <%= f.label :gallery_images, "Галерея (несколько файлов)", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.label :gallery_images, "Галерея (несколько файлов)", class: "mb-1 block text-sm font-medium text-ink-muted" %>
     <%= f.file_field :gallery_images,
       multiple: true,
       accept: "image/*",
       class:
-        "block w-full text-sm text-[var(--color-text-secondary)] file:mr-4 file:rounded-md file:border-0 file:bg-[var(--color-accent-2)] file:px-4 file:py-2 file:text-[var(--color-text-primary)] file:hover:bg-[var(--color-accent-1)]" %>
-    <p class="mt-1 text-xs text-[var(--color-text-muted)]">
+        "block w-full text-sm text-ink-muted file:mr-4 file:rounded-md file:border-0 file:bg-accent-deep file:px-4 file:py-2 file:text-ink file:hover:bg-accent" %>
+    <p class="mt-1 text-xs text-ink-faint">
       До <%= Product::MAX_GALLERY_IMAGES %> изображений (JPEG, PNG, GIF, WebP, AVIF), до 5 МБ каждое. Можно выбрать несколько файлов за раз.
     </p>
     <% if product.persisted? && product.gallery_images.attached? %>
-      <fieldset class="mt-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-primary)]/40 p-3">
-        <legend class="px-1 text-xs font-medium text-[var(--color-text-secondary)]">Удалить из галереи</legend>
+      <fieldset class="mt-4 rounded-lg border border-line bg-page/40 p-3">
+        <legend class="px-1 text-xs font-medium text-ink-muted">Удалить из галереи</legend>
         <ul class="mt-2 flex flex-wrap gap-3">
           <% product.gallery_images.attachments.each do |att| %>
             <li class="flex flex-col items-center gap-2">
-              <label class="flex cursor-pointer flex-col items-center gap-1 text-xs text-[var(--color-text-muted)]">
+              <label class="flex cursor-pointer flex-col items-center gap-1 text-xs text-ink-faint">
                 <%= image_tag att.variant(resize_to_limit: [96, 96]),
-                  class: "h-20 w-20 rounded-md border border-[var(--color-border)] object-cover" %>
+                  class: "h-20 w-20 rounded-md border border-line object-cover" %>
                 <span class="flex items-center gap-2">
                   <%= check_box_tag "product[remove_gallery_image_signed_ids][]", att.signed_id, false,
-                    class: "rounded border-[var(--color-border)]" %>
+                    class: "rounded border-line" %>
                   <span>Удалить</span>
                 </span>
               </label>
@@ -121,14 +120,13 @@
   <div class="flex flex-wrap gap-3 pt-2">
     <%= f.submit (product.persisted? ? "Сохранить" : "Добавить товар"),
       class:
-        "inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-lg border border-transparent bg-[var(--color-accent-2)] px-5 py-2 text-sm font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 motion-reduce:transition-none",
-      style: "font-family: var(--font-orbitron)" %>
+        "font-ui inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-lg border border-transparent bg-accent-deep px-5 py-2 text-sm font-medium uppercase tracking-wide text-ink transition hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transition-none" %>
     <% if product.persisted? %>
       <%= link_to "Отмена",
         admin_product_path(product),
         data: { turbo_frame: dom_id(product) },
         class:
-          "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[var(--color-border)] px-5 py-2 text-sm text-[var(--color-text-secondary)] transition hover:border-[var(--color-accent-glow)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" %>
+          "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-line px-5 py-2 text-sm text-ink-muted transition hover:border-glow hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
     <% end %>
   </div>
 <% end %>

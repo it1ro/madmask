@@ -44,6 +44,27 @@
   </section>
 </div>
 
+<% if @featured_products.any? %>
+  <section class="px-0 py-10 md:py-12" aria-labelledby="featured-heading">
+    <div class="mb-8 text-center">
+      <h2 id="featured-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl">
+        Новинки
+      </h2>
+      <p class="mt-2 font-ui text-sm tracking-wide text-ink-muted">
+        Свежие позиции в каталоге — с 3D на странице товара.
+      </p>
+    </div>
+    <div class="flex flex-col gap-5">
+      <%= render partial: "products/product", collection: @featured_products, as: :product %>
+    </div>
+    <div class="mt-8 text-center">
+      <%= link_to products_path, class: "hero-cta inline-flex" do %>
+        Весь каталог
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
 <%# Categories 2b.5 — genre chips; links include category for future catalog filters %>
 <section class="categories-section" aria-labelledby="categories-heading">
   <h2 id="categories-heading" class="categories-section__title">

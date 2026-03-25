@@ -7,7 +7,7 @@
     <%= link_to "← К каталогу",
       products_path,
       class:
-        "inline-flex min-h-[44px] items-center text-sm text-[var(--color-accent-cyber)] underline-offset-2 transition active:scale-[0.98] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm motion-reduce:active:scale-100" %>
+        "inline-flex min-h-[44px] items-center text-sm text-cyber underline-offset-2 transition active:scale-[0.98] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 rounded-sm motion-reduce:active:scale-100" %>
   </p>
 
   <div class="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12">
@@ -231,21 +231,18 @@
       data-reveal-on-scroll-revealed-class="product-show-info--revealed"
     >
       <div class="product-show-info__inner">
-        <p class="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)]" style="font-family: var(--font-orbitron)">
+        <p class="font-ui text-xs uppercase tracking-[0.2em] text-ink-faint">
           <%= product_category_label(@product.category) %>
         </p>
-        <h1
-          class="mt-2 text-3xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-4xl"
-          style="font-family: var(--font-cinzel)"
-        >
+        <h1 class="font-heading mt-2 text-3xl font-semibold tracking-wide text-ink md:text-4xl">
           <%= @product.name %>
         </h1>
-        <p class="mt-4 text-2xl text-[var(--color-text-accent)]" style="font-family: var(--font-jetbrains)">
+        <p class="mt-4 font-mono text-2xl text-price">
           <%= number_to_currency(@product.price, unit: "₽", separator: ",", delimiter: " ", format: "%n %u") %>
         </p>
 
         <% if @product.description.present? %>
-          <div class="mt-6 max-w-prose whitespace-pre-line text-[var(--color-text-secondary)] leading-relaxed">
+          <div class="mt-6 max-w-prose whitespace-pre-line text-ink-muted leading-relaxed">
             <%= @product.description %>
           </div>
         <% end %>
@@ -264,8 +261,8 @@
             >
               Связаться
             </button>
-            <p class="mt-2 text-xs text-[var(--color-text-muted)]">
-              Контакт для связи не настроен. Для администратора: env <code class="rounded bg-[var(--color-surface)] px-1 py-0.5 text-[0.7rem]">MADMASK_CONTACT_EMAIL</code> или credentials <code class="rounded bg-[var(--color-surface)] px-1 py-0.5 text-[0.7rem]">madmask.contact_email</code>.
+            <p class="mt-2 text-xs text-ink-faint">
+              Контакт для связи не настроен. Для администратора: env <code class="rounded bg-panel px-1 py-0.5 text-[0.7rem]">MADMASK_CONTACT_EMAIL</code> или credentials <code class="rounded bg-panel px-1 py-0.5 text-[0.7rem]">madmask.contact_email</code>.
             </p>
           <% end %>
         </div>
