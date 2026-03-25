@@ -209,7 +209,7 @@ body {
 .hero-title {
   font-family: var(--font-cinzel);
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.04em;
   line-height: 1.15;
   color: var(--color-text-primary);
   text-shadow: 0 0 40px rgba(183, 111, 224, 0.25);
