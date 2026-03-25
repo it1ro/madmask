@@ -6,6 +6,9 @@ export default class extends Controller {
   }
 
   async connect() {
+    const url = (this.modelUrlValue || "").trim()
+    if (!url.length) return
+
     try {
       await this.#initThree()
     } catch (err) {
@@ -48,12 +51,6 @@ export default class extends Controller {
       this.#disposeObject3D(this.loadedRoot)
       this.scene.remove(this.loadedRoot)
       this.loadedRoot = null
-    }
-
-    if (this.fallbackMesh && this.scene) {
-      this.#disposeObject3D(this.fallbackMesh)
-      this.scene.remove(this.fallbackMesh)
-      this.fallbackMesh = null
     }
 
     if (this.renderer) {
@@ -135,12 +132,7 @@ export default class extends Controller {
     this._animationId = requestAnimationFrame(this._boundAnimate)
 
     const url = (this.modelUrlValue || "").trim()
-    if (url.length === 0) {
-      this.#hideOverlay()
-      this.#addFallbackCube()
-    } else {
-      await this.#loadModel(url)
-    }
+    await this.#loadModel(url)
   }
 
   #buildOverlay() {
@@ -222,12 +214,6 @@ export default class extends Controller {
     this.element.setAttribute("data-webgl-preview-state", "loading")
     this.#removeErrorPanel()
 
-    if (this.fallbackMesh && this.scene) {
-      this.#disposeObject3D(this.fallbackMesh)
-      this.scene.remove(this.fallbackMesh)
-      this.fallbackMesh = null
-    }
-
     this.#buildOverlay()
     this.#setProgress(0)
     await this.#loadModel(url)
@@ -261,10 +247,6 @@ export default class extends Controller {
   #animate() {
     this._animationId = requestAnimationFrame(this._boundAnimate)
     if (this.controls) this.controls.update()
-    if (this.fallbackMesh) {
-      this.fallbackMesh.rotation.x += 0.008
-      this.fallbackMesh.rotation.y += 0.012
-    }
     if (this.renderer && this.scene && this.camera) {
       this.renderer.render(this.scene, this.camera)
     }
@@ -306,9 +288,9 @@ export default class extends Controller {
       this.scene.add(root)
       this.element.setAttribute("data-webgl-preview-state", "model-loaded")
     } catch (err) {
-      console.warn("[webgl-preview] Model load failed, using fallback cube", err)
+      console.warn("[webgl-preview] Model load failed", err)
       this.#hideOverlay()
-      this.#addFallbackCube("load-error")
+      this.element.setAttribute("data-webgl-preview-state", "load-error")
       this.#showLoadErrorPanel()
     }
   }
@@ -335,19 +317,6 @@ export default class extends Controller {
     this.camera.position.set(dist * 0.9, dist * 0.55, dist * 1.1)
     this.controls.target.set(0, 0, 0)
     this.controls.update()
-  }
-
-  #addFallbackCube(state = "fallback-cube") {
-    const THREE = this.THREE
-    const geom = new THREE.BoxGeometry(1, 1, 1)
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0x6b5b95,
-      metalness: 0.35,
-      roughness: 0.45
-    })
-    this.fallbackMesh = new THREE.Mesh(geom, mat)
-    this.scene.add(this.fallbackMesh)
-    this.element.setAttribute("data-webgl-preview-state", state)
   }
 
   #disposeObject3D(object) {

@@ -152,38 +152,38 @@
         </section>
       <% end %>
 
-      <%# 3D preview below photos; anchor for catalog links. %>
-      <section
-        id="product-3d-preview"
-        class="relative w-full overflow-hidden rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-bg-primary)] to-[var(--color-accent-2)] shadow-[0_0_28px_rgba(183,111,224,0.18)]"
-        aria-labelledby="product-3d-heading"
-      >
-        <div class="flex items-center justify-between gap-3 border-b border-[var(--color-border)]/80 bg-[var(--color-bg-secondary)]/40 px-4 py-3">
-          <h2
-            id="product-3d-heading"
-            class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]"
-            style="font-family: var(--font-orbitron)"
-          >
-            3D превью
-          </h2>
-          <% if @product.model_file.attached? %>
+      <%# 3D preview only when GLB/GLTF is attached; no placeholder block otherwise. %>
+      <% if @product.model_file.attached? %>
+        <section
+          id="product-3d-preview"
+          class="relative w-full overflow-hidden rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-bg-primary)] to-[var(--color-accent-2)] shadow-[0_0_28px_rgba(183,111,224,0.18)]"
+          aria-labelledby="product-3d-heading"
+        >
+          <div class="flex items-center justify-between gap-3 border-b border-[var(--color-border)]/80 bg-[var(--color-bg-secondary)]/40 px-4 py-3">
+            <h2
+              id="product-3d-heading"
+              class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]"
+              style="font-family: var(--font-orbitron)"
+            >
+              3D превью
+            </h2>
             <span class="truncate text-xs text-[var(--color-text-muted)]" title="<%= @product.model_file.filename %>">
               <%= @product.model_file.filename %>
             </span>
-          <% end %>
-        </div>
-        <%# Description for figure — must stay outside canvas-container (Stimulus clears the node). %>
-        <span id="product-3d-desc" class="sr-only">Интерактивное вращение модели мышью или касанием.</span>
-        <div
-          id="canvas-container"
-          class="relative aspect-square w-full min-h-[min(80vw,28rem)] sm:min-h-[22rem]"
-          data-controller="webgl-preview"
-          data-webgl-preview-model-url-value="<%= h(@product.effective_model_url.to_s) %>"
-          role="figure"
-          aria-labelledby="product-3d-heading"
-          aria-describedby="product-3d-desc"
-        ></div>
-      </section>
+          </div>
+          <%# Description for figure — must stay outside canvas-container (Stimulus clears the node). %>
+          <span id="product-3d-desc" class="sr-only">Интерактивное вращение модели мышью или касанием.</span>
+          <div
+            id="canvas-container"
+            class="relative aspect-square w-full min-h-[min(80vw,28rem)] sm:min-h-[22rem]"
+            data-controller="webgl-preview"
+            data-webgl-preview-model-url-value="<%= h(@product.effective_model_url.to_s) %>"
+            role="figure"
+            aria-labelledby="product-3d-heading"
+            aria-describedby="product-3d-desc"
+          ></div>
+        </section>
+      <% end %>
     </div>
 
     <div
