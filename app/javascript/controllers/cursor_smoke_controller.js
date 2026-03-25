@@ -1,0 +1,331 @@
+import { Controller } from "@hotwired/stimulus"
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
+
+function hexToRgb(hex) {
+  const cleaned = String(hex).trim().replace("#", "")
+  if (![3, 6].includes(cleaned.length)) return null
+
+  const full =
+    cleaned.length === 3
+      ? cleaned
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : cleaned
+
+  const num = Number.parseInt(full, 16)
+  if (Number.isNaN(num)) return null
+
+  return {
+    r: (num >> 16) & 255,
+    g: (num >> 8) & 255,
+    b: num & 255,
+  }
+}
+
+function rgba(rgb, alpha) {
+  const a = clamp(alpha, 0, 1)
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`
+}
+
+/**
+ * Cursor-following "magic smoke" trail using a lightweight canvas.
+ * - No DOM elements created per frame (only draw on canvas).
+ * - Animation runs only while particles exist (then stops automatically).
+ * - Respects prefers-reduced-motion.
+ */
+export default class extends Controller {
+  connect() {
+    if (!this.element) return
+
+    // Run the effect only on the landing page.
+    if (window.location.pathname !== "/") {
+      this.element.style.display = "none"
+      return
+    }
+
+    if (this.prefersReducedMotion()) {
+      this.element.style.display = "none"
+      return
+    }
+
+    this.ctx = this.element.getContext("2d", { alpha: true })
+    if (!this.ctx) return
+
+    // Visual tuning (keep conservative for performance).
+    this.outerRadiusMul = 1.55
+    this.coreRadiusMul = 0.45
+
+    this.colors = this.readBrandColors()
+
+    this.particles = []
+    this.maxParticles = this.computeMaxParticles()
+
+    this.pixelRatio = this.computePixelRatio()
+
+    this.cssWidth = 1
+    this.cssHeight = 1
+    this.offsetLeft = 0
+    this.offsetTop = 0
+
+    this.ctx.imageSmoothingEnabled = true
+
+    this.boundPointerMove = this.onPointerMove.bind(this)
+    this.boundTouchMove = this.onTouchMove.bind(this)
+    this.boundResize = this.onResize.bind(this)
+    this.boundTick = this.tick.bind(this)
+    this.boundBeforeCache = this.pause.bind(this)
+    this.boundAfterCache = this.resume.bind(this)
+
+    this.resizeCanvas()
+    this.mouseX = this.cssWidth / 2
+    this.mouseY = this.cssHeight / 2
+    this.lastX = this.mouseX
+    this.lastY = this.mouseY
+    this.addListeners()
+    window.addEventListener("resize", this.boundResize)
+
+    document.addEventListener("turbo:before-cache", this.boundBeforeCache)
+    document.addEventListener("turbo:load", this.boundAfterCache)
+  }
+
+  prefersReducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  }
+
+  readBrandColors() {
+    const styles = window.getComputedStyle(document.documentElement)
+    const glowHex = styles.getPropertyValue("--color-accent-glow").trim()
+    const cyberGlowHex = styles.getPropertyValue("--color-accent-cyber-glow").trim()
+
+    const glowRgb = hexToRgb(glowHex) ?? { r: 183, g: 111, b: 224 } // fallback: #B76FE0
+    const cyberRgb = hexToRgb(cyberGlowHex) ?? { r: 102, g: 252, b: 241 } // fallback: #66FCF1
+
+    return { glowRgb, cyberRgb }
+  }
+
+  computePixelRatio() {
+    const coarse = window.matchMedia("(pointer: coarse)").matches
+    const dpr = typeof window.devicePixelRatio === "number" ? window.devicePixelRatio : 1
+    return coarse ? 1 : Math.min(2, dpr)
+  }
+
+  computeMaxParticles() {
+    const cores = navigator.hardwareConcurrency ?? 4
+    const mem = navigator.deviceMemory ?? 4 // GB (may be undefined in some browsers)
+
+    // 35–40 on decent devices; lower on weak devices.
+    if (cores <= 4 || mem <= 4) return 26
+    if (cores <= 8 || mem <= 8) return 35
+    return 40
+  }
+
+  addListeners() {
+    if (this.hasListeners) return
+    this.hasListeners = true
+
+    // pointermove covers mouse/pen; touchmove handles touch explicitly.
+    window.addEventListener("pointermove", this.boundPointerMove, { passive: true })
+    window.addEventListener("touchmove", this.boundTouchMove, { passive: true })
+  }
+
+  removeListeners() {
+    if (!this.hasListeners) return
+    this.hasListeners = false
+    window.removeEventListener("pointermove", this.boundPointerMove)
+    window.removeEventListener("touchmove", this.boundTouchMove)
+  }
+
+  onResize() {
+    // Avoid resizing too often; it's usually enough to resize on next frame.
+    if (this.pendingResize) return
+    this.pendingResize = true
+    window.requestAnimationFrame(() => {
+      this.pendingResize = false
+      this.pixelRatio = this.computePixelRatio()
+      this.resizeCanvas()
+      // Canvas size changed: redraw current frame if running.
+      if (this.running) this.draw()
+    })
+  }
+
+  resizeCanvas() {
+    const rect = this.element.getBoundingClientRect()
+    this.cssWidth = Math.max(1, Math.floor(rect.width))
+    this.cssHeight = Math.max(1, Math.floor(rect.height))
+    this.offsetLeft = rect.left
+    this.offsetTop = rect.top
+
+    const w = Math.floor(this.cssWidth * this.pixelRatio)
+    const h = Math.floor(this.cssHeight * this.pixelRatio)
+
+    if (this.element.width !== w) this.element.width = w
+    if (this.element.height !== h) this.element.height = h
+
+    // Map CSS pixels → canvas pixels.
+    this.ctx.setTransform(this.pixelRatio, 0, 0, this.pixelRatio, 0, 0)
+  }
+
+  onPointerMove(e) {
+    if (e.pointerType === "touch") return
+    this.addParticle(e.clientX, e.clientY)
+  }
+
+  onTouchMove(e) {
+    const touch = e.touches?.[0]
+    if (!touch) return
+    this.addParticle(touch.clientX, touch.clientY)
+  }
+
+  addParticle(x, y) {
+    // Convert viewport coordinates → canvas-local coordinates.
+    const rect = this.element.getBoundingClientRect()
+    const cx = x - rect.left
+    const cy = y - rect.top
+
+    // Only emit when movement is noticeable.
+    const dx = cx - this.lastX
+    const dy = cy - this.lastY
+    const distance = Math.hypot(dx, dy)
+    if (distance < 3 && this.particles.length > 0) return
+
+    this.lastX = cx
+    this.lastY = cy
+    this.mouseX = cx
+    this.mouseY = cy
+
+    if (this.particles.length >= this.maxParticles) {
+      this.particles.shift()
+    }
+
+    const radius = 10 + Math.random() * 10
+    const baseAlpha = 0.18 + Math.random() * 0.22
+
+    this.particles.push({
+      x: cx,
+      y: cy,
+      radius,
+      alpha: baseAlpha,
+      life: 1,
+      fadeSpeed: 0.02 + Math.random() * 0.03,
+      driftX: (Math.random() - 0.5) * 0.9,
+      driftY: (Math.random() - 0.5) * 0.7 - 0.25, // slight upward lift
+    })
+
+    this.start()
+  }
+
+  start() {
+    if (this.running) return
+    this.running = true
+    this.animationFrameId = window.requestAnimationFrame(this.boundTick)
+  }
+
+  pause() {
+    this.removeListeners()
+    if (this.animationFrameId) window.cancelAnimationFrame(this.animationFrameId)
+    this.animationFrameId = null
+    this.running = false
+    // Clear state so Turbo cache doesn't keep running work visually.
+    this.particles = []
+    this.clear()
+  }
+
+  resume() {
+    if (this.prefersReducedMotion()) return
+    this.addListeners()
+    if (this.particles.length > 0) this.start()
+    else this.clear()
+  }
+
+  tick() {
+    if (!this.running) return
+
+    this.updateParticles()
+    this.draw()
+
+    if (this.particles.length === 0) {
+      this.running = false
+      this.animationFrameId = null
+      this.clear()
+      return
+    }
+
+    this.animationFrameId = window.requestAnimationFrame(this.boundTick)
+  }
+
+  updateParticles() {
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i]
+      p.life -= p.fadeSpeed
+      p.x += p.driftX
+      p.y += p.driftY
+
+      if (p.life <= 0) {
+        this.particles.splice(i, 1)
+        i--
+      }
+    }
+  }
+
+  clear() {
+    if (!this.ctx) return
+    this.ctx.clearRect(0, 0, this.cssWidth, this.cssHeight)
+  }
+
+  draw() {
+    if (!this.ctx) return
+    this.ctx.clearRect(0, 0, this.cssWidth, this.cssHeight)
+
+    // Use additive blending for glow-like highlights.
+    this.ctx.globalCompositeOperation = "lighter"
+
+    for (const p of this.particles) {
+      const t = Math.max(0, p.life)
+      const a = p.alpha * t
+
+      // Outer glow layer.
+      this.ctx.beginPath()
+      this.ctx.arc(p.x, p.y, p.radius * this.outerRadiusMul, 0, Math.PI * 2)
+      this.ctx.fillStyle = rgba(this.colors.glowRgb, a * 0.22)
+      this.ctx.fill()
+
+      // Core smoke layer.
+      this.ctx.beginPath()
+      this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
+      this.ctx.fillStyle = rgba(this.colors.glowRgb, a * 0.45)
+      this.ctx.fill()
+
+      // Bright kernel.
+      this.ctx.beginPath()
+      this.ctx.arc(p.x, p.y, p.radius * this.coreRadiusMul, 0, Math.PI * 2)
+      this.ctx.fillStyle = rgba(this.colors.cyberRgb, a * 0.85)
+      this.ctx.fill()
+    }
+
+    this.ctx.globalCompositeOperation = "source-over"
+  }
+
+  disconnect() {
+    if (this.boundBeforeCache) {
+      document.removeEventListener("turbo:before-cache", this.boundBeforeCache)
+    }
+    if (this.boundAfterCache) {
+      document.removeEventListener("turbo:load", this.boundAfterCache)
+    }
+    if (this.boundResize) {
+      window.removeEventListener("resize", this.boundResize)
+    }
+    this.removeListeners()
+
+    if (this.animationFrameId) window.cancelAnimationFrame(this.animationFrameId)
+    this.animationFrameId = null
+
+    this.running = false
+    this.particles = []
+
+    this.clear()
+  }
+}
+

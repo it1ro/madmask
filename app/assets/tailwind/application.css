@@ -850,3 +850,14 @@ body {
     opacity: 0.85;
   }
 }
+
+/* Cursor smoke — IMPLEMENTATION_PLAN 6.7 */
+.cursor-smoke-canvas {
+  will-change: contents;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-smoke-canvas {
+    display: none;
+  }
+}

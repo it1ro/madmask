@@ -30,8 +30,15 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="flex min-h-screen flex-col antialiased">
+  <body class="relative flex min-h-screen flex-col antialiased">
     <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+
+    <canvas
+      data-controller="cursor-smoke"
+      class="cursor-smoke-canvas pointer-events-none absolute left-0 top-0 z-[60] h-screen w-screen"
+      aria-hidden="true"
+    ></canvas>
+
     <%= render "shared/header" %>
     <main
       id="main-content"
