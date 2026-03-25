@@ -1,0 +1,47 @@
+<% content_for :title, "Админ — товары — Madmask" %>
+
+<section class="py-4 md:py-8" aria-labelledby="admin-catalog-heading">
+  <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+    <div>
+      <h1
+        id="admin-catalog-heading"
+        class="text-3xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-4xl"
+        style="font-family: var(--font-cinzel)"
+      >
+        Управление каталогом
+      </h1>
+      <p class="mt-2 max-w-xl text-[var(--color-text-secondary)]">
+        Создание и редактирование товаров. Публичный каталог —
+        <%= link_to "на сайте", products_path, class: "text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>.
+      </p>
+    </div>
+    <%= link_to "Добавить (отдельная страница)",
+      new_admin_product_path,
+      data: { turbo_frame: "_top" },
+      class:
+        "inline-flex min-h-[44px] shrink-0 items-center justify-center self-start rounded-lg border border-[var(--color-accent-1)] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 md:self-auto",
+      style: "font-family: var(--font-orbitron)" %>
+  </div>
+
+  <div class="mt-10 space-y-10">
+    <%= render "product_form_container", product: @product %>
+
+    <div>
+      <h2
+        class="mb-4 text-lg font-semibold tracking-wide text-[var(--color-text-primary)]"
+        style="font-family: var(--font-cinzel)"
+      >
+        Все товары
+      </h2>
+      <div id="products" class="flex flex-col gap-5">
+        <% if @products.any? %>
+          <%= render partial: "admin/products/product", collection: @products, as: :product %>
+        <% else %>
+          <p id="products_empty" class="rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-bg-secondary)]/60 px-6 py-10 text-center text-[var(--color-text-muted)]">
+            Пока нет товаров — добавьте первый через форму выше.
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

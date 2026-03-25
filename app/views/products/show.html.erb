@@ -53,23 +53,6 @@
             class: "break-all text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" %>
         </p>
       <% end %>
-
-      <div class="mt-10 flex flex-wrap gap-4">
-        <%= link_to "Редактировать",
-          edit_product_path(@product),
-          data: { turbo_frame: "_top" },
-          class:
-            "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[var(--color-accent-1)] px-5 py-2 text-sm font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2",
-          style: "font-family: var(--font-orbitron)" %>
-        <%= button_to "Удалить",
-          product_path(@product),
-          method: :delete,
-          data: { turbo_confirm: "Удалить «#{@product.name}»?" },
-          form: { data: { turbo: false } },
-          class:
-            "inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-lg border border-[var(--color-category-horror)]/50 bg-transparent px-5 py-2 text-sm text-[var(--color-category-horror)] transition hover:bg-[var(--color-category-horror)]/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2",
-          style: "font-family: var(--font-orbitron)" %>
-      </div>
     </div>
   </div>
 </article>

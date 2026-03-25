@@ -16,13 +16,11 @@
 
     <nav class="flex flex-wrap items-center gap-2 md:gap-6" aria-label="Основная навигация">
       <%= link_to "Каталог", products_path, class: "site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 #{"site-nav-link--active" if request.path.start_with?("/products")}" %>
-      <span
-        class="inline-flex min-h-[44px] max-w-[5.5rem] cursor-default items-center text-xs uppercase tracking-[0.12em] text-[var(--color-text-muted)]"
-        style="font-family: var(--font-orbitron)"
-        title="Скоро"
-      >
-        Админ
-      </span>
+      <%= link_to "Админ",
+        admin_root_path,
+        class:
+          "site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 text-xs uppercase tracking-[0.12em] #{"site-nav-link--active" if request.path.start_with?("/admin")}",
+        style: "font-family: var(--font-orbitron)" %>
     </nav>
   </div>
   <div

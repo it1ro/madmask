@@ -9,7 +9,12 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  resources :products
+  resources :products, only: %i[index show]
+
+  namespace :admin do
+    root to: "products#index"
+    resources :products, except: :show
+  end
 
   root "pages#home"
 end

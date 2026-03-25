@@ -1,0 +1,3 @@
+<%= turbo_stream.prepend "products", partial: "admin/products/product", locals: { product: @product } %>
+<%= turbo_stream.remove "products_empty" %>
+<%= turbo_stream.replace "product_form_container", partial: "admin/products/product_form_container", locals: { product: Product.new } %>

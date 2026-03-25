@@ -1,6 +1,6 @@
 <%# locals: product:, form_html: (optional) %>
 <% form_html = local_assigns.fetch(:form_html, {}) %>
-<%= form_with model: product, html: { class: "space-y-4", novalidate: true }.merge(form_html) do |f| %>
+<%= form_with model: [:admin, product], html: { class: "space-y-4", novalidate: true }.merge(form_html) do |f| %>
   <% if product.errors.any? %>
     <div
       class="rounded-lg border border-[var(--color-category-horror)]/50 bg-[var(--color-bg-secondary)] px-4 py-3 text-sm text-[var(--color-text-secondary)]"
@@ -81,7 +81,7 @@
       style: "font-family: var(--font-orbitron)" %>
     <% if product.persisted? %>
       <%= link_to "Отмена",
-        product_path(product),
+        admin_product_path(product),
         data: { turbo_frame: dom_id(product) },
         class:
           "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[var(--color-border)] px-5 py-2 text-sm text-[var(--color-text-secondary)] transition hover:border-[var(--color-accent-glow)] hover:text-[var(--color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" %>

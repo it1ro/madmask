@@ -7,5 +7,6 @@
 | 3.1 Модель `Product`: поля `name`, `description`, `price`, `category`, `model_url`; обложка — `has_one_attached :cover_image` (по [OVERVIEW.md](../OVERVIEW.md), не колонка string); миграции Active Storage | выполнено |
 | 3.2 Миграция и применение | частично: `create_products` + `create_active_storage_tables` применены в dev |
 | 3.3 `ProductsController` (REST), Turbo Frames (редактирование), Turbo Streams (создание/удаление) | выполнено |
-| 3.4 Маршруты `resources :products` в `config/routes.rb` (RESTful: index, show, new, create, edit, update, destroy) | выполнено |
-| 3.5–3.6 | не начато |
+| 3.4 Маршруты: публично `resources :products, only: [:index, :show]`; CRUD в `namespace :admin` (`/admin`, `Admin::ProductsController`) | выполнено |
+| 3.5 Простая админ-панель: `/admin`, Turbo Frames/Streams для товаров, без аутентификации (позже) | выполнено |
+| 3.6 Протестировать CRUD в браузере | не начато |
