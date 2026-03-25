@@ -231,3 +231,55 @@ module.exports = {
 
 ### 9. Заключение
 Гайдлайн задаёт визуальную идентичность fantasy/horror с технологичными акцентами, согласован с полями категорий в [OVERVIEW.md](OVERVIEW.md) и с MVP без корзины. Токены разделяют **акценты UI** и **цвета категорий товара**.
+
+## Главная страница (лендинг)
+
+### Цветовая схема
+- **Фон:** `--color-bg-primary: #0a0a0a` (базовый чёрный), градиентный слой с переходами к `--color-bg-secondary: #1a0b2e` и `--color-accent-cyber: #00ffcc10`.
+- **Текст:** `--color-text-primary: #e6e6e6`, `--color-text-secondary: #b0b0b0`.
+- **Акценты:** `--color-accent-cyber: #00ffcc`, `--color-accent-glow: #ff00cc`.
+- **Категории:** fantasy → `#c9a03d`, horror → `#b91c1c`, sci‑fi → `#3b82f6`, cyberpunk → `#22d3ee`.
+
+### Типографика
+- **Заголовки (H1, H2):** Cinzel (Google Fonts), вес 700, межбуквенный интервал увеличен.
+- **Подзаголовки и акцентный текст:** Orbitron (Google Fonts), вес 500.
+- **Основной текст:** Inter (системный шрифт), вес 400.
+- **Размеры:** H1 — 3.5rem на десктопе, 2.5rem на мобильных; H2 — 2rem; основной текст — 1rem.
+
+### Компоненты
+
+#### Hero
+- Заголовок: `text-5xl md:text-7xl font-bold tracking-tight` (Cinzel).
+- Подзаголовок: `text-xl md:text-2xl text-gray-300` (Orbitron).
+- CTA-кнопка: градиентный фон (`from-accent-cyber to-accent-glow`), белый текст, padding: `px-8 py-3`, border-radius: `rounded-full`, hover-эффект с увеличением тени.
+
+#### Чипы категорий
+- Общий стиль: `px-4 py-2 rounded-full border border-white/10 transition-all duration-300 hover:scale-105`.
+- Цвет текста и границы при ховере: соответствует категории.
+- Иконки: размер 24px, цвет наследуется от текста.
+
+#### Карточка шага («Как это работает»)
+- Фон: `bg-white/5 backdrop-blur-sm`, border-radius: `rounded-2xl`, padding: `p-6`.
+- Иконка: размер 48px, цвет `text-accent-cyber`.
+- Заголовок: `text-xl font-bold` (Orbitron).
+- Анимация появления: `opacity-0 translate-y-4 transition-all duration-500`, при появлении `opacity-100 translate-y-0`.
+
+### Анимации (CSS)
+
+- **Градиент фона:** `@keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }` применяется к фону с большим размером.
+- **Свечение при ховере:** `box-shadow: 0 0 15px rgba(0,255,204,0.6); transition: box-shadow 0.3s ease;`
+- **Плавное появление элементов:** классы Tailwind `animate-fadeIn` (кастомная утилита).
+- **Для `prefers-reduced-motion`:** все анимации отключаются или заменяются на простые переходы.
+
+### Запрет WebGL на главной
+- Three.js и OrbitControls **не загружаются** на главной странице. Если используется мини-тизер (canvas с примитивами), он должен быть реализован либо через чистый CSS/Canvas API без импорта Three.js, либо с условной загрузкой только на главной, но без внешних моделей. Это требование MVP (см. OVERVIEW.md).
+
+### Доступность
+- Все интерактивные элементы имеют `:focus-visible` стили (кольцо контрастного цвета).
+- Используются семантические теги: `<header>`, `<main>`, `<section>`, `<footer>`.
+- Скринридеры: атрибуты `aria-label` для иконок, `aria-hidden` для декоративных элементов.
+- Управление с клавиатуры: все ссылки и кнопки доступны по Tab.
+
+### Адаптивность
+- Мобильная версия: колонка в один столбец, чипы категорий выстраиваются в строку с прокруткой, шапка с гамбургер-меню (если необходимо).
+- Отступы: `container mx-auto px-4 md:px-6`.
