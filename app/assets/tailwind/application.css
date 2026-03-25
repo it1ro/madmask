@@ -503,3 +503,143 @@ body {
     transition: none;
   }
 }
+
+/* Brand / social proof — IMPLEMENTATION_PLAN 2b.7 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.brand-story {
+  padding-block: 2.5rem 3rem;
+}
+
+@media (width >= 768px) {
+  .brand-story {
+    padding-block: 3rem 3.5rem;
+  }
+}
+
+.brand-story__inner {
+  max-width: 40rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand-story--revealed .brand-story__inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.brand-story__title {
+  font-family: var(--font-cinzel);
+  font-weight: 600;
+  font-size: clamp(1.375rem, 3.5vw, 2rem);
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--color-text-primary);
+  margin: 0 0 1rem;
+}
+
+.brand-story__body {
+  font-family: var(--font-inter);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0 0 1.75rem;
+}
+
+.brand-story__quote-wrap {
+  margin: 0;
+  padding: 1.5rem 1.25rem 1.25rem;
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--color-bg-secondary) 92%, var(--color-accent-1) 8%) 0%,
+    var(--color-bg-secondary) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--color-border) 85%, var(--color-accent-glow) 15%);
+  border-radius: 1rem;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent-glow) 12%, transparent),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.brand-story__quote {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-family: var(--font-orbitron);
+  font-size: clamp(0.875rem, 2.5vw, 1.0625rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-text-primary);
+  text-shadow: 0 0 20px color-mix(in srgb, var(--color-accent-glow) 35%, transparent);
+}
+
+.brand-story__typewriter {
+  display: inline;
+}
+
+.brand-story__typewriter-out {
+  color: var(--color-text-primary);
+}
+
+.brand-story__cursor {
+  display: inline-block;
+  margin-left: 0.0625rem;
+  color: var(--color-accent-cyber);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--color-accent-cyber-glow) 50%, transparent);
+  animation: brand-story-cursor-blink 0.9s step-end infinite;
+}
+
+.brand-story__cursor[hidden] {
+  display: none;
+}
+
+@keyframes brand-story-cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.brand-story__attribution {
+  margin-top: 1rem;
+  font-family: var(--font-inter);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-story__inner {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .brand-story__cursor {
+    animation: none;
+  }
+}

@@ -195,3 +195,38 @@
     </li>
   </ol>
 </section>
+
+<%# Brand / social proof — IMPLEMENTATION_PLAN 2b.7 %>
+<section
+  class="brand-story"
+  data-controller="reveal-on-scroll"
+  data-reveal-on-scroll-revealed-class="brand-story--revealed"
+  aria-labelledby="brand-story-heading"
+>
+  <div class="brand-story__inner">
+    <h2 id="brand-story-heading" class="brand-story__title">
+      Крафт и характер
+    </h2>
+    <p class="brand-story__body">
+      Madmask — не конвейер: маски и украшения собираются вручную и в малых сериях, с вниманием к деталям и к жанру —
+      от тёмного fantasy до холодного sci‑fi и неона cyberpunk. Коллекция растёт осмысленно: каждая позиция
+      со своим настроением, чтобы ты нашёл артефакт под роль, а не «ещё один аксессуар».
+    </p>
+    <figure class="brand-story__quote-wrap">
+      <blockquote class="brand-story__quote">
+        <span class="sr-only">Не носи маску — стань ею.</span>
+        <span
+          class="brand-story__typewriter"
+          data-controller="typewriter"
+          data-typewriter-text-value="Не носи маску — стань ею."
+          data-typewriter-speed-value="48"
+          aria-hidden="true"
+        >
+          <span data-typewriter-target="output" class="brand-story__typewriter-out"></span>
+          <span data-typewriter-target="cursor" class="brand-story__cursor">▍</span>
+        </span>
+      </blockquote>
+      <figcaption class="brand-story__attribution">Слоган коллекции</figcaption>
+    </figure>
+  </div>
+</section>
