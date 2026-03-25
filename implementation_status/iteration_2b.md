@@ -8,5 +8,6 @@
 | 2b.1 Маршрутизация: `PagesController#home`, `root "pages#home"` | выполнено |
 | 2b.2 Layout: шапка, подвал, CSS-переменные из гайдлайна, `products_path` (заглушка `products#index`) | выполнено |
 | 2b.3 Hero: Cinzel/Orbitron, CTA «В каталог», градиент + шум + кибер-сетка, опциональная анимация градиента | выполнено |
+| 2b.4 PNG: `madmask-logo.png` в шапке (lockup, hover glow), `madmask-image.png` в hero над H1, файлы в `public/images/` (статика по `/images/…`) | выполнено |
 
-Реализация секций лендинга — далее по подзадачам 2b.4+.
+Реализация секций лендинга — далее по подзадачам 2b.5+.

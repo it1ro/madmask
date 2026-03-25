@@ -191,6 +191,30 @@ body {
   outline-offset: 3px;
 }
 
+/* Hero brand illustration — IMPLEMENTATION_PLAN 2b.4 */
+.hero-brand-image {
+  width: 100%;
+  max-width: 32rem;
+  margin-inline: auto;
+  margin-bottom: 1rem;
+}
+
+@media (width >= 768px) {
+  .hero-brand-image {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.hero-brand-image__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(42vh, 22rem);
+  margin-inline: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px rgba(183, 111, 224, 0.18));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-section__gradient-shift {
     animation: none;

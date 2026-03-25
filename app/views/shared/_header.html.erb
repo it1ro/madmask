@@ -3,27 +3,12 @@
   role="banner"
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
-    <%= link_to root_path, class: "group flex items-center gap-2 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" do %>
-      <svg
-        class="h-9 w-9 shrink-0 text-[var(--color-accent-glow)] transition-[filter] duration-200 group-hover:drop-shadow-[0_0_8px_var(--color-accent-glow)]"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path
-          d="M16 3C10 7 6 12 6 18c0 5 4 9 10 11 6-2 10-6 10-11 0-6-4-11-10-15z"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linejoin="round"
-        />
-        <ellipse cx="12" cy="16" rx="1.8" ry="2.2" fill="currentColor" opacity="0.85" />
-        <ellipse cx="20" cy="16" rx="1.8" ry="2.2" fill="currentColor" opacity="0.85" />
-        <path d="M13 21c1.2 1.5 2.6 2.2 4 2.2s2.8-.7 4-2.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-      </svg>
-      <span class="text-lg tracking-[0.12em] text-[var(--color-text-primary)]" style="font-family: var(--font-cinzel)">
-        Madmask
-      </span>
+    <%= link_to root_path, class: "group flex items-center rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" do %>
+      <%= image_tag "/images/madmask-logo.png",
+        alt: "Madmask",
+        width: 1024,
+        height: 1024,
+        class: "h-8 w-auto shrink-0 object-contain transition-[filter] duration-200 md:h-9 group-hover:drop-shadow-[0_0_12px_var(--color-accent-glow)]" %>
     <% end %>
 
     <nav class="flex flex-wrap items-center gap-4 md:gap-6" aria-label="Основная навигация">
