@@ -15,14 +15,17 @@
 
     <div class="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-5 md:gap-7">
       <figure class="hero-brand-image">
-        <%= image_tag "/images/madmask-image.png",
-          alt: "Madmask — маски и украшения в стиле fantasy и cyberpunk",
-          width: 1024,
-          height: 1024,
-          loading: "eager",
-          fetchpriority: "high",
-          decoding: "async",
-          class: "hero-brand-image__img" %>
+        <picture class="mx-auto block w-full">
+          <source srcset="/images/madmask-image.webp" type="image/webp" />
+          <%= image_tag "/images/madmask-image.png",
+            alt: "Madmask — маски и украшения в стиле fantasy и cyberpunk",
+            width: 1024,
+            height: 1024,
+            loading: "eager",
+            fetchpriority: "high",
+            decoding: "async",
+            class: "hero-brand-image__img" %>
+        </picture>
       </figure>
       <h1
         id="hero-heading"

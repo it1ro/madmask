@@ -13,5 +13,4 @@
 | 2b.6 Секция «Как это работает»: 3 шага (карточки, SVG), fade-in-up при скролле (`reveal_on_scroll` + Intersection Observer), `prefers-reduced-motion` | выполнено |
 | 2b.7 Социальное доказательство / бренд: текст о ручной работе и коллекции; слоган с эффектом печатной машинки (`typewriter` Stimulus, старт при появлении в viewport; при `prefers-reduced-motion` — полный текст сразу); секция с `reveal-on-scroll` | выполнено |
 | 2b.8 Адаптивность и доступность: `lang="ru"`, skip-link → `#main-content`, `tabindex="-1"` на `main`, `overflow-x: clip` на `html`, токен `--color-text-muted` для «Админ» (WCAG AA без `opacity-50`), целевые области касания ≥44×44 (шапка, каталог, CTA, соцсети, карточки жанров на узком экране), базовый `:focus-visible` через `:where(...)`, доработки `prefers-reduced-motion` для логотипа | выполнено |
-
-Реализация секций лендинга — далее по подзадачам 2b.9+.
+| 2b.9 Производительность: только importmap (Turbo/Stimulus), без Three.js на лендинге; в layout `yield :three_js` для будущей страницы товара; hero — `<picture>` WebP + PNG; логотип в шапке — PNG (`madmask-logo.png`) | выполнено |

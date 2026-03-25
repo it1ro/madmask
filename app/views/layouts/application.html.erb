@@ -37,5 +37,8 @@
       <%= yield %>
     </main>
     <%= render "shared/footer" %>
+
+    <%# Three.js / WebGL: only pages that call `content_for :three_js` render scripts here — landing stays lightweight (IMPLEMENTATION_PLAN 2b.9). %>
+    <%= yield :three_js %>
   </body>
 </html>
