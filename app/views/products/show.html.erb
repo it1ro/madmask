@@ -113,7 +113,7 @@
             <%# Fullscreen lightbox: larger variants (2400px), arrows, Escape / backdrop to close %>
             <div
               data-product-gallery-target="dialog"
-              class="product-gallery-lightbox fixed inset-0 z-[200] hidden p-3 sm:p-6"
+              class="product-gallery-lightbox fixed inset-0 z-[2147483647] hidden p-3 sm:p-6"
               role="dialog"
               aria-modal="true"
               aria-label="Просмотр фотографии"
@@ -121,7 +121,7 @@
               data-action="click->product-gallery#closeLightbox"
             >
               <div
-                class="absolute inset-0 bg-[rgba(5,2,10,0.92)] backdrop-blur-sm motion-reduce:backdrop-blur-none"
+                class="absolute inset-0 bg-[rgba(2,1,6,0.97)] backdrop-blur-md motion-reduce:backdrop-blur-none"
                 aria-hidden="true"
               ></div>
               <span
@@ -136,6 +136,7 @@
               <div
                 class="relative z-10 flex max-h-[min(92dvh,100vh)] w-full max-w-[min(96vw,100vw)] items-center justify-center gap-1 sm:gap-3"
                 data-action="click->product-gallery#stopPropagation"
+                data-product-gallery-ignore-close="true"
               >
                 <button
                   type="button"
@@ -170,12 +171,21 @@
               </div>
               <button
                 type="button"
-                class="product-gallery-lightbox-nav absolute right-3 top-3 z-20 inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center rounded-xl border-2 border-[var(--color-border)]/80 bg-[var(--color-surface)]/90 px-2 text-4xl leading-none text-[var(--color-text-primary)] shadow-md motion-reduce:transition-none transition-opacity hover:border-[var(--color-accent-cyber)] hover:text-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 sm:right-5 sm:top-5 sm:min-h-[4.5rem] sm:min-w-[4.5rem] sm:px-3 sm:text-5xl"
+                class="product-gallery-lightbox-nav absolute right-3 top-3 z-[2147483647] inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-white/70 bg-black/90 px-3 text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_0_0_2px_rgba(0,0,0,0.55),0_0_18px_rgba(102,252,241,0.3)] motion-reduce:transition-none transition-[background-color,border-color,box-shadow] hover:border-[var(--color-accent-cyber)] hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 sm:right-5 sm:top-5 sm:min-h-[3.25rem] sm:px-4"
                 data-action="click->product-gallery#closeLightbox"
                 aria-label="Закрыть просмотр"
                 data-product-gallery-focus-on-open="true"
               >
-                <span aria-hidden="true">×</span>
+                <svg
+                  class="h-5 w-5 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                </svg>
+                <span class="hidden sm:inline">Закрыть</span>
               </button>
             </div>
           <% end %>

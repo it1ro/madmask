@@ -4,8 +4,8 @@
 
 | Подзадача | Результат |
 |-----------|-----------|
-| 6.1 — CSS-переменные цветов | `app/assets/stylesheets/madmask_design_tokens.css` (`:root`); подключено в `app/assets/stylesheets/application.tailwind.css` (п. плана) и импортируется в `app/assets/tailwind/application.css` перед `@import "tailwindcss"` |
-| Токены + Tailwind v4 `@theme` | В `app/assets/tailwind/application.css`: `@theme` мапит семантические утилиты (`font-heading`, `font-ui`, `text-ink`, `bg-card`, `border-line`, `shadow-glow` / `shadow-card`, и т.д.) поверх CSS-переменных из `madmask_design_tokens.css` |
+| 6.1 — CSS-переменные цветов | `app/assets/stylesheets/0_madmask_design_tokens.css` (`:root`); подключено в `app/assets/stylesheets/application.tailwind.css` (п. плана) и импортируется в `app/assets/tailwind/application.css` перед `@import "tailwindcss"` |
+| Токены + Tailwind v4 `@theme` | В `app/assets/tailwind/application.css`: `@theme` мапит семантические утилиты (`font-heading`, `font-ui`, `text-ink`, `bg-card`, `border-line`, `shadow-glow` / `shadow-card`, и т.д.) поверх CSS-переменных из `0_madmask_design_tokens.css` |
 | Полировка публичных вьюх | Каталог, карточка товара, show (ключевые блоки), header/footer переведены на утилиты темы; hover карточки: подъём 6px + комбинированная тень (внешнее свечение + лёгкий inset) |
 | Главная — секция товаров | `PagesController#home`: `@featured_products = Product.order(created_at: :desc).limit(4)`; блок «Новинки» с `render "products/product"` и CTA «Весь каталог» (если есть товары) |
 | Fade-in при навигации | Stimulus `page_transition_controller.js` + классы `.page-main` / `.page-main--visible` на `<main>`; `turbo:load` + `turbo:before-cache`; `prefers-reduced-motion: reduce` — без сдвига, контент видим без анимации |

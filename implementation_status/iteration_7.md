@@ -4,6 +4,8 @@
 
 | Подзадача | Результат |
 |-----------|-----------|
+| 7.1 Адаптивность и touch | `webgl_preview_controller.js`: ограничение `renderer.setPixelRatio` до `1` на устройствах с primary touch/coarse pointer, сохранён лимит `2` для desktop; для `OrbitControls` на touch включена схема `ONE: ROTATE`, `TWO: DOLLY_ROTATE`, отключен pan для предотвращения конфликтов со скроллом |
+| Lightbox поверх шапки | `app/views/products/show.html.erb`: `product-gallery-lightbox` поднят до `z-[1000]`, фон усилен до `rgba(2,1,6,0.97)` + `backdrop-blur-md`; кнопка закрытия получила более контрастный фон/обводку и `z-30` для гарантированной видимости |
 | CTA «Связаться» | `product_contact_mailto_url` + `madmask_contact_email` (ENV → credentials); кнопка/ disabled + подсказка; стили `.product-cta`, `.cta-pulse-shadow` в `application.css` |
 | Конфиг | `config.x.contact_email` в `application.rb` (опционально, дублирует ENV) |
 | Каталог | `alt: product.name`; `active:` на ссылках; `aria-label` на ссылке 3D |

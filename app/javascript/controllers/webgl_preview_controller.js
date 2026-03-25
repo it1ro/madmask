@@ -100,7 +100,7 @@ export default class extends Controller {
     this.camera.position.set(1.6, 1.2, 2.4)
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false })
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+    this.#updateRendererPixelRatio()
     this.renderer.setClearColor(BG, 1)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
@@ -122,6 +122,7 @@ export default class extends Controller {
     this.controls.enableDamping = true
     this.controls.dampingFactor = 0.06
     this.controls.target.set(0, 0, 0)
+    this.#configureControlsForInputType()
 
     this.resizeObserver = new ResizeObserver(() => this.#resize())
     this.resizeObserver.observe(this.element)
@@ -239,9 +240,39 @@ export default class extends Controller {
     if (!this.element || !this.camera || !this.renderer) return
     const w = this.element.clientWidth || 1
     const h = this.element.clientHeight || 1
+    this.#updateRendererPixelRatio()
     this.camera.aspect = w / h
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(w, h, false)
+  }
+
+  #configureControlsForInputType() {
+    if (!this.controls || !this.THREE) return
+    const isTouchDevice = this.#isTouchPrimaryInput()
+    this.controls.enablePan = false
+
+    if (isTouchDevice) {
+      // Improve mobile UX: predictable one-finger rotate + two-finger zoom/rotate.
+      this.controls.rotateSpeed = 0.72
+      this.controls.zoomSpeed = 0.9
+      this.controls.touches = {
+        ONE: this.THREE.TOUCH.ROTATE,
+        TWO: this.THREE.TOUCH.DOLLY_ROTATE
+      }
+    }
+  }
+
+  #updateRendererPixelRatio() {
+    if (!this.renderer) return
+    const deviceRatio = window.devicePixelRatio || 1
+    const maxPixelRatio = this.#isTouchPrimaryInput() ? 1 : 2
+    this.renderer.setPixelRatio(Math.min(deviceRatio, maxPixelRatio))
+  }
+
+  #isTouchPrimaryInput() {
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches
+    const maxTouchPoints = navigator.maxTouchPoints || 0
+    return coarsePointer || maxTouchPoints > 0
   }
 
   #animate() {

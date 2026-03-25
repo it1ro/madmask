@@ -142,9 +142,16 @@ export default class extends Controller {
     })
   }
 
-  closeLightbox() {
+  closeLightbox(event) {
     if (!this.hasDialogTarget) return
     if (this.dialogTarget.classList.contains("hidden")) return
+    if (event) {
+      const target = event.target
+      if (target instanceof Element) {
+        if (target.closest('[data-product-gallery-ignore-close="true"]')) return
+        if (target.closest("header[role='banner']")) return
+      }
+    }
 
     this.dialogTarget.classList.add("hidden")
     this.dialogTarget.classList.remove("flex", "items-center", "justify-center")

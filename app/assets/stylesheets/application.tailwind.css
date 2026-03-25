@@ -1,7 +1,7 @@
 /*
  * IMPLEMENTATION_PLAN §6.1 — color CSS variables from DESIGN_GUIDELINES.md.
  *
- * tailwindcss-rails 4.x compiles from app/assets/tailwind/application.css; this file is loaded
- * by Propshaft alongside app/assets/builds/tailwind.css. Shared tokens live in one place:
+ * Propshaft serves `app/assets/**/*.css` in sorted order for `stylesheet_link_tag :app`.
+ * `0_madmask_design_tokens.css` is named to load first, so importing it here is safe.
  */
-@import "./madmask_design_tokens.css";
+@import "./0_madmask_design_tokens.css";

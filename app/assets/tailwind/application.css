@@ -1,7 +1,7 @@
-@import "../stylesheets/madmask_design_tokens.css";
+@import "../stylesheets/0_madmask_design_tokens.css";
 @import "tailwindcss";
 
-/* Tailwind v4 theme tokens → utilities (CSS vars: madmask_design_tokens.css) — IMPLEMENTATION_PLAN iteration 6 */
+/* Tailwind v4 theme tokens → utilities (CSS vars: 0_madmask_design_tokens.css) — IMPLEMENTATION_PLAN iteration 6 */
 @theme {
   --font-heading: var(--font-cinzel);
   --font-ui: var(--font-orbitron);

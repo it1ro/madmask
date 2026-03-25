@@ -1,4 +1,9 @@
-/* Madmask design tokens — DESIGN_GUIDELINES.md §2 (single source for :root variables) */
+/*
+ * Madmask design tokens — DESIGN_GUIDELINES.md §2
+ *
+ * Prefixed with `0_` so Propshaft includes this stylesheet before `application*.css`
+ * when using `stylesheet_link_tag :app` (paths are sorted alphabetically).
+ */
 
 :root {
   --color-bg-primary: #0a050f;
