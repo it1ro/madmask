@@ -29,3 +29,11 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    errors:
+      models:
+        product:
+          attributes:
+            model_file:
+              invalid_extension: "must use a .glb or .gltf filename"
+              invalid_content_type: "must be GLB or GLTF (allowed content types only)"

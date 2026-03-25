@@ -10,29 +10,45 @@
         "inline-flex min-h-[44px] items-center text-sm text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>
   </p>
 
-  <div class="grid gap-8 lg:grid-cols-2 lg:gap-12">
-    <div
-      class="relative aspect-square w-full max-w-xl overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] lg:max-w-none"
-    >
-      <%# IMPLEMENTATION_PLAN 4.3: canvas mount for WebGL (Stimulus webgl-preview, iteration 5). %>
-      <div
-        id="canvas-container"
-        class="absolute inset-0 z-10"
-        data-controller="webgl-preview"
-        data-webgl-preview-model-url-value="<%= @product.model_url %>"
-        aria-label="3D preview"
-      ></div>
-      <% if @product.cover_image.attached? %>
-        <%= image_tag @product.cover_image,
-          class:
-            "pointer-events-none absolute inset-0 -z-0 h-full w-full object-cover",
-          alt: @product.name %>
-      <% else %>
-        <div
-          class="pointer-events-none absolute inset-0 -z-0 flex h-full w-full items-center justify-center text-[var(--color-text-muted)]"
-        >
-          Нет обложки
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12">
+    <div class="flex flex-col gap-6">
+      <%# 3D preview: own block (not stacked under cover) so WebGL is visible; anchor for catalog links. %>
+      <section
+        id="product-3d-preview"
+        class="relative w-full overflow-hidden rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-bg-primary)] to-[var(--color-accent-2)] shadow-[0_0_28px_rgba(183,111,224,0.18)]"
+        aria-labelledby="product-3d-heading"
+      >
+        <div class="flex items-center justify-between gap-3 border-b border-[var(--color-border)]/80 bg-[var(--color-bg-secondary)]/40 px-4 py-3">
+          <h2
+            id="product-3d-heading"
+            class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]"
+            style="font-family: var(--font-orbitron)"
+          >
+            3D превью
+          </h2>
+          <% if @product.model_file.attached? %>
+            <span class="truncate text-xs text-[var(--color-text-muted)]" title="<%= @product.model_file.filename %>">
+              <%= @product.model_file.filename %>
+            </span>
+          <% end %>
         </div>
+        <div
+          id="canvas-container"
+          class="relative aspect-square w-full min-h-[min(80vw,28rem)] sm:min-h-[22rem]"
+          data-controller="webgl-preview"
+          data-webgl-preview-model-url-value="<%= h(@product.effective_model_url.to_s) %>"
+          aria-label="Интерактивная 3D-модель"
+        ></div>
+      </section>
+
+      <% if @product.cover_image.attached? %>
+        <section class="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]" aria-label="Обложка товара">
+          <div class="relative aspect-[4/3] w-full max-w-xl sm:max-w-md">
+            <%= image_tag @product.cover_image,
+              class: "h-full w-full object-cover",
+              alt: @product.name %>
+          </div>
+        </section>
       <% end %>
     </div>
 
@@ -56,16 +72,6 @@
         </div>
       <% end %>
 
-      <% if @product.model_url.present? %>
-        <p class="mt-6 text-sm text-[var(--color-text-muted)]">
-          3D-модель:
-          <%= link_to @product.model_url,
-            @product.model_url,
-            target: "_blank",
-            rel: "noopener noreferrer",
-            class: "break-all text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" %>
-        </p>
-      <% end %>
     </div>
   </div>
 </article>

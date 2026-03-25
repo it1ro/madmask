@@ -56,11 +56,23 @@
   </div>
 
   <div>
-    <%= f.label :model_url, "URL 3D-модели (GLB/GLTF)", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
-    <%= f.url_field :model_url,
-      placeholder: "https://",
+    <%= f.label :model_file, "3D-модель (файл)", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.file_field :model_file,
+      accept: ".glb,.gltf",
       class:
-        "w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-accent-glow)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent-glow)]" %>
+        "block w-full text-sm text-[var(--color-text-secondary)] file:mr-4 file:rounded-md file:border-0 file:bg-[var(--color-accent-2)] file:px-4 file:py-2 file:text-[var(--color-text-primary)] file:hover:bg-[var(--color-accent-1)]" %>
+    <% if product.model_file.attached? %>
+      <p class="mt-2 text-xs text-[var(--color-text-muted)]">
+        Сейчас: <%= product.model_file.filename %>
+      </p>
+      <label class="mt-2 flex cursor-pointer items-center gap-2 text-sm text-[var(--color-text-secondary)]">
+        <%= check_box_tag "product[remove_model_file]", "1", false, class: "rounded border-[var(--color-border)]" %>
+        <span>Удалить загруженный файл (3D-превью будет недоступно до новой загрузки)</span>
+      </label>
+    <% end %>
+    <p class="mt-1 text-xs text-[var(--color-text-muted)]">
+      Загрузите GLB или GLTF для интерактивного превью. Без файла отображается заглушка.
+    </p>
   </div>
 
   <div>

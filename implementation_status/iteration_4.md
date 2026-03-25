@@ -11,11 +11,11 @@
 
 ## 4.3 (выполнено)
 
-- В `app/views/products/show.html.erb`: контейнер `#canvas-container` с `data-controller="webgl-preview"` и `data-webgl-preview-model-url-value="<%= @product.model_url %>"` (классы позиционирования поверх обложки).
+- В `app/views/products/show.html.erb`: контейнер `#canvas-container` с `data-controller="webgl-preview"` и `data-webgl-preview-model-url-value` из `effective_model_url` (классы позиционирования поверх обложки).
 
 ## 4.4 (выполнено)
 
-- Проверка ответа `GET http://localhost:3000/products/2`: **HTTP 200**; в HTML присутствуют `id="canvas-container"`, `data-controller="webgl-preview"`, `data-webgl-preview-model-url-value` (значение зависит от поля `model_url` у товара). Контейнер в разметке отображается в блоке превью (поверх обложки).
+- Проверка ответа `GET http://localhost:3000/products/2`: **HTTP 200**; в HTML присутствуют `id="canvas-container"`, `data-controller="webgl-preview"`, `data-webgl-preview-model-url-value` (пусто или URL блоба при вложенной модели). Контейнер в разметке отображается в блоке превью (поверх обложки).
 
 ## Прочее
 

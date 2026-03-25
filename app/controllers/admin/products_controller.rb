@@ -37,6 +37,10 @@ module Admin
     end
 
     def update
+      if params.dig(:product, :remove_model_file) == "1"
+        @product.model_file.purge
+      end
+
       if @product.update(product_params)
         respond_to do |format|
           format.turbo_stream
@@ -63,7 +67,7 @@ module Admin
     end
 
     def product_params
-      params.require(:product).permit(:name, :description, :price, :category, :model_url, :cover_image)
+      params.require(:product).permit(:name, :description, :price, :category, :cover_image, :model_file)
     end
   end
 end

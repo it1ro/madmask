@@ -6,6 +6,17 @@ export default class extends Controller {
   }
 
   async connect() {
+    try {
+      await this.#initThree()
+    } catch (err) {
+      console.error("[webgl-preview] init failed", err)
+      this.element.setAttribute("data-webgl-preview-state", "init-failed")
+      this.element.innerHTML =
+        '<p class="flex min-h-[12rem] items-center justify-center px-4 text-center text-sm text-[var(--color-text-secondary)]">Не удалось загрузить 3D. Проверьте сеть и обновите страницу.</p>'
+    }
+  }
+
+  async #initThree() {
     const THREE = await import("three")
     const { OrbitControls } = await import("three/addons/controls/OrbitControls.js")
     const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js")
@@ -21,15 +32,20 @@ export default class extends Controller {
 
     if (!this.#hasWebGL()) {
       this.element.setAttribute("data-webgl-preview-state", "no-webgl")
+      this.element.innerHTML =
+        '<p class="flex min-h-[12rem] items-center justify-center px-4 text-center text-sm text-[var(--color-text-secondary)]">WebGL недоступен в этом браузере.</p>'
       return
     }
 
+    const BG = 0x0a050f
     this.scene = new THREE.Scene()
+    this.scene.background = new THREE.Color(BG)
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.01, 1000)
     this.camera.position.set(1.6, 1.2, 2.4)
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false })
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+    this.renderer.setClearColor(BG, 1)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
     this.element.appendChild(this.renderer.domElement)

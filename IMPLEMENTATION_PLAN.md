@@ -103,7 +103,7 @@
 **Цель:** Реализовать управление товарами (админ-интерфейс) с использованием Hotwire.
 
 **Подзадачи:**
-1. Сгенерировать модель `Product` с полями: `name:string`, `description:text`, `price:decimal`, `category:string`, `model_url:string`, `cover_image:string`.
+1. Сгенерировать модель `Product` с полями: `name:string`, `description:text`, `price:decimal`, `category:string`; 3D-модель — `has_one_attached :model_file` (не колонка URL); обложка — `has_one_attached :cover_image`.
 2. Создать миграцию и применить.
 3. Сгенерировать `ProductsController` с RESTful-действиями, используя `scaffold` для быстрого старта, но адаптировать под Hotwire:
    - Вьюхи должны использовать Turbo Frames для редактирования.
@@ -121,26 +121,27 @@
 **Подзадачи:**
 1. В `app/views/layouts/application.html.erb` добавить скрипты Three.js и OrbitControls из CDN (например, https://cdn.skypack.dev/three и https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls.js).
 2. Убедиться, что глобальный объект `THREE` доступен в консоли.
-3. Создать на странице `show.html.erb` контейнер для canvas: `<div id="canvas-container" data-controller="webgl-preview" data-webgl-preview-model-url-value="<%= @product.model_url %>">`.
+3. Создать на странице `show.html.erb` контейнер для canvas: `data-webgl-preview-model-url-value` из `effective_model_url` (URL блоба вложенного GLB при наличии).
 4. Проверить, что контейнер отображается.
 
 ---
 
 ### Итерация 5: Stimulus-контроллер WebGL
 
-**Цель:** Реализовать полноценный 3D-просмотр товара с загрузкой модели по URL.
+**Цель:** Реализовать полноценный 3D-просмотр товара с загрузкой GLB/GLTF **только из Active Storage** (`has_one_attached :model_file`). В Stimulus передаётся URL блоба (`Product#effective_model_url` → `data-webgl-preview-model-url-value`).
 
 **Подзадачи:**
 1. Сгенерировать Stimulus-контроллер: `bin/rails generate stimulus webgl_preview`.
 2. В контроллере `webgl_preview_controller.js` реализовать:
    - `connect()`: инициализация сцены, камеры, освещения, рендерера.
-   - `loadModel(url)`: использование `GLTFLoader` для загрузки GLB/GLTF.
+   - `loadModel(url)`: использование `GLTFLoader` для загрузки GLB/GLTF по URL блоба Active Storage.
    - Добавить `OrbitControls`.
    - Обработка ошибок: при неудачной загрузке отображать вращающийся куб.
    - Адаптация размера canvas к контейнеру (ResizeObserver или событие resize).
    - Очистка при `disconnect()`.
-3. Подключить контроллер к контейнеру через `data-controller`.
-4. Протестировать на примере тестовой модели (можно загрузить публичную GLB, например, с GitHub).
+3. Подключить контроллер к контейнеру через `data-controller`; значение URL — из `effective_model_url`.
+4. В админке: загрузка файла модели; при необходимости — удаление вложения.
+5. Протестировать: файл в storage; отсутствие файла — куб-заглушка.
 
 ---
 
