@@ -33,15 +33,14 @@
     <div
       class="relative aspect-square w-full max-w-xl overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] lg:max-w-none"
     >
-      <%= tag.div(
-        id: "canvas-container",
-        class: "absolute inset-0 z-10",
-        data: {
-          controller: "webgl-preview",
-          webgl_preview_model_url_value: @product.model_url
-        },
-        aria: { label: "3D preview" }
-      ) %>
+      <%# IMPLEMENTATION_PLAN 4.3: canvas mount for WebGL (Stimulus webgl-preview, iteration 5). %>
+      <div
+        id="canvas-container"
+        class="absolute inset-0 z-10"
+        data-controller="webgl-preview"
+        data-webgl-preview-model-url-value="<%= @product.model_url %>"
+        aria-label="3D preview"
+      ></div>
       <% if @product.cover_image.attached? %>
         <%= image_tag @product.cover_image,
           class:
