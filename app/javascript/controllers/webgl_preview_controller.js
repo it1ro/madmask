@@ -113,13 +113,15 @@ export default class extends Controller {
     this.camera.position.set(1.6, 1.2, 2.4)
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    // Better energy response for physically-based materials.
+    this.renderer.physicallyCorrectLights = true
     this.#updateRendererPixelRatio()
     // Transparent background to match DESIGN_GUIDELINES container gradients.
     this.renderer.setClearColor(BG, 0)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
     // Exposure tuned for dark scene readability (HDRI/environments can change perceived brightness).
-    this.renderer.toneMappingExposure = 1.15
+    this.renderer.toneMappingExposure = 1.35
 
     this.element.appendChild(this.renderer.domElement)
     this.#styleCanvas(this.renderer.domElement)
@@ -131,12 +133,12 @@ export default class extends Controller {
     this.scene.add(hemi)
 
     // Rim/key from above to keep silhouettes readable.
-    const rim = new THREE.DirectionalLight(0xffffff, 0.8)
+    const rim = new THREE.DirectionalLight(0xffffff, 1.25)
     rim.position.set(4, 8, 6)
     this.scene.add(rim)
 
     // Back/fill from the side for more even PBR shading.
-    const fill = new THREE.DirectionalLight(0x666666, 0.4)
+    const fill = new THREE.DirectionalLight(0x8a8a8a, 0.65)
     fill.position.set(-4, 2, -2)
     this.scene.add(fill)
 
@@ -260,7 +262,7 @@ export default class extends Controller {
     canvas.height = h
     const ctx = canvas.getContext("2d", { willReadFrequently: false })
 
-    // Base vertical gradient: top purple glow -> bottom dark back.
+    // Base vertical gradient: top neutral highlight -> bottom dark back.
     const gradient = ctx.createLinearGradient(0, 0, 0, h)
     // Neutral “studio-like” gradient: reduce color cast on models.
     gradient.addColorStop(0, "rgba(235,235,235,0.95)")
@@ -270,10 +272,11 @@ export default class extends Controller {
     ctx.fillRect(0, 0, w, h)
 
     // Subtle horizontal bands to avoid "flat" reflections on very simple models.
-    ctx.globalAlpha = 0.12
+    // Kept neutral, but slightly higher contrast so highlights feel more "Sketchfab-like".
+    ctx.globalAlpha = 0.2
     for (let i = 0; i < 18; i++) {
       const y = Math.round((i / 18) * h)
-      ctx.fillStyle = i % 2 === 0 ? "rgba(215,215,215,0.55)" : "rgba(255,255,255,0.35)"
+      ctx.fillStyle = i % 2 === 0 ? "rgba(255,255,255,0.82)" : "rgba(195,195,195,0.52)"
       ctx.fillRect(0, y, w, 2)
     }
     ctx.globalAlpha = 1
@@ -556,8 +559,10 @@ export default class extends Controller {
     const THREE = this.THREE
     if (!object || !THREE) return
 
-    // Reduce env-map intensity to avoid strong tinting with themed HDRIs.
-    const targetIntensity = 0.95
+    // Boost env-map influence to make specular reflections more visible.
+    // Lighting stays neutral (procedural fallback + softened directional lights),
+    // so stronger IBL should not reintroduce the previous color cast.
+    const targetIntensity = 1.8
     object.traverse((child) => {
       if (!child || !child.isMesh) return
 
@@ -567,6 +572,11 @@ export default class extends Controller {
         // Keep it narrow to PBR materials to avoid unexpected side effects.
         if (m.isMeshStandardMaterial || m.isMeshPhysicalMaterial) {
           m.envMapIntensity = targetIntensity
+          // Increase perceived gloss: slightly reduce roughness.
+          // Works for both scalar roughness and roughnessMap since Three.js multiplies them.
+          if (typeof m.roughness === "number" && Number.isFinite(m.roughness)) {
+            m.roughness = Math.max(0.04, m.roughness * 0.82)
+          }
           m.needsUpdate = true
         }
       })
