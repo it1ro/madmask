@@ -11,7 +11,7 @@
 | Fade-in при навигации | Stimulus `page_transition_controller.js` + классы `.page-main` / `.page-main--visible` на `<main>`; `turbo:load` + `turbo:before-cache`; `prefers-reduced-motion: reduce` — без сдвига, контент видим без анимации |
 | Админка | Формы, списки, new/edit — `border-line`, `bg-card` / `bg-panel`, кнопки с `font-ui`, фокус `outline-glow` |
 | WebGL спиннер | Уже был (`.webgl-preview__*`); без изменений по сути |
-| Курсор-дым (landing `/`) | Реализован: overlay `canvas` + particles через Stimulus `cursor_smoke_controller`, canvas ограничен первым экраном (100vh), `prefers-reduced-motion` отключает эффект |
+| Курсор-дым (landing `/`) | Реализован: overlay `canvas` + particles через Stimulus `cursor_smoke_controller`, добавлены гравитация и искры при резком торможении (по deceleration), `prefers-reduced-motion` отключает эффект |
 
 ## Связанная работа (другая тема)
 

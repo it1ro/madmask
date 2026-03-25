@@ -56,6 +56,19 @@ export default class extends Controller {
     // Visual tuning (keep conservative for performance).
     this.outerRadiusMul = 1.55
     this.coreRadiusMul = 0.45
+    // Simple physics tuning: make the smoke trail rise a bit,
+    // then sag down due to gravity.
+    this.gravityBase = 0.05
+    // Slightly less damping so vertical fall becomes visible.
+    this.dragXMul = 0.99
+    this.dragYMul = 0.988
+
+    // Spark tuning: short-lived bright particles on quick braking.
+    this.sparkDrag = 0.92
+    this.sparkGravityMul = 0.22
+    this.decelToStrength = 25
+    this.minDecelStrength = 0.18
+    this.maxSparkPerBurst = 12
 
     this.colors = this.readBrandColors()
 
@@ -83,6 +96,11 @@ export default class extends Controller {
     this.mouseY = this.cssHeight / 2
     this.lastX = this.mouseX
     this.lastY = this.mouseY
+    // Motion state for deceleration detection (cursor braking).
+    this.prevMoveX = this.mouseX
+    this.prevMoveY = this.mouseY
+    this.prevMoveTime = null
+    this.prevSpeed = 0
     this.addListeners()
     window.addEventListener("resize", this.boundResize)
 
@@ -169,13 +187,108 @@ export default class extends Controller {
 
   onPointerMove(e) {
     if (e.pointerType === "touch") return
+    const rect = this.element.getBoundingClientRect()
+    const cx = e.clientX - rect.left
+    const cy = e.clientY - rect.top
+    this.maybeEmitSparks(cx, cy)
     this.addParticle(e.clientX, e.clientY)
   }
 
   onTouchMove(e) {
     const touch = e.touches?.[0]
     if (!touch) return
+    const rect = this.element.getBoundingClientRect()
+    const cx = touch.clientX - rect.left
+    const cy = touch.clientY - rect.top
+    this.maybeEmitSparks(cx, cy)
     this.addParticle(touch.clientX, touch.clientY)
+  }
+
+  maybeEmitSparks(cx, cy) {
+    if (!Number.isFinite(cx) || !Number.isFinite(cy)) return
+
+    const now = performance.now()
+    if (this.prevMoveTime == null) {
+      this.prevMoveTime = now
+      this.prevMoveX = cx
+      this.prevMoveY = cy
+      this.prevSpeed = 0
+      return
+    }
+
+    const dtMs = now - this.prevMoveTime
+    if (dtMs <= 0) return
+
+    const dx = cx - this.prevMoveX
+    const dy = cy - this.prevMoveY
+    const dist = Math.hypot(dx, dy)
+
+    // Speed in canvas pixels per ms.
+    const speed = dist / dtMs
+
+    // Deceleration estimate: how much the speed dropped since last move.
+    const decel = Math.max(0, this.prevSpeed - speed)
+    const strength = clamp(decel * this.decelToStrength, 0, 1)
+
+    // Update motion state now for next delta.
+    this.prevSpeed = speed
+    this.prevMoveTime = now
+    this.prevMoveX = cx
+    this.prevMoveY = cy
+
+    if (strength < this.minDecelStrength) return
+
+    const dirMag = Math.hypot(dx, dy)
+    let dirX = 0
+    let dirY = -1
+    if (dirMag > 0.0001) {
+      dirX = dx / dirMag
+      dirY = dy / dirMag
+    }
+    const perpX = -dirY
+    const perpY = dirX
+
+    const sparkCount = clamp(
+      Math.round(2 + strength * (this.maxSparkPerBurst - 2)),
+      1,
+      this.maxSparkPerBurst
+    )
+    const kick = 0.6 + strength * 3.0
+
+    for (let i = 0; i < sparkCount; i++) {
+      if (this.particles.length >= this.maxParticles) this.particles.shift()
+
+      const jitter = 0.4 + Math.random() * 0.9
+      // Scatter mostly sideways (perp) + a bit opposite to motion (brake feel).
+      const vx =
+        perpX * (kick * 0.75) +
+        -dirX * (kick * 0.25) +
+        (Math.random() - 0.5) * jitter
+      const vy =
+        perpY * (kick * 0.75) +
+        -dirY * (kick * 0.25) +
+        (Math.random() - 0.5) * (jitter * 0.6) -
+        0.5 * strength
+
+      const radius = 1 + Math.random() * (1.5 + strength * 1.5)
+      const alpha = 0.35 + strength * 0.5
+      const fadeSpeed = 0.07 + Math.random() * 0.05 + strength * 0.01
+
+      this.particles.push({
+        kind: "spark",
+        x: cx,
+        y: cy,
+        radius,
+        alpha,
+        life: 1,
+        fadeSpeed,
+        driftX: vx,
+        driftY: vy,
+        gravityY: this.gravityBase * (0.6 + Math.random() * 0.8) * this.sparkGravityMul
+      })
+    }
+
+    this.start()
   }
 
   addParticle(x, y) {
@@ -210,7 +323,9 @@ export default class extends Controller {
       life: 1,
       fadeSpeed: 0.02 + Math.random() * 0.03,
       driftX: (Math.random() - 0.5) * 0.9,
-      driftY: (Math.random() - 0.5) * 0.7 - 0.25, // slight upward lift
+      // Initial velocity (slight upward lift), then gravity takes over.
+      driftY: (Math.random() - 0.5) * 0.6 - 0.12,
+      gravityY: this.gravityBase * (0.95 + Math.random() * 0.9),
     })
 
     this.start()
@@ -229,6 +344,8 @@ export default class extends Controller {
     this.running = false
     // Clear state so Turbo cache doesn't keep running work visually.
     this.particles = []
+    this.prevMoveTime = null
+    this.prevSpeed = 0
     this.clear()
   }
 
@@ -258,9 +375,24 @@ export default class extends Controller {
   updateParticles() {
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i]
+      const kind = p.kind || "smoke"
       p.life -= p.fadeSpeed
-      p.x += p.driftX
-      p.y += p.driftY
+      // Integrate particle motion with a tiny acceleration.
+      // Keep it cheap (no dt): we already run at rAF.
+      if (kind === "spark") {
+        p.driftX *= this.sparkDrag
+        const gravityY =
+          p.gravityY ?? this.gravityBase * this.sparkGravityMul
+        p.driftY = (p.driftY + gravityY) * this.sparkDrag
+        p.x += p.driftX
+        p.y += p.driftY
+      } else {
+        p.driftX *= this.dragXMul
+        const gravityY = p.gravityY ?? this.gravityBase
+        p.driftY = (p.driftY + gravityY) * this.dragYMul
+        p.x += p.driftX
+        p.y += p.driftY
+      }
 
       if (p.life <= 0) {
         this.particles.splice(i, 1)
@@ -284,33 +416,70 @@ export default class extends Controller {
     for (const p of this.particles) {
       const t = Math.max(0, p.life)
       let a = p.alpha * t
+      const kind = p.kind || "smoke"
 
       // Soft edge fading: particles are clipped by canvas bounds.
       // Fade them out gradually before the boundary to avoid "hard" disappearance.
       const w = this.cssWidth
       const h = this.cssHeight
       const distToEdge = Math.min(p.x, w - p.x, p.y, h - p.y)
-      const fadeMargin = Math.max(46, p.radius * 3.5)
+      const fadeMargin = Math.max(
+        kind === "spark" ? 22 : 46,
+        p.radius * (kind === "spark" ? 6 : 3.5)
+      )
       const edgeSoft = Math.pow(clamp(distToEdge / fadeMargin, 0, 1), 1.12)
       a *= edgeSoft
 
-      // Outer glow layer.
-      this.ctx.beginPath()
-      this.ctx.arc(p.x, p.y, p.radius * this.outerRadiusMul, 0, Math.PI * 2)
-      this.ctx.fillStyle = rgba(this.colors.glowRgb, a * 0.22)
-      this.ctx.fill()
+      if (kind === "spark") {
+        // Streak aligned with velocity gives a "spark" feel.
+        const speed = Math.hypot(p.driftX, p.driftY)
+        const len = clamp(speed * 8, 2, 12)
+        if (speed > 0.0001) {
+          const ux = p.driftX / speed
+          const uy = p.driftY / speed
+          const x1 = p.x - ux * len * 0.65
+          const y1 = p.y - uy * len * 0.65
+          const x2 = p.x + ux * len * 0.2
+          const y2 = p.y + uy * len * 0.2
 
-      // Core smoke layer.
-      this.ctx.beginPath()
-      this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
-      this.ctx.fillStyle = rgba(this.colors.glowRgb, a * 0.45)
-      this.ctx.fill()
+          this.ctx.strokeStyle = rgba(this.colors.cyberRgb, a * 0.9)
+          this.ctx.lineWidth = Math.max(1, p.radius * 0.6)
+          this.ctx.beginPath()
+          this.ctx.moveTo(x1, y1)
+          this.ctx.lineTo(x2, y2)
+          this.ctx.stroke()
+        }
 
-      // Bright kernel.
-      this.ctx.beginPath()
-      this.ctx.arc(p.x, p.y, p.radius * this.coreRadiusMul, 0, Math.PI * 2)
-      this.ctx.fillStyle = rgba(this.colors.cyberRgb, a * 0.85)
-      this.ctx.fill()
+        // Outer glow.
+        this.ctx.beginPath()
+        this.ctx.arc(p.x, p.y, p.radius * 2.2, 0, Math.PI * 2)
+        this.ctx.fillStyle = rgba(this.colors.glowRgb, a * 0.25)
+        this.ctx.fill()
+
+        // Bright center.
+        this.ctx.beginPath()
+        this.ctx.arc(p.x, p.y, p.radius * 1.05, 0, Math.PI * 2)
+        this.ctx.fillStyle = rgba(this.colors.cyberRgb, a * 0.95)
+        this.ctx.fill()
+      } else {
+        // Outer glow layer.
+        this.ctx.beginPath()
+        this.ctx.arc(p.x, p.y, p.radius * this.outerRadiusMul, 0, Math.PI * 2)
+        this.ctx.fillStyle = rgba(this.colors.glowRgb, a * 0.22)
+        this.ctx.fill()
+
+        // Core smoke layer.
+        this.ctx.beginPath()
+        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
+        this.ctx.fillStyle = rgba(this.colors.glowRgb, a * 0.45)
+        this.ctx.fill()
+
+        // Bright kernel.
+        this.ctx.beginPath()
+        this.ctx.arc(p.x, p.y, p.radius * this.coreRadiusMul, 0, Math.PI * 2)
+        this.ctx.fillStyle = rgba(this.colors.cyberRgb, a * 0.85)
+        this.ctx.fill()
+      }
     }
 
     this.ctx.globalCompositeOperation = "source-over"
@@ -333,6 +502,8 @@ export default class extends Controller {
 
     this.running = false
     this.particles = []
+    this.prevMoveTime = null
+    this.prevSpeed = 0
 
     this.clear()
   }
