@@ -227,6 +227,7 @@
             class="relative aspect-square w-full min-h-[min(80vw,28rem)] sm:min-h-[22rem]"
             data-controller="webgl-preview"
             data-webgl-preview-model-url-value="<%= h(@product.effective_model_url.to_s) %>"
+            data-webgl-preview-cover-image-url-value="<%= h(@product.cover_image.attached? ? url_for(@product.cover_image.variant(resize_to_limit: [1200, 1200])) : "") %>"
             role="figure"
             aria-labelledby="product-3d-heading"
             aria-describedby="product-3d-desc"

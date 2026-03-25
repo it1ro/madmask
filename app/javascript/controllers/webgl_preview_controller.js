@@ -2,7 +2,8 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static values = {
-    modelUrl: String
+    modelUrl: String,
+    coverImageUrl: String
   }
 
   async connect() {
@@ -72,11 +73,7 @@ export default class extends Controller {
   async #initThree() {
     if (!this.#hasWebGL()) {
       this.element.setAttribute("data-webgl-preview-state", "no-webgl")
-      this.#renderStaticMessage(
-        "no-webgl",
-        "WebGL недоступен в этом браузере. Откройте страницу в другом браузере или обновите.",
-        true
-      )
+      this.#renderNoWebglFallback()
       return
     }
 
@@ -183,6 +180,36 @@ export default class extends Controller {
             ? `<button type="button" data-action="click->webgl-preview#retry" class="inline-flex min-h-[44px] min-w-[10rem] items-center justify-center rounded-lg border border-[var(--color-accent-cyber)] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-2)]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 active:scale-[0.98]" style="font-family: var(--font-orbitron)">Повторить</button>`
             : ""
         }
+      </div>
+    `
+  }
+
+  #renderNoWebglFallback() {
+    const coverUrl = (this.coverImageUrlValue || "").trim()
+    if (!coverUrl.length) {
+      this.#renderStaticMessage(
+        "no-webgl",
+        "WebGL недоступен в этом браузере. Откройте страницу в другом браузере или обновите.",
+        false
+      )
+      return
+    }
+
+    const absoluteCoverUrl = this.#resolveUrl(coverUrl)
+    this.element.innerHTML = `
+      <div class="relative h-full w-full">
+        <img
+          src="${absoluteCoverUrl}"
+          alt="Статичное изображение товара"
+          loading="eager"
+          class="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <div class="absolute inset-0 bg-[rgba(10,5,15,0.35)] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-center gap-1 border-t border-[var(--color-border)]/80 bg-[var(--color-bg-secondary)]/95 px-3 py-2 text-center backdrop-blur-sm">
+          <p class="text-xs text-[var(--color-text-secondary)]">
+            WebGL недоступен в этом браузере. Показана статичная обложка.
+          </p>
+        </div>
       </div>
     `
   }
