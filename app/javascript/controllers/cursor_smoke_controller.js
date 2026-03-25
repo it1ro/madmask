@@ -480,6 +480,22 @@ export default class extends Controller {
         this.ctx.fillStyle = rgba(this.colors.cyberRgb, a * 0.95)
         this.ctx.fill()
       } else {
+        // Dark under-shadow so the smoke "rests" on the hero.
+        // Stronger + more blurred, but still one cheap fill per particle.
+        const shadowAlpha = a * 0.42
+        const shadowBlur = Math.min(30, p.radius * 1.15 + 10)
+        this.ctx.save()
+        this.ctx.globalCompositeOperation = "source-over"
+        this.ctx.shadowColor = `rgba(0,0,0,${clamp(shadowAlpha * 0.8, 0, 0.22)})`
+        this.ctx.shadowBlur = shadowBlur
+        this.ctx.shadowOffsetX = 0
+        this.ctx.shadowOffsetY = 4
+        this.ctx.beginPath()
+        this.ctx.arc(p.x, p.y, p.radius * this.outerRadiusMul * 0.78, 0, Math.PI * 2)
+        this.ctx.fillStyle = `rgba(0,0,0,${clamp(shadowAlpha * 0.22, 0, 0.12)})`
+        this.ctx.fill()
+        this.ctx.restore()
+
         // Outer glow layer.
         this.ctx.beginPath()
         this.ctx.arc(p.x, p.y, p.radius * this.outerRadiusMul, 0, Math.PI * 2)
