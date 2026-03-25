@@ -8,6 +8,23 @@
 | 2.4 Фоновая сборка Tailwind (`tailwindcss:watch` / Procfile) | выполнено |
 | 2.5 Сервис `tailwind` в `docker-compose.yml` (`tailwindcss:watch`) | выполнено |
 | 2.6 Проверка: приложение открывается со стилями Tailwind | выполнено |
+| 2.7 Makefile с релевантными командами | выполнено |
+
+## Подзадача 2.7
+
+**Цель:** единая точка входа для типичных команд без ручного набора `docker compose run --rm web …`.
+
+**Сделано:** в корне репозитория добавлен `Makefile`:
+
+- запуск стека: `make up`, `make up-d`, `make down`, `make build`, `make logs`;
+- оболочка: `make bash`, `make exec-bash` (когда `web` уже поднят);
+- Rails: `make console`, `make routes`, `make test`, `make lint`, `make setup`, `make ci`, произвольные задачи — `make rails ARGS="db:migrate"`;
+- БД: `db-prepare`, `db-migrate`, `db-rollback`, `db-seed`, `db-reset`;
+- Tailwind: `tailwind-build`, `tailwind-watch` (сервис `tailwind` в compose);
+- `make bundle-install`;
+- `make help` — список целей.
+
+Переменная `COMPOSE` по умолчанию `docker compose`; при необходимости: `make test COMPOSE="docker-compose"`.
 
 ## Подзадача 2.6
 
