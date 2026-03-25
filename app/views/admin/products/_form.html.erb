@@ -86,6 +86,38 @@
     <% end %>
   </div>
 
+  <div>
+    <%= f.label :gallery_images, "Галерея (несколько файлов)", class: "mb-1 block text-sm font-medium text-[var(--color-text-secondary)]" %>
+    <%= f.file_field :gallery_images,
+      multiple: true,
+      accept: "image/*",
+      class:
+        "block w-full text-sm text-[var(--color-text-secondary)] file:mr-4 file:rounded-md file:border-0 file:bg-[var(--color-accent-2)] file:px-4 file:py-2 file:text-[var(--color-text-primary)] file:hover:bg-[var(--color-accent-1)]" %>
+    <p class="mt-1 text-xs text-[var(--color-text-muted)]">
+      До <%= Product::MAX_GALLERY_IMAGES %> изображений (JPEG, PNG, GIF, WebP, AVIF), до 5 МБ каждое. Можно выбрать несколько файлов за раз.
+    </p>
+    <% if product.persisted? && product.gallery_images.attached? %>
+      <fieldset class="mt-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-primary)]/40 p-3">
+        <legend class="px-1 text-xs font-medium text-[var(--color-text-secondary)]">Удалить из галереи</legend>
+        <ul class="mt-2 flex flex-wrap gap-3">
+          <% product.gallery_images.attachments.each do |att| %>
+            <li class="flex flex-col items-center gap-2">
+              <label class="flex cursor-pointer flex-col items-center gap-1 text-xs text-[var(--color-text-muted)]">
+                <%= image_tag att.variant(resize_to_limit: [96, 96]),
+                  class: "h-20 w-20 rounded-md border border-[var(--color-border)] object-cover" %>
+                <span class="flex items-center gap-2">
+                  <%= check_box_tag "product[remove_gallery_image_signed_ids][]", att.signed_id, false,
+                    class: "rounded border-[var(--color-border)]" %>
+                  <span>Удалить</span>
+                </span>
+              </label>
+            </li>
+          <% end %>
+        </ul>
+      </fieldset>
+    <% end %>
+  </div>
+
   <div class="flex flex-wrap gap-3 pt-2">
     <%= f.submit (product.persisted? ? "Сохранить" : "Добавить товар"),
       class:

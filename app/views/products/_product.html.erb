@@ -1,16 +1,26 @@
 <%# locals: product: %>
 <article
-  class="group relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-5 shadow-[0_0_20px_rgba(0,0,0,0.25)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_0_18px_var(--color-accent-glow)] motion-reduce:transform-none motion-reduce:transition-none"
+  class="group relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-5 shadow-[0_0_20px_rgba(0,0,0,0.25)] transition duration-200 hover:-translate-y-1.5 hover:shadow-[0_0_18px_var(--color-accent-glow)] motion-reduce:transform-none motion-reduce:transition-none"
   style="--product-cat: <%= product_category_css_var(product.category) %>"
 >
   <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
     <div
       class="relative h-36 w-full shrink-0 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] sm:h-32 sm:w-32"
     >
-      <% if product.cover_image.attached? %>
-        <%= image_tag product.cover_image,
+      <% hero = product.hero_image %>
+      <% if hero.present? %>
+        <%= image_tag hero.variant(resize_to_limit: [512, 512]),
           class: "h-full w-full object-cover",
           alt: "" %>
+        <% if product.gallery_extra_count.positive? %>
+          <span
+            class="pointer-events-none absolute bottom-1.5 right-1.5 rounded-md border border-[var(--color-accent-cyber)]/60 bg-[var(--color-bg-primary)]/90 px-1.5 py-0.5 text-[0.6875rem] font-medium leading-none text-[var(--color-accent-cyber)] shadow-sm"
+            style="font-family: var(--font-jetbrains)"
+            aria-label="Дополнительных фотографий в галерее: <%= product.gallery_extra_count %>"
+          >
+            +<%= product.gallery_extra_count %>
+          </span>
+        <% end %>
       <% else %>
         <div
           class="flex h-full w-full items-center justify-center text-xs text-[var(--color-text-muted)]"

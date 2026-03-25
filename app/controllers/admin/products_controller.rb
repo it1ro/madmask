@@ -41,6 +41,8 @@ module Admin
         @product.model_file.purge
       end
 
+      purge_requested_gallery_images
+
       if @product.update(product_params)
         respond_to do |format|
           format.turbo_stream
@@ -66,8 +68,28 @@ module Admin
       @product = Product.find(params[:id])
     end
 
+    def purge_requested_gallery_images
+      ids = Array(params.dig(:product, :remove_gallery_image_signed_ids)).map(&:presence).compact
+      return if ids.empty?
+
+      ids.each do |signed_id|
+        att = ActiveStorage::Attachment.find_signed(signed_id)
+        next unless att && att.record == @product && att.name == "gallery_images"
+
+        att.purge
+      end
+    end
+
     def product_params
-      params.require(:product).permit(:name, :description, :price, :category, :cover_image, :model_file)
+      params.require(:product).permit(
+        :name,
+        :description,
+        :price,
+        :category,
+        :cover_image,
+        :model_file,
+        gallery_images: []
+      )
     end
   end
 end

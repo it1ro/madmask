@@ -37,3 +37,7 @@ en:
             model_file:
               invalid_extension: "must use a .glb or .gltf filename"
               invalid_content_type: "must be GLB or GLTF (allowed content types only)"
+            gallery_images:
+              too_many: "cannot exceed %{count} images"
+              invalid_image_type: "must be JPEG, PNG, GIF, WebP, or AVIF"
+              too_large: "each file must be at most 5 MB"

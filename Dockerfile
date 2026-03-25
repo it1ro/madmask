@@ -8,6 +8,7 @@ ENV LANG=C.UTF-8 \
     BUNDLE_JOBS=4 \
     BUNDLE_RETRY=3
 
+# libvips: required by ruby-vips / image_processing for Active Storage variants (resize_to_limit in views).
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       build-essential \
@@ -15,6 +16,7 @@ RUN apt-get update -qq && \
       curl \
       git \
       libsqlite3-dev \
+      libvips42 \
       libyaml-dev \
       pkg-config \
     && rm -rf /var/lib/apt/lists/*
