@@ -70,6 +70,16 @@ export default class extends Controller {
   }
 
   async #initThree() {
+    if (!this.#hasWebGL()) {
+      this.element.setAttribute("data-webgl-preview-state", "no-webgl")
+      this.#renderStaticMessage(
+        "no-webgl",
+        "WebGL недоступен в этом браузере. Откройте страницу в другом браузере или обновите.",
+        true
+      )
+      return
+    }
+
     const THREE = await import("three")
     const { OrbitControls } = await import("three/addons/controls/OrbitControls.js")
     const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js")
@@ -82,16 +92,6 @@ export default class extends Controller {
     this.THREE = THREE
     this.OrbitControls = OrbitControls
     this.GLTFLoader = GLTFLoader
-
-    if (!this.#hasWebGL()) {
-      this.element.setAttribute("data-webgl-preview-state", "no-webgl")
-      this.#renderStaticMessage(
-        "no-webgl",
-        "WebGL недоступен в этом браузере. Откройте страницу в другом браузере или обновите.",
-        true
-      )
-      return
-    }
 
     const BG = 0x0a050f
     this.scene = new THREE.Scene()
@@ -222,8 +222,23 @@ export default class extends Controller {
 
   #hasWebGL() {
     try {
+      if (typeof window === "undefined") return false
+      const supportsWebGLApi =
+        typeof window.WebGLRenderingContext !== "undefined" ||
+        typeof window.WebGL2RenderingContext !== "undefined"
+      if (!supportsWebGLApi) return false
+
       const canvas = document.createElement("canvas")
-      return !!(canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+      const contextAttributes = {
+        antialias: true,
+        failIfMajorPerformanceCaveat: true
+      }
+
+      return !!(
+        canvas.getContext("webgl2", contextAttributes) ||
+        canvas.getContext("webgl", contextAttributes) ||
+        canvas.getContext("experimental-webgl", contextAttributes)
+      )
     } catch {
       return false
     }

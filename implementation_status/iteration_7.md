@@ -4,7 +4,8 @@
 
 | Подзадача | Результат |
 |-----------|-----------|
-| 7.1 Адаптивность и touch | `webgl_preview_controller.js`: ограничение `renderer.setPixelRatio` до `1` на устройствах с primary touch/coarse pointer, сохранён лимит `2` для desktop; для `OrbitControls` на touch включена схема `ONE: ROTATE`, `TWO: DOLLY_ROTATE`, отключен pan для предотвращения конфликтов со скроллом |
+| 7.1 Адаптивность и touch | `webgl_preview_controller.js`: для `OrbitControls` на touch включена схема `ONE: ROTATE`, `TWO: DOLLY_ROTATE`, отключен pan для предотвращения конфликтов со скроллом |
+| 7.2 Оптимизация WebGL | `webgl_preview_controller.js`: `renderer.setPixelRatio` ограничен до `1` на mobile/coarse pointer и до `2` на desktop; добавлена ранняя проверка поддержки WebGL (`WebGLRenderingContext`/`WebGL2RenderingContext` + `webgl2/webgl/experimental-webgl`) до импорта Three.js |
 | Lightbox поверх шапки | `app/views/products/show.html.erb`: `product-gallery-lightbox` поднят до `z-[1000]`, фон усилен до `rgba(2,1,6,0.97)` + `backdrop-blur-md`; кнопка закрытия получила более контрастный фон/обводку и `z-30` для гарантированной видимости |
 | CTA «Связаться» | `product_contact_mailto_url` + `madmask_contact_email` (ENV → credentials); кнопка/ disabled + подсказка; стили `.product-cta`, `.cta-pulse-shadow` в `application.css` |
 | Конфиг | `config.x.contact_email` в `application.rb` (опционально, дублирует ENV) |
