@@ -1,25 +1,6 @@
 <% content_for :title, "#{@product.name} — Madmask" %>
 
-<%# Iteration 4.1: pinned Three.js + OrbitControls (same version); importmap in head per spec. %>
-<% content_for :head do %>
-  <script type="importmap">
-  <%= raw({
-    "imports" => {
-      "three" => "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-      "three/addons/" => "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-    }
-  }.to_json) %>
-  </script>
-<% end %>
-
-<% content_for :three_js do %>
-  <script type="module">
-    import * as THREE from "three";
-    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    window.THREE = THREE;
-    window.OrbitControls = OrbitControls;
-  </script>
-<% end %>
+<%# Three.js 0.170: pins in config/importmap.rb; Stimulus webgl_preview loads via dynamic import on this page only. %>
 
 <article class="py-4 md:py-8">
   <p class="mb-6">
