@@ -23,5 +23,8 @@ module Madmask
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Optional; primary resolution is ENV/credentials in ProductsHelper#madmask_contact_email
+    config.x.contact_email = ENV.fetch("MADMASK_CONTACT_EMAIL", "").presence
   end
 end

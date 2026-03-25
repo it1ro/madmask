@@ -11,7 +11,7 @@
       <% if hero.present? %>
         <%= image_tag hero.variant(resize_to_limit: [512, 512]),
           class: "h-full w-full object-cover",
-          alt: "" %>
+          alt: product.name %>
         <% if product.gallery_extra_count.positive? %>
           <span
             class="pointer-events-none absolute bottom-1.5 right-1.5 rounded-md border border-[var(--color-accent-cyber)]/60 bg-[var(--color-bg-primary)]/90 px-1.5 py-0.5 text-[0.6875rem] font-medium leading-none text-[var(--color-accent-cyber)] shadow-sm"
@@ -37,7 +37,7 @@
           class="text-lg font-semibold tracking-wide text-[var(--color-text-primary)] md:text-xl"
           style="font-family: var(--font-cinzel)"
         >
-          <%= link_to product.name, product_path(product), class: "hover:text-[var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>
+          <%= link_to product.name, product_path(product), class: "rounded-sm transition active:opacity-80 hover:text-[var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 motion-reduce:active:opacity-100" %>
         </h2>
         <span
           class="inline-flex shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium uppercase tracking-wider text-[var(--color-bg-primary)]"
@@ -61,7 +61,7 @@
         <%= link_to "Подробнее",
           product_path(product),
           class:
-            "inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[var(--color-accent-1)] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2",
+            "inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[var(--color-accent-1)] px-4 py-2 text-xs font-medium uppercase tracking-wide text-[var(--color-text-primary)] transition active:scale-[0.98] hover:bg-[var(--color-accent-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 motion-reduce:active:scale-100",
           style: "font-family: var(--font-orbitron)" %>
       </div>
     </div>
@@ -78,8 +78,9 @@
       </p>
       <%= link_to "Открыть 3D превью",
         product_path(product, anchor: "product-3d-preview"),
+        aria: { label: "Перейти к интерактивному 3D на странице товара: #{product.name}" },
         class:
-          "inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-lg border border-[var(--color-accent-cyber)] px-3 py-2 text-xs font-medium text-[var(--color-text-primary)] transition hover:bg-[var(--color-accent-2)]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2" %>
+          "inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-lg border border-[var(--color-accent-cyber)] px-3 py-2 text-xs font-medium text-[var(--color-text-primary)] transition active:scale-[0.98] hover:bg-[var(--color-accent-2)]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 motion-reduce:active:scale-100" %>
     </div>
   <% end %>
 </article>

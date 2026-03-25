@@ -6,11 +6,20 @@ export default class extends Controller {
 
   select(event) {
     const el = event.currentTarget
-    const url = el.dataset.thumbUrl || el.getAttribute("data-thumb-url")
-    if (!url || !this.hasMainTarget) return
+    const mainUrl =
+      el.dataset.thumbMainUrl ||
+      el.getAttribute("data-thumb-main-url") ||
+      el.dataset.thumbUrl ||
+      el.getAttribute("data-thumb-url")
+    const srcset = el.dataset.thumbSrcset || el.getAttribute("data-thumb-srcset")
+    if (!mainUrl || !this.hasMainTarget) return
 
-    this.mainTarget.src = url
-    this.mainTarget.removeAttribute("srcset")
+    this.mainTarget.src = mainUrl
+    if (srcset && srcset.trim().length > 0) {
+      this.mainTarget.srcset = srcset
+    } else {
+      this.mainTarget.removeAttribute("srcset")
+    }
 
     this.element.querySelectorAll('[data-product-gallery-thumb="true"]').forEach((el) => {
       el.setAttribute("aria-selected", "false")

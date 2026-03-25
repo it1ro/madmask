@@ -7,7 +7,7 @@
     <%= link_to "← К каталогу",
       products_path,
       class:
-        "inline-flex min-h-[44px] items-center text-sm text-[var(--color-accent-cyber)] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm" %>
+        "inline-flex min-h-[44px] items-center text-sm text-[var(--color-accent-cyber)] underline-offset-2 transition active:scale-[0.98] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 rounded-sm motion-reduce:active:scale-100" %>
   </p>
 
   <div class="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12">
@@ -23,9 +23,12 @@
             class="p-3 sm:p-4"
           >
             <% main_img = preview_images.first %>
-            <% main_variant = main_img.variant(resize_to_limit: [1200, 1200]) %>
+            <% main_v800 = main_img.variant(resize_to_limit: [800, 800]) %>
+            <% main_v1200 = main_img.variant(resize_to_limit: [1200, 1200]) %>
             <div class="relative aspect-[4/3] w-full max-w-xl overflow-hidden rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-primary)]/30 sm:max-w-md">
-              <%= image_tag main_variant,
+              <%= image_tag url_for(main_v1200),
+                srcset: "#{url_for(main_v800)} 800w, #{url_for(main_v1200)} 1200w",
+                sizes: "(max-width: 640px) 100vw, min(28rem, 100vw)",
                 class:
                   "h-full w-full object-cover motion-reduce:transition-none transition-opacity duration-200",
                 alt: @product.name,
@@ -39,16 +42,21 @@
               >
                 <% preview_images.each_with_index do |blob_or_attached, i| %>
                   <% thumb = blob_or_attached.variant(resize_to_limit: [120, 120]) %>
+                  <% large800 = blob_or_attached.variant(resize_to_limit: [800, 800]) %>
+                  <% large1200 = blob_or_attached.variant(resize_to_limit: [1200, 1200]) %>
                   <button
                     type="button"
-                    class="shrink-0 snap-start overflow-hidden rounded-lg border-2 border-transparent bg-[var(--color-bg-primary)]/40 motion-reduce:transition-none transition-[border-color] duration-150 aria-selected:border-[var(--color-accent-cyber)] aria-selected:ring-1 aria-selected:ring-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2"
+                    class="shrink-0 snap-start overflow-hidden rounded-lg border-2 border-transparent bg-[var(--color-bg-primary)]/40 motion-reduce:transition-none transition-[border-color] duration-150 aria-selected:border-[var(--color-accent-cyber)] aria-selected:ring-1 aria-selected:ring-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 active:opacity-90"
                     style="min-width: 4.5rem; min-height: 4.5rem"
                     data-product-gallery-thumb="true"
                     data-action="click->product-gallery#select"
                     data-thumb-url="<%= url_for(thumb) %>"
+                    data-thumb-src="<%= url_for(thumb) %>"
+                    data-thumb-main-url="<%= url_for(large1200) %>"
+                    data-thumb-srcset="<%= "#{url_for(large800)} 800w, #{url_for(large1200)} 1200w" %>"
                     role="tab"
                     aria-selected="<%= i.zero? %>"
-                    aria-label="Кадр <%= i + 1 %>"
+                    aria-label="Выбрать кадр <%= i + 1 %>"
                   >
                     <%= image_tag thumb,
                       class: "h-[4.5rem] w-[4.5rem] object-cover",
@@ -90,36 +98,65 @@
             </span>
           <% end %>
         </div>
+        <%# Description for figure — must stay outside canvas-container (Stimulus clears the node). %>
+        <span id="product-3d-desc" class="sr-only">Интерактивное вращение модели мышью или касанием.</span>
         <div
           id="canvas-container"
           class="relative aspect-square w-full min-h-[min(80vw,28rem)] sm:min-h-[22rem]"
           data-controller="webgl-preview"
           data-webgl-preview-model-url-value="<%= h(@product.effective_model_url.to_s) %>"
-          aria-label="Интерактивная 3D-модель"
+          role="figure"
+          aria-labelledby="product-3d-heading"
+          aria-describedby="product-3d-desc"
         ></div>
       </section>
     </div>
 
-    <div>
-      <p class="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)]" style="font-family: var(--font-orbitron)">
-        <%= product_category_label(@product.category) %>
-      </p>
-      <h1
-        class="mt-2 text-3xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-4xl"
-        style="font-family: var(--font-cinzel)"
-      >
-        <%= @product.name %>
-      </h1>
-      <p class="mt-4 text-2xl text-[var(--color-text-accent)]" style="font-family: var(--font-jetbrains)">
-        <%= number_to_currency(@product.price, unit: "₽", separator: ",", delimiter: " ", format: "%n %u") %>
-      </p>
+    <div
+      class="product-show-info"
+      data-controller="reveal-on-scroll"
+      data-reveal-on-scroll-revealed-class="product-show-info--revealed"
+    >
+      <div class="product-show-info__inner">
+        <p class="text-xs uppercase tracking-[0.2em] text-[var(--color-text-muted)]" style="font-family: var(--font-orbitron)">
+          <%= product_category_label(@product.category) %>
+        </p>
+        <h1
+          class="mt-2 text-3xl font-semibold tracking-wide text-[var(--color-text-primary)] md:text-4xl"
+          style="font-family: var(--font-cinzel)"
+        >
+          <%= @product.name %>
+        </h1>
+        <p class="mt-4 text-2xl text-[var(--color-text-accent)]" style="font-family: var(--font-jetbrains)">
+          <%= number_to_currency(@product.price, unit: "₽", separator: ",", delimiter: " ", format: "%n %u") %>
+        </p>
 
-      <% if @product.description.present? %>
-        <div class="mt-6 max-w-prose whitespace-pre-line text-[var(--color-text-secondary)] leading-relaxed">
-          <%= @product.description %>
+        <% if @product.description.present? %>
+          <div class="mt-6 max-w-prose whitespace-pre-line text-[var(--color-text-secondary)] leading-relaxed">
+            <%= @product.description %>
+          </div>
+        <% end %>
+
+        <% contact_href = product_contact_mailto_url(@product) %>
+        <div class="mt-8">
+          <% if contact_href.present? %>
+            <%= link_to "Связаться",
+              contact_href,
+              class: "product-cta cta-pulse-shadow inline-flex w-full min-h-[44px] justify-center sm:w-auto sm:min-w-[12rem]" %>
+          <% else %>
+            <button
+              type="button"
+              disabled
+              class="product-cta inline-flex w-full min-h-[44px] cursor-not-allowed justify-center opacity-50 sm:w-auto sm:min-w-[12rem]"
+            >
+              Связаться
+            </button>
+            <p class="mt-2 text-xs text-[var(--color-text-muted)]">
+              Контакт для связи не настроен. Для администратора: env <code class="rounded bg-[var(--color-surface)] px-1 py-0.5 text-[0.7rem]">MADMASK_CONTACT_EMAIL</code> или credentials <code class="rounded bg-[var(--color-surface)] px-1 py-0.5 text-[0.7rem]">madmask.contact_email</code>.
+            </p>
+          <% end %>
         </div>
-      <% end %>
-
+      </div>
     </div>
   </div>
 </article>
