@@ -57,7 +57,7 @@
         <%= link_to "Подробнее",
           product_path(product),
           class:
-            "inline-flex min-h-[40px] items-center justify-center rounded-lg border border-accent px-4 py-2 font-ui text-xs font-medium uppercase tracking-wide text-ink transition active:scale-[0.98] hover:bg-accent-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:active:scale-100" %>
+            "inline-flex min-h-[40px] items-center justify-center rounded-lg border border-accent px-4 py-2 font-ui text-xs font-medium uppercase tracking-wide text-ink transition active:scale-[0.98] hover:scale-[1.02] hover:shadow-[0_0_18px_var(--color-accent-glow)] hover:bg-accent-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:active:scale-100 motion-reduce:transform-none motion-reduce:transition-none" %>
       </div>
     </div>
   </div>
@@ -75,7 +75,7 @@
         product_path(product, anchor: "product-3d-preview"),
         aria: { label: "Перейти к интерактивному 3D на странице товара: #{product.name}" },
         class:
-          "inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-lg border border-cyber px-3 py-2 font-ui text-xs font-medium text-ink transition active:scale-[0.98] hover:bg-accent-deep/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:active:scale-100" %>
+          "inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-lg border border-cyber px-3 py-2 font-ui text-xs font-medium text-ink transition active:scale-[0.98] hover:scale-[1.02] hover:shadow-[0_0_18px_var(--color-accent-glow)] hover:bg-accent-deep/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:active:scale-100 motion-reduce:transform-none motion-reduce:transition-none" %>
     </div>
   <% end %>
 </article>
