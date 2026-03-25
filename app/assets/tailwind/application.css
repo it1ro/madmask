@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+/* Design tokens — DESIGN_GUIDELINES.md §2 */
+:root {
+  --color-bg-primary: #0a050f;
+  --color-bg-secondary: #120b1a;
+  --color-surface: #1e1528;
+  --color-border: #2c1f3a;
+
+  --color-text-primary: #f0e9f0;
+  --color-text-secondary: #b9a9c9;
+  --color-text-accent: #e85d5d;
+
+  --color-accent-1: #8b5f9e;
+  --color-accent-2: #5d3a6b;
+  --color-accent-glow: #b76fe0;
+  --color-accent-cyber: #00c8b0;
+  --color-accent-cyber-glow: #66fcf1;
+
+  --font-cinzel: "Cinzel", serif;
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-jetbrains: "JetBrains Mono", ui-monospace, monospace;
+}
+
+body {
+  font-family: var(--font-inter);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.site-nav-link {
+  font-family: var(--font-orbitron);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  transition:
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    text-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.site-nav-link:hover {
+  color: var(--color-text-primary);
+  text-shadow: 0 0 4px var(--color-accent-glow);
+}
+
+.site-nav-link:focus-visible {
+  outline: 2px solid var(--color-accent-glow);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.site-nav-link--active {
+  color: var(--color-text-primary);
+  box-shadow: inset 0 -2px 0 0 var(--color-accent-cyber);
+  padding-bottom: 0.125rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav-link {
+    transition: none;
+  }
+}

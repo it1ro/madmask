@@ -18,14 +18,23 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;600&display=swap"
+      rel="stylesheet"
+    >
+
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="flex min-h-screen flex-col antialiased">
+    <%= render "shared/header" %>
+    <main id="main-content" class="mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-24 md:px-6 md:pt-28">
       <%= yield %>
     </main>
+    <%= render "shared/footer" %>
   </body>
 </html>
