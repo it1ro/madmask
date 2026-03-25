@@ -1,5 +1,26 @@
 <% content_for :title, "#{@product.name} — Madmask" %>
 
+<%# Iteration 4.1: pinned Three.js + OrbitControls (same version); importmap in head per spec. %>
+<% content_for :head do %>
+  <script type="importmap">
+  <%= raw({
+    "imports" => {
+      "three" => "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/" => "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }.to_json) %>
+  </script>
+<% end %>
+
+<% content_for :three_js do %>
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    window.THREE = THREE;
+    window.OrbitControls = OrbitControls;
+  </script>
+<% end %>
+
 <article class="py-4 md:py-8">
   <p class="mb-6">
     <%= link_to "← К каталогу",
@@ -12,12 +33,24 @@
     <div
       class="relative aspect-square w-full max-w-xl overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] lg:max-w-none"
     >
+      <%= tag.div(
+        id: "canvas-container",
+        class: "absolute inset-0 z-10",
+        data: {
+          controller: "webgl-preview",
+          webgl_preview_model_url_value: @product.model_url
+        },
+        aria: { label: "3D preview" }
+      ) %>
       <% if @product.cover_image.attached? %>
         <%= image_tag @product.cover_image,
-          class: "h-full w-full object-cover",
+          class:
+            "pointer-events-none absolute inset-0 -z-0 h-full w-full object-cover",
           alt: @product.name %>
       <% else %>
-        <div class="flex h-full w-full items-center justify-center text-[var(--color-text-muted)]">
+        <div
+          class="pointer-events-none absolute inset-0 -z-0 flex h-full w-full items-center justify-center text-[var(--color-text-muted)]"
+        >
           Нет обложки
         </div>
       <% end %>
