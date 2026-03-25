@@ -12,3 +12,5 @@ pin "three/addons/controls/OrbitControls.js",
   to: "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js"
 pin "three/addons/loaders/GLTFLoader.js",
   to: "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js"
+pin "three/addons/loaders/RGBELoader.js",
+  to: "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/RGBELoader.js"

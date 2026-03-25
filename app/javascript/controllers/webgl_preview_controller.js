@@ -54,6 +54,8 @@ export default class extends Controller {
       this.loadedRoot = null
     }
 
+    this.#disposeEnvironment()
+
     if (this.renderer) {
       this.renderer.dispose()
       if (this.renderer.domElement && this.renderer.domElement.parentNode === this.element) {
@@ -80,6 +82,7 @@ export default class extends Controller {
     const THREE = await import("three")
     const { OrbitControls } = await import("three/addons/controls/OrbitControls.js")
     const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js")
+    const { RGBELoader } = await import("three/addons/loaders/RGBELoader.js")
 
     if (typeof window !== "undefined") {
       window.THREE = THREE
@@ -89,31 +92,43 @@ export default class extends Controller {
     this.THREE = THREE
     this.OrbitControls = OrbitControls
     this.GLTFLoader = GLTFLoader
+    this.RGBELoader = RGBELoader
 
     const BG = 0x0a050f
     this.scene = new THREE.Scene()
-    this.scene.background = new THREE.Color(BG)
+    // Keep canvas transparent so that container gradients remain visible.
+    this.scene.background = null
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.01, 1000)
     this.camera.position.set(1.6, 1.2, 2.4)
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false })
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.#updateRendererPixelRatio()
-    this.renderer.setClearColor(BG, 1)
+    // Transparent background to match DESIGN_GUIDELINES container gradients.
+    this.renderer.setClearColor(BG, 0)
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
+    // Exposure tuned for dark scene readability (HDRI/environments can change perceived brightness).
+    this.renderer.toneMappingExposure = 1.45
 
     this.element.appendChild(this.renderer.domElement)
     this.#styleCanvas(this.renderer.domElement)
     this.#buildOverlay()
 
-    const ambient = new THREE.AmbientLight(0xffffff, 0.55)
-    this.scene.add(ambient)
-    const key = new THREE.DirectionalLight(0xffffff, 1.1)
-    key.position.set(4, 8, 6)
-    this.scene.add(key)
-    const fill = new THREE.DirectionalLight(0xaaccff, 0.35)
+    // Themed lighting for fantasy/horror + cyber accents (matches DESIGN_GUIDELINES §5).
+    const hemi = new THREE.HemisphereLight(0x442266, 0x226688, 0.95)
+    this.scene.add(hemi)
+
+    // Rim/key from above to keep silhouettes readable.
+    const rim = new THREE.DirectionalLight(0xb76fe0, 1.25)
+    rim.position.set(4, 8, 6)
+    this.scene.add(rim)
+
+    // Back/fill from the side for more even PBR shading.
+    const fill = new THREE.DirectionalLight(0x226688, 0.7)
     fill.position.set(-4, 2, -2)
     this.scene.add(fill)
+
+    await this.#initEnvironment()
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.enableDamping = true
@@ -131,6 +146,96 @@ export default class extends Controller {
 
     const url = (this.modelUrlValue || "").trim()
     await this.#loadModel(url)
+  }
+
+  async #initEnvironment() {
+    if (!this.renderer || !this.scene || !this.THREE || !this.RGBELoader) return
+
+    // Default candidate locations: project can optionally ship real HDRIs under /public/hdr/.
+    const candidates = ["/hdr/madmask_env_1.hdr", "/hdr/madmask_env_2.hdr"]
+
+    const THREE = this.THREE
+
+    try {
+      const pmrem = new THREE.PMREMGenerator(this.renderer)
+
+      // Load HDRI first; fall back to a procedural equirectangular gradient if missing.
+      let envMap = null
+
+      for (const candidate of candidates) {
+        try {
+          const texture = await new Promise((resolve, reject) => {
+            const loader = new this.RGBELoader()
+            loader.load(
+              candidate,
+              (tex) => resolve(tex),
+              undefined,
+              (err) => reject(err)
+            )
+          })
+
+          // Convert HDRI into a prefiltered radiance environment map.
+          const rt = pmrem.fromEquirectangular(texture)
+          envMap = rt.texture
+          this._hdrTextureToDispose = texture
+          if (typeof rt.dispose === "function") rt.dispose()
+
+          break
+        } catch (err) {
+          console.warn("[webgl-preview] HDRI load failed:", candidate, err)
+        }
+      }
+
+      if (!envMap) {
+        const procedural = this.#createProceduralEquirectangular()
+        const rt = pmrem.fromEquirectangular(procedural)
+        envMap = rt.texture
+        this._proceduralEnvTextureToDispose = procedural
+        if (typeof rt.dispose === "function") rt.dispose()
+      }
+
+      // Keep the filtered env map for the lifetime of the controller.
+      this._envMapToDispose = envMap
+      this.scene.environment = envMap
+
+      pmrem.dispose()
+      this._pmremGenerator = null
+    } catch (err) {
+      console.warn("[webgl-preview] environment init failed, fallback to lights only.", err)
+    }
+  }
+
+  #createProceduralEquirectangular() {
+    const THREE = this.THREE
+    const w = 512
+    const h = 256
+    const canvas = document.createElement("canvas")
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext("2d", { willReadFrequently: false })
+
+    // Base vertical gradient: top purple glow -> bottom dark back.
+    const gradient = ctx.createLinearGradient(0, 0, 0, h)
+    gradient.addColorStop(0, "rgba(183,111,224,0.95)")
+    gradient.addColorStop(0.5, "rgba(34,102,136,0.55)")
+    gradient.addColorStop(1, "rgba(10,5,15,1)")
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, w, h)
+
+    // Subtle horizontal bands to avoid "flat" reflections on very simple models.
+    ctx.globalAlpha = 0.15
+    for (let i = 0; i < 18; i++) {
+      const y = Math.round((i / 18) * h)
+      ctx.fillStyle = i % 2 === 0 ? "rgba(0,200,176,0.9)" : "rgba(183,111,224,0.9)"
+      ctx.fillRect(0, y, w, 2)
+    }
+    ctx.globalAlpha = 1
+
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.colorSpace = THREE.SRGBColorSpace
+    texture.generateMipmaps = false
+    texture.needsUpdate = true
+    return texture
   }
 
   #buildOverlay() {
@@ -359,6 +464,10 @@ export default class extends Controller {
       this.loadedRoot = root
       this.#fitModelToView(root)
       this.scene.add(root)
+
+      // Improve reflections readability for typical PBR materials.
+      this.#applyEnvMapIntensityToMaterials(root)
+
       this.element.setAttribute("data-webgl-preview-state", "model-loaded")
     } catch (err) {
       console.warn("[webgl-preview] Model load failed", err)
@@ -366,6 +475,26 @@ export default class extends Controller {
       this.element.setAttribute("data-webgl-preview-state", "load-error")
       this.#showLoadErrorPanel()
     }
+  }
+
+  #applyEnvMapIntensityToMaterials(object) {
+    const THREE = this.THREE
+    if (!object || !THREE) return
+
+    const targetIntensity = 1.35
+    object.traverse((child) => {
+      if (!child || !child.isMesh) return
+
+      const materials = Array.isArray(child.material) ? child.material : [child.material]
+      materials.forEach((m) => {
+        if (!m) return
+        // Keep it narrow to PBR materials to avoid unexpected side effects.
+        if (m.isMeshStandardMaterial || m.isMeshPhysicalMaterial) {
+          m.envMapIntensity = targetIntensity
+          m.needsUpdate = true
+        }
+      })
+    })
   }
 
   #resolveUrl(url) {
@@ -408,5 +537,29 @@ export default class extends Controller {
         })
       }
     })
+  }
+
+  #disposeEnvironment() {
+    try {
+      if (this.scene) this.scene.environment = null
+      if (this._envMapToDispose) {
+        this._envMapToDispose.dispose()
+        this._envMapToDispose = null
+      }
+      if (this._hdrTextureToDispose) {
+        this._hdrTextureToDispose.dispose()
+        this._hdrTextureToDispose = null
+      }
+      if (this._proceduralEnvTextureToDispose) {
+        this._proceduralEnvTextureToDispose.dispose()
+        this._proceduralEnvTextureToDispose = null
+      }
+      if (this._pmremGenerator) {
+        this._pmremGenerator.dispose()
+        this._pmremGenerator = null
+      }
+    } catch (err) {
+      console.warn("[webgl-preview] environment dispose failed", err)
+    }
   }
 }
