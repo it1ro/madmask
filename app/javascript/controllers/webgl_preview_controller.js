@@ -78,6 +78,7 @@ export default class extends Controller {
     this.scene = null
     this.camera = null
     this.THREE = null
+    this.LightProbeGenerator = null
   }
 
   async #initThree() {
@@ -91,6 +92,7 @@ export default class extends Controller {
     const { OrbitControls } = await import("three/addons/controls/OrbitControls.js")
     const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js")
     const { RGBELoader } = await import("three/addons/loaders/RGBELoader.js")
+    const { LightProbeGenerator } = await import("three/addons/lights/LightProbeGenerator.js")
 
     if (typeof window !== "undefined") {
       window.THREE = THREE
@@ -101,6 +103,7 @@ export default class extends Controller {
     this.OrbitControls = OrbitControls
     this.GLTFLoader = GLTFLoader
     this.RGBELoader = RGBELoader
+    this.LightProbeGenerator = LightProbeGenerator
 
     const BG = 0x0a050f
     this.scene = new THREE.Scene()
@@ -116,23 +119,24 @@ export default class extends Controller {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping
     // Exposure tuned for dark scene readability (HDRI/environments can change perceived brightness).
-    this.renderer.toneMappingExposure = 1.45
+    this.renderer.toneMappingExposure = 1.15
 
     this.element.appendChild(this.renderer.domElement)
     this.#styleCanvas(this.renderer.domElement)
     this.#buildOverlay()
 
     // Themed lighting for fantasy/horror + cyber accents (matches DESIGN_GUIDELINES §5).
-    const hemi = new THREE.HemisphereLight(0x442266, 0x226688, 0.95)
+    // Keep it mostly neutral so env-map driven lighting looks closer to Sketchfab.
+    const hemi = new THREE.HemisphereLight(0xbdbdbd, 0x1b1b27, 0.35)
     this.scene.add(hemi)
 
     // Rim/key from above to keep silhouettes readable.
-    const rim = new THREE.DirectionalLight(0xb76fe0, 1.25)
+    const rim = new THREE.DirectionalLight(0xffffff, 0.8)
     rim.position.set(4, 8, 6)
     this.scene.add(rim)
 
     // Back/fill from the side for more even PBR shading.
-    const fill = new THREE.DirectionalLight(0x226688, 0.7)
+    const fill = new THREE.DirectionalLight(0x666666, 0.4)
     fill.position.set(-4, 2, -2)
     this.scene.add(fill)
 
@@ -163,6 +167,7 @@ export default class extends Controller {
     const candidates = ["/hdr/madmask_env_1.hdr", "/hdr/madmask_env_2.hdr"]
 
     const THREE = this.THREE
+    let sourceEquirectangularTexture = null
 
     try {
       const pmrem = new THREE.PMREMGenerator(this.renderer)
@@ -182,6 +187,8 @@ export default class extends Controller {
             )
           })
 
+          // Keep original equirectangular texture for diffuse light-probe generation.
+          sourceEquirectangularTexture = texture
           // Convert HDRI into a prefiltered radiance environment map.
           const rt = pmrem.fromEquirectangular(texture)
           envMap = rt.texture
@@ -196,6 +203,7 @@ export default class extends Controller {
 
       if (!envMap) {
         const procedural = this.#createProceduralEquirectangular()
+        sourceEquirectangularTexture = procedural
         const rt = pmrem.fromEquirectangular(procedural)
         envMap = rt.texture
         this._proceduralEnvTextureToDispose = procedural
@@ -205,6 +213,36 @@ export default class extends Controller {
       // Keep the filtered env map for the lifetime of the controller.
       this._envMapToDispose = envMap
       this.scene.environment = envMap
+
+      // Diffuse light probe (irradiance) to better match Sketchfab-like IBL.
+      // This does not affect the canvas background (it stays transparent).
+      if (this.LightProbeGenerator && sourceEquirectangularTexture) {
+        let cubeRT = null
+        try {
+          cubeRT = new THREE.WebGLCubeRenderTarget(256, {
+            format: THREE.RGBAFormat,
+            type: THREE.UnsignedByteType,
+            generateMipmaps: false,
+            minFilter: THREE.LinearFilter,
+            magFilter: THREE.LinearFilter
+          })
+          // LightProbeGenerator will read back the cube texture; keep it in linear space.
+          cubeRT.texture.colorSpace = THREE.NoColorSpace
+
+          cubeRT.fromEquirectangularTexture(this.renderer, sourceEquirectangularTexture)
+
+          const lightProbe = await this.LightProbeGenerator.fromCubeRenderTarget(this.renderer, cubeRT)
+          lightProbe.intensity = 1.0
+          this.scene.add(lightProbe)
+
+          this._lightProbeToDispose = lightProbe
+          this._cubeRenderTargetToDispose = cubeRT
+          cubeRT = null
+        } catch (probeErr) {
+          if (cubeRT) cubeRT.dispose()
+          console.warn("[webgl-preview] light probe generation failed", probeErr)
+        }
+      }
 
       pmrem.dispose()
       this._pmremGenerator = null
@@ -224,17 +262,18 @@ export default class extends Controller {
 
     // Base vertical gradient: top purple glow -> bottom dark back.
     const gradient = ctx.createLinearGradient(0, 0, 0, h)
-    gradient.addColorStop(0, "rgba(183,111,224,0.95)")
-    gradient.addColorStop(0.5, "rgba(34,102,136,0.55)")
-    gradient.addColorStop(1, "rgba(10,5,15,1)")
+    // Neutral “studio-like” gradient: reduce color cast on models.
+    gradient.addColorStop(0, "rgba(235,235,235,0.95)")
+    gradient.addColorStop(0.45, "rgba(120,120,120,0.25)")
+    gradient.addColorStop(1, "rgba(10,10,12,1)")
     ctx.fillStyle = gradient
     ctx.fillRect(0, 0, w, h)
 
     // Subtle horizontal bands to avoid "flat" reflections on very simple models.
-    ctx.globalAlpha = 0.15
+    ctx.globalAlpha = 0.12
     for (let i = 0; i < 18; i++) {
       const y = Math.round((i / 18) * h)
-      ctx.fillStyle = i % 2 === 0 ? "rgba(0,200,176,0.9)" : "rgba(183,111,224,0.9)"
+      ctx.fillStyle = i % 2 === 0 ? "rgba(215,215,215,0.55)" : "rgba(255,255,255,0.35)"
       ctx.fillRect(0, y, w, 2)
     }
     ctx.globalAlpha = 1
@@ -517,7 +556,8 @@ export default class extends Controller {
     const THREE = this.THREE
     if (!object || !THREE) return
 
-    const targetIntensity = 1.35
+    // Reduce env-map intensity to avoid strong tinting with themed HDRIs.
+    const targetIntensity = 0.95
     object.traverse((child) => {
       if (!child || !child.isMesh) return
 
@@ -578,6 +618,14 @@ export default class extends Controller {
   #disposeEnvironment() {
     try {
       if (this.scene) this.scene.environment = null
+      if (this._lightProbeToDispose) {
+        this._lightProbeToDispose.removeFromParent()
+        this._lightProbeToDispose = null
+      }
+      if (this._cubeRenderTargetToDispose) {
+        this._cubeRenderTargetToDispose.dispose()
+        this._cubeRenderTargetToDispose = null
+      }
       if (this._envMapToDispose) {
         this._envMapToDispose.dispose()
         this._envMapToDispose = null
