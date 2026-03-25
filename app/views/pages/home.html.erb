@@ -37,7 +37,9 @@
         Коллекция масок в&nbsp;духе fantasy, horror, sci‑fi и&nbsp;cyberpunk.
         На&nbsp;странице товара — интерактивный 3D‑просмотр: вращай модель и&nbsp;рассмотри детали до&nbsp;заказа.
       </p>
-      <%= link_to products_path, class: "hero-cta" do %>
+      <%= link_to products_path,
+        class: "hero-cta",
+        data: { controller: "catalog-flash", action: "mouseenter->catalog-flash#flashOnce" } do %>
         В каталог
       <% end %>
     </div>
