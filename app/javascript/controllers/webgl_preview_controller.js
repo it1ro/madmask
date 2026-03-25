@@ -8,7 +8,15 @@ export default class extends Controller {
 
   async connect() {
     const url = (this.modelUrlValue || "").trim()
-    if (!url.length) return
+    if (!url.length) {
+      this.element.setAttribute("data-webgl-preview-state", "no-model")
+      // Не инициализируем Three.js, если у нас нет URL модели —
+      // показываем fallback, чтобы во второй панели не оставался один фон.
+      this.#removeOverlay()
+      this.#removeErrorPanel()
+      this.#renderNoModelFallback()
+      return
+    }
 
     try {
       await this.#initThree()
@@ -314,6 +322,34 @@ export default class extends Controller {
           <p class="text-xs text-[var(--color-text-secondary)]">
             WebGL недоступен в этом браузере. Показана статичная обложка.
           </p>
+        </div>
+      </div>
+    `
+  }
+
+  #renderNoModelFallback() {
+    const coverUrl = (this.coverImageUrlValue || "").trim()
+    if (!coverUrl.length) {
+      this.#renderStaticMessage(
+        "no-model",
+        "3D-модель не прикреплена. Нечего отображать.",
+        false
+      )
+      return
+    }
+
+    const absoluteCoverUrl = this.#resolveUrl(coverUrl)
+    this.element.innerHTML = `
+      <div class="relative h-full w-full">
+        <img
+          src="${absoluteCoverUrl}"
+          alt="Статичное изображение товара"
+          loading="eager"
+          class="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <div class="absolute inset-0 bg-[rgba(10,5,15,0.35)] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-center gap-1 border-t border-[var(--color-border)]/80 bg-[var(--color-bg-secondary)]/95 px-3 py-2 text-center backdrop-blur-sm">
+          <p class="text-xs text-[var(--color-text-secondary)]">Модель не найдена. Показана обложка.</p>
         </div>
       </div>
     `
