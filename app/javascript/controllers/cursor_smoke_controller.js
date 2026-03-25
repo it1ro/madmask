@@ -119,8 +119,14 @@ export default class extends Controller {
 
     const glowRgb = hexToRgb(glowHex) ?? { r: 183, g: 111, b: 224 } // fallback: #B76FE0
     const cyberRgb = hexToRgb(cyberGlowHex) ?? { r: 102, g: 252, b: 241 } // fallback: #66FCF1
+    // "Torch" palette derived from brand glow (kept warm-orange, not pure yellow).
+    const torchRgb = {
+      r: clamp(glowRgb.r + 75, 0, 255),
+      g: clamp(glowRgb.g + 30, 0, 255),
+      b: clamp(glowRgb.b - 160, 0, 255)
+    }
 
-    return { glowRgb, cyberRgb }
+    return { glowRgb, cyberRgb, torchRgb }
   }
 
   computePixelRatio() {
@@ -303,6 +309,13 @@ export default class extends Controller {
     const distance = Math.hypot(dx, dy)
     if (distance < 3 && this.particles.length > 0) return
 
+    const emitDirMag = distance > 0.0001 ? distance : 0.0001
+    const emitDirX = dx / emitDirMag
+    const emitDirY = dy / emitDirMag
+    // Torch strength based on how far the cursor moved since last emit.
+    // Keep it responsive even for medium movement, so the trail reads as "burning".
+    const torchStrength = clamp(distance / 18, 0, 1)
+
     this.lastX = cx
     this.lastY = cy
     this.mouseX = cx
@@ -326,6 +339,11 @@ export default class extends Controller {
       // Initial velocity (slight upward lift), then gravity takes over.
       driftY: (Math.random() - 0.5) * 0.6 - 0.12,
       gravityY: this.gravityBase * (0.95 + Math.random() * 0.9),
+      // Trail torch effect metadata (direction where the user "burns" the trace).
+      emitDirX,
+      emitDirY,
+      torchStrength,
+      torchSeed: Math.random()
     })
 
     this.start()
@@ -479,6 +497,37 @@ export default class extends Controller {
         this.ctx.arc(p.x, p.y, p.radius * this.coreRadiusMul, 0, Math.PI * 2)
         this.ctx.fillStyle = rgba(this.colors.cyberRgb, a * 0.85)
         this.ctx.fill()
+
+        // Torch-like streak along the emission direction (adds warm directional glow).
+        const torchStrength = p.torchStrength || 0
+        if (torchStrength > 0.02) {
+          const dirX = p.emitDirX ?? 0
+          const dirY = p.emitDirY ?? 0
+          const flicker =
+            0.78 + 0.22 * Math.sin((p.torchSeed ?? 0) * 80 + (1 - t) * 24)
+          const len = p.radius * (0.9 + torchStrength * 1.8)
+
+          const x1 = p.x - dirX * len
+          const y1 = p.y - dirY * len
+          const x2 = p.x + dirX * len * 0.18
+          const y2 = p.y + dirY * len * 0.18
+
+          this.ctx.save()
+          this.ctx.lineCap = "round"
+          this.ctx.lineWidth = Math.max(1, p.radius * (0.12 + torchStrength * 0.28))
+          this.ctx.strokeStyle = rgba(this.colors.torchRgb, a * 0.38 * torchStrength * flicker)
+          this.ctx.beginPath()
+          this.ctx.moveTo(x1, y1)
+          this.ctx.lineTo(x2, y2)
+          this.ctx.stroke()
+
+          // Hot tip accent near the current cursor position.
+          this.ctx.beginPath()
+          this.ctx.arc(p.x, p.y, p.radius * (0.22 + torchStrength * 0.12), 0, Math.PI * 2)
+          this.ctx.fillStyle = rgba(this.colors.torchRgb, a * 0.65 * torchStrength * flicker)
+          this.ctx.fill()
+          this.ctx.restore()
+        }
       }
     }
 
