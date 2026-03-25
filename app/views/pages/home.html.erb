@@ -1,4 +1,32 @@
-<%# Landing sections follow in 2b.3+. Layout: shared header/footer + design tokens (2b.2). %>
-<div class="flex min-h-[50vh] flex-col items-center justify-center py-16 text-center">
-  <p class="text-sm text-[var(--color-text-secondary)]">Madmask — главная (лендинг в разработке)</p>
+<%# Hero 2b.3 — further sections in 2b.4+ %>
+<div
+  class="relative w-screen max-w-[100vw] shrink-0 ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]"
+>
+  <section
+    class="hero-section flex min-h-[72vh] flex-col items-center justify-center px-4 py-16 text-center md:min-h-[80vh] md:px-8 md:py-24"
+    aria-labelledby="hero-heading"
+  >
+    <div class="hero-section__layers" aria-hidden="true">
+      <div class="hero-section__gradient-shift"></div>
+      <div class="hero-section__grid"></div>
+      <div class="hero-section__noise"></div>
+      <div class="hero-section__vignette"></div>
+    </div>
+
+    <div class="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-5 md:gap-7">
+      <h1
+        id="hero-heading"
+        class="hero-title text-4xl sm:text-5xl md:text-6xl"
+      >
+        Артефакты для&nbsp;образа
+      </h1>
+      <p class="hero-subtitle text-base md:text-lg">
+        Коллекция масок и&nbsp;украшений в&nbsp;духе fantasy, horror, sci‑fi и&nbsp;cyberpunk.
+        На&nbsp;странице товара — интерактивный 3D‑просмотр: вращай модель и&nbsp;рассмотри детали до&nbsp;заказа.
+      </p>
+      <%= link_to products_path, class: "hero-cta" do %>
+        В каталог
+      <% end %>
+    </div>
+  </section>
 </div>
