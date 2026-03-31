@@ -11,6 +11,12 @@
 | 8.7 `kamal setup` | готово к выполнению (команды в runbook) |
 | 8.8 `kamal deploy` | готово к выполнению (команды в runbook) |
 
+## Важные нюансы (исправлено/учтено)
+
+- Включён SSL-режим Rails для работы за `kamal-proxy` (`config.assume_ssl`, `config.force_ssl`), с исключением редиректа для healthcheck `/up`.
+- Исправлен workflow деплоя: `actions/checkout@v4` (вместо несуществующего `@v6`).
+- Права на volume для SQLite/Active Storage: контейнер в production работает от пользователя `rails` (uid 1000), поэтому директория на сервере должна быть доступна для записи uid=1000.
+
 ## Сделано в 8.1
 
 - Добавлен production `Dockerfile` (root) в многоступенчатом формате:
@@ -40,8 +46,8 @@
 - Установить Docker Engine и плагин Compose, убедиться что демон запущен.
 - Создать директорию под персистентные данные:
   - `sudo mkdir -p /var/lib/madmask/storage`
-  - `sudo chown -R root:root /var/lib/madmask`
-  - (опционально) выставить права под пользователя, от которого будет запускаться Docker/Kamal.
+  - `sudo chown -R 1000:1000 /var/lib/madmask/storage`
+  - (если нужен root-владелец каталога `/var/lib/madmask`, то права выставлять точечно, главное — чтобы `/var/lib/madmask/storage` был writable для uid=1000)
 - Проверить SSH-доступ ключом деплоя:
   - `ssh -i ~/.ssh/madmask_ed25519 root@77.105.168.30 "docker --version"`
 
