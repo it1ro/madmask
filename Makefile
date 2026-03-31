@@ -7,6 +7,7 @@ RUN_TAILWIND := $(COMPOSE) run --rm tailwind
 EXEC_WEB := $(COMPOSE) exec web
 KAMAL_SSH_ARGS := $(if $(SSH_AUTH_SOCK),-e SSH_AUTH_SOCK=/ssh-agent -v $(SSH_AUTH_SOCK):/ssh-agent,-v $$HOME/.ssh:/root/.ssh:ro)
 KAMAL_RUN := $(COMPOSE) run --rm --entrypoint bash -e KAMAL_REGISTRY_PASSWORD -e RAILS_MASTER_KEY $(KAMAL_SSH_ARGS) web -lc
+KAMAL_CMD := bundle check || bundle install && bin/kamal
 
 .PHONY: help up up-d down build logs bash shell rails console routes test lint \
 	db-prepare db-migrate db-rollback db-seed db-reset \
@@ -117,22 +118,22 @@ bundle-install:
 	$(RUN_WEB) bundle install
 
 kamal:
-	$(KAMAL_RUN) "bin/kamal $(ARGS)"
+	$(KAMAL_RUN) "$(KAMAL_CMD) $(ARGS)"
 
 kamal-setup:
-	$(KAMAL_RUN) "bin/kamal setup"
+	$(KAMAL_RUN) "$(KAMAL_CMD) setup"
 
 kamal-deploy:
-	$(KAMAL_RUN) "bin/kamal deploy"
+	$(KAMAL_RUN) "$(KAMAL_CMD) deploy"
 
 kamal-logs:
-	$(KAMAL_RUN) "bin/kamal logs"
+	$(KAMAL_RUN) "$(KAMAL_CMD) logs"
 
 kamal-console:
-	$(KAMAL_RUN) "bin/kamal console"
+	$(KAMAL_RUN) "$(KAMAL_CMD) console"
 
 kamal-shell:
-	$(KAMAL_RUN) "bin/kamal shell"
+	$(KAMAL_RUN) "$(KAMAL_CMD) shell"
 
 kamal-secrets-check:
-	@$(KAMAL_RUN) "bin/kamal secrets print | ruby -e 'STDIN.each_line { |line| k,v=line.split(\"=\",2); v=(v||\"\").strip; puts \"#{k}=<#{v.empty? ? \"empty\" : \"set\"}>\" }'"
+	@$(KAMAL_RUN) "$(KAMAL_CMD) secrets print | ruby -e 'STDIN.each_line { |line| k,v=line.split(\"=\",2); v=(v||\"\").strip; puts \"#{k}=<#{v.empty? ? \"empty\" : \"set\"}>\" }'"

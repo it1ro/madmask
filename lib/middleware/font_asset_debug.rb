@@ -44,7 +44,6 @@ class FontAssetDebug
       # Best-effort logging only
     end
 
-    [status, headers, body]
+    [ status, headers, body ]
   end
 end
-
