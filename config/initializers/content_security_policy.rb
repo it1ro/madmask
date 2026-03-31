@@ -12,13 +12,17 @@ Rails.application.configure do
     policy.frame_ancestors :self
 
     policy.script_src :self
-    policy.style_src :self, "https://fonts.googleapis.com"
-    policy.font_src :self, "https://fonts.gstatic.com", :data
+    # Turbo and some UI behaviors may apply `style=""` attributes at runtime.
+    # CSP nonces do not cover style attributes, so we allow inline styles.
+    policy.style_src :self, :unsafe_inline
+    policy.font_src :self, :data
     policy.img_src :self, :data, :blob
     policy.connect_src :self
   end
 
   config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }
-  config.content_security_policy_nonce_directives = %w(script-src style-src)
+  # Keep nonces for scripts; don't nonce style-src because it disables `unsafe-inline`
+  # for style attributes (and Turbo uses inline styles in a few places).
+  config.content_security_policy_nonce_directives = %w(script-src)
   config.content_security_policy_nonce_auto = true
 end
