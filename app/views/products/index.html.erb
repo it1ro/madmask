@@ -1,6 +1,10 @@
 <% content_for :title, "Каталог — Madmask" %>
 
-<section class="py-4 md:py-8" aria-labelledby="catalog-heading">
+<section
+  class="py-4 md:py-8"
+  aria-labelledby="catalog-heading"
+  data-controller="catalog-loading"
+>
   <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
     <div>
       <h1 id="catalog-heading" class="font-heading text-3xl font-semibold tracking-wide text-ink md:text-4xl">
@@ -65,7 +69,21 @@
       </div>
     </div>
 
-    <div id="products" class="flex flex-col gap-5">
+    <div
+      id="products"
+      class="relative flex flex-col gap-5"
+      data-catalog-loading-target="list"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 z-10 hidden items-center justify-center rounded-2xl bg-page/20 backdrop-blur-[1px]"
+        data-catalog-loading-target="indicator"
+        aria-hidden="true"
+      >
+        <div class="flex items-center gap-3 rounded-full border border-line bg-card/70 px-4 py-2 shadow-card">
+          <span class="h-4 w-4 animate-spin rounded-full border-2 border-ink-faint border-t-cyber motion-reduce:animate-none"></span>
+          <span class="font-ui text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted">Загрузка</span>
+        </div>
+      </div>
       <% if @products.any? %>
         <%= render partial: "products/product", collection: @products, as: :product %>
       <% else %>

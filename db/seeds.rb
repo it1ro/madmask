@@ -1,9 +1,24 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+require "bigdecimal"
+
+desired_count = 80
+existing_count = Product.count
+missing_count = [desired_count - existing_count, 0].max
+
+if missing_count.positive?
+  start_index = existing_count
+
+  missing_count.times do |i|
+    n = start_index + i + 1
+    category = Product::CATEGORIES[(n - 1) % Product::CATEGORIES.length]
+
+    Product.create!(
+      name: "Seed product ##{n}",
+      category: category,
+      price: BigDecimal((900 + (n * 37) % 8_000).to_s),
+      description:
+        "Seeded item for pagination and catalog UX checks. " \
+        "Category: #{category}. " \
+        "Index: #{n}."
+    )
+  end
+end
