@@ -33,8 +33,9 @@
   /* Bespoke / made-to-order — distinct warm gold */
   --color-category-custom: #c9a03d;
 
+  --font-anton: "Anton", sans-serif;
   --font-cinzel: "Source Serif 4", serif;
-  --font-orbitron: "Orbitron", sans-serif;
+  --font-orbitron: "Orbitron", ui-monospace, monospace;
   --font-inter: "Inter", system-ui, sans-serif;
   --font-jetbrains: "JetBrains Mono", ui-monospace, monospace;
 }
