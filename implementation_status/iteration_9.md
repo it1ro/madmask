@@ -11,6 +11,7 @@
 ## Где менялось
 
 - `app/views/layouts/application.html.erb` — Google Fonts без Anton (оставлены Inter/Orbitron).
+- `app/views/shared/_footer.html.erb` — в футере заменены ссылки на Instagram/X на VK.
 - `app/assets/stylesheets/0_madmask_design_tokens.css` — добавлен `--font-anton`, уточнён fallback для Orbitron.
 - `app/assets/tailwind/application.css` — `--font-heading` → Anton, uppercase для заголовков, Inter line-height/weight, Orbitron letter-spacing.
 - `app/assets/stylesheets/00_fonts.css` — `@font-face` для локального Anton (`app/assets/fonts/anton/Anton.otf` + fallback `Anton-Regular.ttf`).
