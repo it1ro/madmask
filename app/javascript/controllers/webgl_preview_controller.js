@@ -559,10 +559,11 @@ export default class extends Controller {
     const THREE = this.THREE
     if (!object || !THREE) return
 
-    // Boost env-map influence to make specular reflections more visible.
-    // Lighting stays neutral (procedural fallback + softened directional lights),
-    // so stronger IBL should not reintroduce the previous color cast.
-    const targetIntensity = 1.8
+    // Make the preview feel "glossier":
+    // - stronger IBL reflections (envMapIntensity)
+    // - lower roughness (sharper highlights)
+    // - optional clearcoat for physical materials (lacquer-like layer)
+    const targetIntensity = 2.6
     object.traverse((child) => {
       if (!child || !child.isMesh) return
 
@@ -572,10 +573,19 @@ export default class extends Controller {
         // Keep it narrow to PBR materials to avoid unexpected side effects.
         if (m.isMeshStandardMaterial || m.isMeshPhysicalMaterial) {
           m.envMapIntensity = targetIntensity
-          // Increase perceived gloss: slightly reduce roughness.
+          // Increase perceived gloss by reducing roughness.
           // Works for both scalar roughness and roughnessMap since Three.js multiplies them.
           if (typeof m.roughness === "number" && Number.isFinite(m.roughness)) {
-            m.roughness = Math.max(0.04, m.roughness * 0.82)
+            m.roughness = Math.max(0.02, m.roughness * 0.65)
+          }
+
+          if (m.isMeshPhysicalMaterial) {
+            // Clearcoat gives a strong "glossy" read even on darker/albedo-heavy assets.
+            if (typeof m.clearcoat === "number") m.clearcoat = Math.max(m.clearcoat || 0, 0.55)
+            if (typeof m.clearcoatRoughness === "number") m.clearcoatRoughness = Math.min(m.clearcoatRoughness || 0.2, 0.1)
+
+            // Slightly boost specular response when available (Three r152+).
+            if (typeof m.specularIntensity === "number") m.specularIntensity = Math.max(m.specularIntensity || 0, 0.65)
           }
           m.needsUpdate = true
         }

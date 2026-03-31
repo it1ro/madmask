@@ -17,6 +17,7 @@
 | Галерея JS | `product_gallery_controller.js` — миниатюры → главный кадр; lightbox по клику на главное фото (вариант до 2400px), стрелки (крупные hit-target) и клавиши ←/→, клик по увеличенному фото — следующий кадр; Escape и фон — закрытие; `data-product-gallery-slides-value` через `tag.div` |
 | Индикатор фото | В галерее показывается `N / total` в карточном режиме (над главным кадром) и в lightbox (сверху слева), обновляется при перелистывании |
 | WebGL | Оверлей спиннер + прогресс (`loader.load` onProgress); скрытие по готовности/fallback; панель ошибки + «Повторить»; `role="figure"` + `sr-only` описание рядом с `#canvas-container` |
+| Глянец в 3D-превью | `webgl_preview_controller.js`: усилены отражения (IBL) через `envMapIntensity`, снижена `roughness` для более резких бликов; для `MeshPhysicalMaterial` добавлен `clearcoat` (лаковый слой) и мягкий буст `specularIntensity` при наличии |
 | Правая колонка | `reveal-on-scroll` + `.product-show-info` / `--revealed` |
 
 ## Команды проверки
