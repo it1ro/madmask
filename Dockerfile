@@ -61,4 +61,4 @@ EXPOSE 3000
 
 ENV RAILS_LOG_TO_STDOUT=true
 
-CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+CMD ["sh", "-lc", "bin/rails db:prepare && exec bin/rails server -b 0.0.0.0 -p 3000"]
