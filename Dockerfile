@@ -1,38 +1,64 @@
-# Development image: Ruby 3.2, SQLite tooling, Bundler.
-# Node.js is omitted — Tailwind is provided by tailwindcss-rails (see OVERVIEW.md).
+## Production image (multi-stage) with asset precompilation.
+## Dev image lives in `Dockerfile.dev` and is used by docker-compose.
 
-FROM ruby:3.2-slim
+ARG RUBY_VERSION=3.3.10
+
+FROM ruby:${RUBY_VERSION}-slim AS base
+
+WORKDIR /rails
 
 ENV LANG=C.UTF-8 \
+    RAILS_ENV=production \
+    BUNDLE_DEPLOYMENT=1 \
     BUNDLE_PATH=/usr/local/bundle \
+    BUNDLE_WITHOUT=development:test \
     BUNDLE_JOBS=4 \
     BUNDLE_RETRY=3
 
-# libvips: required by ruby-vips / image_processing for Active Storage variants (resize_to_limit in views).
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+      libsqlite3-0 \
+      libvips42 \
+      libyaml-0-2 \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM base AS build
+
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       build-essential \
-      ca-certificates \
-      curl \
       git \
       libsqlite3-dev \
-      libvips42 \
+      libvips-dev \
       libyaml-dev \
       pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-# Ensure Bundler is available explicitly (base image may ship an older pin).
-RUN gem install bundler --no-document
+COPY Gemfile Gemfile.lock ./
+RUN bundle install && bundle exec bootsnap precompile --gemfile
 
-# Rails CLI for `rails new` inside the container before the app Gemfile exists (iteration 1).
-# Pinned to match RubyGems stable release (bump intentionally when upgrading the stack).
-RUN gem install rails --no-document -v "8.1.3"
+COPY . .
 
-WORKDIR /app
+RUN bundle exec bootsnap precompile app/ lib/
 
-COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Precompile assets without requiring credentials in the build context.
+RUN SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-# Shell keeps the container alive when no command is passed; compose will override.
-CMD ["bash"]
+FROM base
+
+RUN useradd --create-home --uid 1000 rails
+
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /rails /rails
+
+RUN chown -R rails:rails /rails
+
+USER rails
+
+EXPOSE 3000
+
+ENV RAILS_LOG_TO_STDOUT=true
+
+CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]

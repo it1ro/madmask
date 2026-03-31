@@ -9,6 +9,7 @@ services:
     build:
       context: .
       network: host
+      dockerfile: Dockerfile.dev
     network_mode: host
     working_dir: /app
     environment:
@@ -37,6 +38,7 @@ services:
     build:
       context: .
       network: host
+      dockerfile: Dockerfile.dev
     network_mode: host
     working_dir: /app
     environment:
