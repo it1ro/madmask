@@ -9,19 +9,24 @@ export default class extends Controller {
 
   connect() {
     this.boundBeforeCache = this.resetForCache.bind(this)
-    this.boundAnimate = this.animateIn.bind(this)
+    this.boundOnLoad = this.onTurboLoad.bind(this)
     document.addEventListener("turbo:before-cache", this.boundBeforeCache)
-    document.addEventListener("turbo:load", this.boundAnimate)
-    this.animateIn()
+    document.addEventListener("turbo:load", this.boundOnLoad)
+    this.onTurboLoad()
   }
 
   disconnect() {
     document.removeEventListener("turbo:before-cache", this.boundBeforeCache)
-    document.removeEventListener("turbo:load", this.boundAnimate)
+    document.removeEventListener("turbo:load", this.boundOnLoad)
   }
 
   resetForCache() {
     this.element.classList.remove(this.visibleClass)
+  }
+
+  onTurboLoad() {
+    this.sanitizeScrollLock()
+    this.animateIn()
   }
 
   animateIn() {
@@ -34,5 +39,24 @@ export default class extends Controller {
     requestAnimationFrame(() => {
       this.element.classList.add(this.visibleClass)
     })
+  }
+
+  sanitizeScrollLock() {
+    const body = document.body
+    if (!body?.classList?.contains("overflow-hidden")) return
+
+    const hasOpenOverlay = Boolean(
+      document.querySelector(
+        [
+          "dialog[open]",
+          ".product-gallery-lightbox:not(.hidden):not([hidden])",
+          '[role="dialog"][aria-modal="true"]:not(.hidden):not([hidden])'
+        ].join(",")
+      )
+    )
+
+    if (hasOpenOverlay) return
+
+    body.classList.remove("overflow-hidden")
   }
 }
