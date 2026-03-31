@@ -38,9 +38,9 @@ class Product < ApplicationRecord
   # Extra frames beyond the hero thumbnail (for "+N" badge on catalog cards).
   def gallery_extra_count
     if cover_image.attached?
-      gallery_images.count
-    elsif gallery_images.any?
-      gallery_images.count - 1
+      gallery_images.attachments.size
+    elsif gallery_images.attached?
+      gallery_images.attachments.size - 1
     else
       0
     end

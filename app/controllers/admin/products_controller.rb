@@ -3,7 +3,11 @@ module Admin
     before_action :set_product, only: %i[edit update destroy]
 
     def index
-      @products = Product.order(created_at: :desc)
+      @products = Product
+        .with_attached_cover_image
+        .with_attached_gallery_images
+        .with_attached_model_file
+        .order(created_at: :desc)
       @product = Product.new
     end
 
@@ -65,7 +69,11 @@ module Admin
     private
 
     def set_product
-      @product = Product.find(params[:id])
+      @product = Product
+        .with_attached_cover_image
+        .with_attached_gallery_images
+        .with_attached_model_file
+        .find(params[:id])
     end
 
     def purge_requested_gallery_images

@@ -2,7 +2,11 @@ class ProductsController < ApplicationController
   before_action :set_product, only: :show
 
   def index
-    @products = Product.order(created_at: :desc)
+    @products = Product
+      .with_attached_cover_image
+      .with_attached_gallery_images
+      .with_attached_model_file
+      .order(created_at: :desc)
     if params[:category].present? && Product::CATEGORIES.include?(params[:category])
       @products = @products.where(category: params[:category])
     end
@@ -17,6 +21,10 @@ class ProductsController < ApplicationController
   private
 
   def set_product
-    @product = Product.find(params[:id])
+    @product = Product
+      .with_attached_cover_image
+      .with_attached_gallery_images
+      .with_attached_model_file
+      .find(params[:id])
   end
 end
