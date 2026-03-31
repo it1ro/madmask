@@ -8,7 +8,8 @@ EXEC_WEB := $(COMPOSE) exec web
 
 .PHONY: help up up-d down build logs bash shell rails console routes test lint \
 	db-prepare db-migrate db-rollback db-seed db-reset \
-	tailwind-build tailwind-watch bundle-install setup ci exec-bash
+	tailwind-build tailwind-watch bundle-install setup ci exec-bash \
+	kamal kamal-setup kamal-deploy kamal-logs kamal-console kamal-shell
 
 help:
 	@echo "Madmask — команды через Docker (сервис web; см. docker-compose.yml):"
@@ -37,6 +38,14 @@ help:
 	@echo "  make tailwind-watch   — watch в одноразовом контейнере tailwind"
 	@echo ""
 	@echo "  make bundle-install  — bundle install в контейнере web"
+	@echo ""
+	@echo "Deploy (Kamal, запускается на хосте):"
+	@echo "  make kamal ARGS=\"…\"     — произвольно, напр. ARGS=\"deploy\""
+	@echo "  make kamal-setup        — первичная настройка сервера (kamal setup)"
+	@echo "  make kamal-deploy       — деплой (kamal deploy)"
+	@echo "  make kamal-logs         — tail логов"
+	@echo "  make kamal-console      — Rails console в проде"
+	@echo "  make kamal-shell        — shell в прод-контейнере"
 
 up:
 	$(COMPOSE) up
@@ -103,3 +112,21 @@ tailwind-watch:
 
 bundle-install:
 	$(RUN_WEB) bundle install
+
+kamal:
+	bin/kamal $(ARGS)
+
+kamal-setup:
+	bin/kamal setup
+
+kamal-deploy:
+	bin/kamal deploy
+
+kamal-logs:
+	bin/kamal logs
+
+kamal-console:
+	bin/kamal console
+
+kamal-shell:
+	bin/kamal shell

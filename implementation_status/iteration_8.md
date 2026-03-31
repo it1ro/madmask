@@ -6,10 +6,10 @@
 | 8.2 `.dockerignore` | выполнено (проверено и уточнено) |
 | 8.3 Установка Kamal | выполнено (gem в `Gemfile`, binstub `bin/kamal`) |
 | 8.4 `kamal init` | выполнено (`config/deploy.yml`, `.kamal/` присутствуют) |
-| 8.5 Правки `config/deploy.yml` | выполнено (сервер `77.105.168.30`, домен `madmask.ilmir.tech`) |
-| 8.6 Подготовка сервера (Docker/SSH) | не начато |
-| 8.7 `kamal setup` | не начато |
-| 8.8 `kamal deploy` | не начато |
+| 8.5 Правки `config/deploy.yml` | выполнено (сервер `77.105.168.30`, домен `madmask.ilmir.tech`, SSH key `~/.ssh/madmask_ed25519`, registry `ghcr.io/it1ro/madmask`, volume `/var/lib/madmask/storage`) |
+| 8.6 Подготовка сервера (Docker/SSH) | готово (runbook + команды) |
+| 8.7 `kamal setup` | готово к выполнению (команды в runbook) |
+| 8.8 `kamal deploy` | готово к выполнению (команды в runbook) |
 
 ## Сделано в 8.1
 
@@ -23,4 +23,35 @@
 - `.dockerignore` обновлён: добавлены `storage/` и SQLite-файлы из `db/`, убран слишком широкий игнор `*.md` (чтобы не выкидывать `README.md` из build context).
 - Kamal подтверждён в проекте: `gem "kamal"` в `Gemfile`, версия присутствует в `Gemfile.lock`, binstub `bin/kamal` на месте.
 - `kamal init` уже выполнен ранее: есть `config/deploy.yml` и `.kamal/`.
+
+## Runbook (8.6–8.8)
+
+### 0) Локально: подготовить секреты и доступ к GHCR
+
+- Экспортировать токен GHCR (нужен `write:packages`):
+  - `export KAMAL_REGISTRY_PASSWORD="***"`
+- Убедиться, что `config/master.key` присутствует локально (он используется для `RAILS_MASTER_KEY` через `.kamal/secrets`).
+
+### 1) Сервер: подготовка (один раз)
+
+- Установить Docker Engine и плагин Compose, убедиться что демон запущен.
+- Создать директорию под персистентные данные:
+  - `sudo mkdir -p /var/lib/madmask/storage`
+  - `sudo chown -R root:root /var/lib/madmask`
+  - (опционально) выставить права под пользователя, от которого будет запускаться Docker/Kamal.
+- Проверить SSH-доступ ключом деплоя:
+  - `ssh -i ~/.ssh/madmask_ed25519 root@77.105.168.30 "docker --version"`
+
+### 2) Первый setup
+
+- `make kamal-setup`
+
+### 3) Деплой
+
+- `make kamal-deploy`
+
+### 4) Проверки после деплоя
+
+- Логи: `make kamal-logs`
+- Консоль: `make kamal-console`
 
