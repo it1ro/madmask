@@ -7,13 +7,13 @@ pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 
 # Three.js (same version for core + JSM addons; dynamic import from webgl_preview only on product show)
-pin "three", to: "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+pin "three", to: "three/build/three.module.js"
 pin "three/addons/controls/OrbitControls.js",
-  to: "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js"
+  to: "three/addons/controls/OrbitControls.js"
 pin "three/addons/loaders/GLTFLoader.js",
-  to: "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js"
+  to: "three/addons/loaders/GLTFLoader.js"
 pin "three/addons/loaders/RGBELoader.js",
-  to: "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/RGBELoader.js"
+  to: "three/addons/loaders/RGBELoader.js"
 
 pin "three/addons/lights/LightProbeGenerator.js",
-  to: "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/lights/LightProbeGenerator.js"
+  to: "three/addons/lights/LightProbeGenerator.js"
