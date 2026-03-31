@@ -61,4 +61,7 @@ EXPOSE 3000
 
 ENV RAILS_LOG_TO_STDOUT=true
 
+HEALTHCHECK --interval=5s --timeout=3s --start-period=20s --retries=12 \
+  CMD curl -fsS "http://127.0.0.1:3000/up" || exit 1
+
 CMD ["sh", "-lc", "bin/rails db:prepare && exec bin/rails server -b 0.0.0.0 -p 3000"]

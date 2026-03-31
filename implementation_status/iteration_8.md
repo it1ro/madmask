@@ -14,6 +14,8 @@
 ## Важные нюансы (исправлено/учтено)
 
 - Включён SSL-режим Rails для работы за `kamal-proxy` (`config.assume_ssl`, `config.force_ssl`), с исключением редиректа для healthcheck `/up`.
+- Исправлен порт приложения для прокси: добавлен `proxy.app_port: 3000` в `config/deploy.yml`, т.к. Puma слушает `3000`, а kamal-proxy по умолчанию ожидает `80`.
+- Добавлен `HEALTHCHECK` в production `Dockerfile` (проверка `GET /up` на `127.0.0.1:3000`), чтобы Kamal мог дождаться статуса `healthy` и не падал с `Health=null`.
 - Исправлен workflow деплоя: `actions/checkout@v4` (вместо несуществующего `@v6`).
 - Права на volume для SQLite/Active Storage: контейнер в production работает от пользователя `rails` (uid 1000), поэтому директория на сервере должна быть доступна для записи uid=1000. Добавлен хук `.kamal/hooks/pre-app-boot`, который перед стартом контейнера создаёт `/var/lib/madmask/storage` и выставляет владельца `1000:1000`.
 - Локальный запуск `kamal` из dev-контейнера: добавлен временный `git safe.directory` для `/app/.git`, чтобы обойти `fatal: detected dubious ownership` без записи в глобальный git config.
