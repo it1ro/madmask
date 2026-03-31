@@ -6,6 +6,7 @@
 |-----------|--------|-------------|
 | 7.6.1 Информационная архитектура каталога (счётчик, микротекст, явный “Сбросить”) | выполнено | `app/controllers/products_controller.rb`, `app/views/products/index.html.erb` |
 | 7.6.2 Перформанс индекса (не подтягивать тяжёлые Active Storage вложения, убрать N+1) | выполнено | `app/controllers/products_controller.rb`, `app/views/products/_product.html.erb` |
+| 7.6.3 Карточка товара в списке (тач‑цели ≥44px, кликабельная обложка, сигнал “3D доступно”) | выполнено | `app/views/products/_product.html.erb` |
 
 ## Примечание
 
