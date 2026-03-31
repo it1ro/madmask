@@ -5,7 +5,6 @@ class HomePageTest < ApplicationSystemTestCase
     visit root_path
 
     assert_text "Артефакты"
-    assert_link "В каталог"
+    assert_link("В каталог")
   end
 end
-
