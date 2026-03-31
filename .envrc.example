@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Local-only secrets for running Kamal from your shell (use direnv).
+# Copy to .envrc and replace the placeholders.
+#
+# Never commit .envrc (it is gitignored).
+
+export KAMAL_REGISTRY_PASSWORD="***"
+export RAILS_MASTER_KEY="***"

@@ -33,6 +33,8 @@
 - Экспортировать master key Rails (никогда не коммитить `config/master.key`):
   - `export RAILS_MASTER_KEY="***"`
 
+Опционально (удобнее): использовать `direnv` и локальный `.envrc` (см. `.envrc.example`).
+
 ### 1) Сервер: подготовка (один раз)
 
 - Установить Docker Engine и плагин Compose, убедиться что демон запущен.

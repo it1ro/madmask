@@ -9,6 +9,9 @@
 
 # Ignore all environment files.
 /.env*
+/.envrc
+/.envrc.local
+!/.envrc.example
 
 # Ignore all logfiles and tempfiles.
 /log/*

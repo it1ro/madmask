@@ -5,11 +5,12 @@ COMPOSE ?= docker compose
 RUN_WEB := $(COMPOSE) run --rm web
 RUN_TAILWIND := $(COMPOSE) run --rm tailwind
 EXEC_WEB := $(COMPOSE) exec web
+KAMAL_RUN := $(COMPOSE) run --rm --entrypoint bash -e KAMAL_REGISTRY_PASSWORD -e RAILS_MASTER_KEY -v $$HOME/.ssh:/root/.ssh:ro web -lc
 
 .PHONY: help up up-d down build logs bash shell rails console routes test lint \
 	db-prepare db-migrate db-rollback db-seed db-reset \
 	tailwind-build tailwind-watch bundle-install setup ci exec-bash \
-	kamal kamal-setup kamal-deploy kamal-logs kamal-console kamal-shell
+	kamal kamal-setup kamal-deploy kamal-logs kamal-console kamal-shell kamal-secrets-check
 
 help:
 	@echo "Madmask — команды через Docker (сервис web; см. docker-compose.yml):"
@@ -39,13 +40,14 @@ help:
 	@echo ""
 	@echo "  make bundle-install  — bundle install в контейнере web"
 	@echo ""
-	@echo "Deploy (Kamal, запускается на хосте):"
+	@echo "Deploy (Kamal, запускается в dev-контейнере):"
 	@echo "  make kamal ARGS=\"…\"     — произвольно, напр. ARGS=\"deploy\""
 	@echo "  make kamal-setup        — первичная настройка сервера (kamal setup)"
 	@echo "  make kamal-deploy       — деплой (kamal deploy)"
 	@echo "  make kamal-logs         — tail логов"
 	@echo "  make kamal-console      — Rails console в проде"
 	@echo "  make kamal-shell        — shell в прод-контейнере"
+	@echo "  make kamal-secrets-check — проверить, что секреты подхватываются (без вывода значений)"
 
 up:
 	$(COMPOSE) up
@@ -114,19 +116,22 @@ bundle-install:
 	$(RUN_WEB) bundle install
 
 kamal:
-	bin/kamal $(ARGS)
+	$(KAMAL_RUN) "bin/kamal $(ARGS)"
 
 kamal-setup:
-	bin/kamal setup
+	$(KAMAL_RUN) "bin/kamal setup"
 
 kamal-deploy:
-	bin/kamal deploy
+	$(KAMAL_RUN) "bin/kamal deploy"
 
 kamal-logs:
-	bin/kamal logs
+	$(KAMAL_RUN) "bin/kamal logs"
 
 kamal-console:
-	bin/kamal console
+	$(KAMAL_RUN) "bin/kamal console"
 
 kamal-shell:
-	bin/kamal shell
+	$(KAMAL_RUN) "bin/kamal shell"
+
+kamal-secrets-check:
+	@$(KAMAL_RUN) "bin/kamal secrets print | ruby -e 'STDIN.each_line { |line| k,v=line.split(\"=\",2); v=(v||\"\").strip; puts \"#{k}=<#{v.empty? ? \"empty\" : \"set\"}>\" }'"
