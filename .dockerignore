@@ -1,0 +1,32 @@
+.git
+.gitignore
+
+# Editor / OS / misc
+.DS_Store
+.idea
+.vscode
+
+# App runtime noise
+log
+tmp
+
+# Local secrets / env
+.env
+.env.*
+config/master.key
+
+# Bundler caches (we install gems in image)
+vendor/bundle
+
+# Frontend / node (not used, but ignore if present)
+node_modules
+yarn-error.log
+npm-debug.log
+
+# Docker/Kamal local state
+.kamal
+
+# Project docs / internal planning
+implementation_status
+agent-transcripts
+*.md

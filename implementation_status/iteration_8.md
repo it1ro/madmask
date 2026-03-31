@@ -3,7 +3,7 @@
 | Подзадача | Статус |
 |-----------|--------|
 | 8.1 Production Dockerfile (multi-stage + assets precompile) | выполнено |
-| 8.2 `.dockerignore` | не начато |
+| 8.2 `.dockerignore` | выполнено |
 | 8.3 Установка Kamal | уже есть в проекте |
 | 8.4 `kamal init` | уже есть в проекте |
 | 8.5 Правки `config/deploy.yml` | уже есть в проекте (требует конкретизации под сервер) |
