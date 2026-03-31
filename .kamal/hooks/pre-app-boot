@@ -1,0 +1,32 @@
+#!/bin/sh
+set -eu
+
+STORAGE_DIR="/var/lib/madmask/storage"
+TARGET_UID="1000"
+TARGET_GID="1000"
+
+ensure_storage_dir() {
+  host="$1"
+  ssh_host="$host"
+
+  case "$ssh_host" in
+    *@*) ;;
+    *) ssh_host="root@$ssh_host" ;;
+  esac
+
+  ssh -o BatchMode=yes "$ssh_host" sh -lc "set -eu
+    if command -v sudo >/dev/null 2>&1; then
+      sudo mkdir -p '$STORAGE_DIR'
+      sudo chown -R '$TARGET_UID:$TARGET_GID' '$STORAGE_DIR'
+    else
+      mkdir -p '$STORAGE_DIR'
+      chown -R '$TARGET_UID:$TARGET_GID' '$STORAGE_DIR'
+    fi
+  "
+}
+
+IFS=','; set -- $KAMAL_HOSTS; IFS=' '
+for host in "$@"; do
+  ensure_storage_dir "$host"
+done
+
