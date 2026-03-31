@@ -63,7 +63,7 @@ Rails.application.configure do
   config.assets.quiet = true
 
   # Debug missing font assets (/assets/fonts/*.woff2)
-  config.middleware.use FontAssetDebug
+  config.middleware.use Middleware::FontAssetDebug
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
