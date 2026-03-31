@@ -16,6 +16,8 @@
 - Включён SSL-режим Rails для работы за `kamal-proxy` (`config.assume_ssl`, `config.force_ssl`), с исключением редиректа для healthcheck `/up`.
 - Исправлен workflow деплоя: `actions/checkout@v4` (вместо несуществующего `@v6`).
 - Права на volume для SQLite/Active Storage: контейнер в production работает от пользователя `rails` (uid 1000), поэтому директория на сервере должна быть доступна для записи uid=1000.
+- Локальный запуск `kamal` из dev-контейнера: добавлен временный `git safe.directory` для `/app/.git`, чтобы обойти `fatal: detected dubious ownership` без записи в глобальный git config.
+- GHCR: при ошибке `denied: denied` нужно проверить PAT для `it1ro` (scopes `write:packages` + `read:packages`, и `repo` если репозиторий приватный) и соответствие `registry.username` в `config/deploy.yml`.
 
 ## Сделано в 8.1
 
