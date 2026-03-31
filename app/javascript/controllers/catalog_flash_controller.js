@@ -65,7 +65,8 @@ export default class extends Controller {
 
     if (this.prefersReducedMotion()) return
 
-    const durationMs = 1280
+    // Slightly longer + stronger vibration feels more "energetic" on the initial flash.
+    const durationMs = 1400
     this.startVibration(durationMs)
     this.runBurst(durationMs)
   }
@@ -269,17 +270,26 @@ export default class extends Controller {
 
       // Decaying amplitude: quick at start, fades out smoothly.
       const decay = 1 - t
-      const amp = 7 * decay * decay
+      // More amplitude and a slower decay curve so it "hits" harder.
+      const amp = 12 * Math.pow(decay, 1.35)
 
       const w = t * Math.PI * 2
-      const tx = Math.sin(w * 6.5) * amp * 0.75
-      const ty = Math.cos(w * 5.5) * amp * 0.45
-      const rotDeg = Math.sin(w * 4.7) * amp * 0.08
+      // Higher oscillation frequency for "energetic" feel.
+      const tx = Math.sin(w * 8.2) * amp * 1.05
+      const ty = Math.cos(w * 6.4) * amp * 0.8
+      const rotDeg = Math.sin(w * 5.1) * amp * 0.14
+
+      // Extra "kick" right at the beginning of the flash.
+      const kick = clamp(1 - t / 0.16, 0, 1)
 
       // Slight brightness pump to make the effect feel "magic".
-      const brightness = 1.08 + 0.2 * decay
-      el.style.filter = `brightness(${brightness})`
-      el.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) rotate(${rotDeg.toFixed(2)}deg)`
+      const brightness = 1.12 + 0.32 * decay + 0.38 * kick
+      const scale = 1 + 0.06 * decay + 0.1 * kick
+
+      el.style.filter = `brightness(${brightness.toFixed(3)})`
+      el.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) rotate(${rotDeg.toFixed(
+        2
+      )}deg) scale(${scale.toFixed(3)})`
 
       this.vibrationRafId = window.requestAnimationFrame(frame)
     }

@@ -12,7 +12,7 @@
 | Админка | Формы, списки, new/edit — `border-line`, `bg-card` / `bg-panel`, кнопки с `font-ui`, фокус `outline-glow` |
 | WebGL спиннер | Уже был (`.webgl-preview__*`); без изменений по сути |
 | Курсор-дым (landing `/`) | Реализован: overlay `canvas` + particles через Stimulus `cursor_smoke_controller`, добавлены гравитация и искры при резком торможении (по deceleration), `prefers-reduced-motion` отключает эффект; исправлена вёрстка слоёв (canvas ниже шапки/hero) |
-| One-shot canvas-вспышка на hero CTA | Добавлена: при первом `mouseenter` для CTA «В каталог», эффект только один раз на вкладку (через `sessionStorage`), поверх шапки (отдельный временный canvas) |
+| One-shot canvas-вспышка на hero CTA | Добавлена: при первом `mouseenter` для CTA «В каталог», эффект только один раз на вкладку (через `sessionStorage`), поверх шапки (отдельный временный canvas). Вибрация кнопки усилена: больше амплитуда/энергия в стартовой фазе. |
 
 ## Связанная работа (другая тема)
 
