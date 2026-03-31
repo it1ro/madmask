@@ -14,12 +14,19 @@
   </div>
 
   <div class="mt-10">
-    <h2 class="font-heading mb-4 text-lg font-semibold tracking-wide text-ink">
-      Все товары
-    </h2>
+    <div class="mb-4 flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+      <h2 class="font-heading text-lg font-semibold tracking-wide text-ink">
+        Все товары
+      </h2>
+      <p class="font-ui text-xs uppercase tracking-wide text-ink-muted">
+        <%= @results_count %> <%= russian_plural(@results_count, "товар", "товара", "товаров") %>
+        <% if @current_category.present? %>
+          <span class="text-ink-faint">·</span>
+          <span>жанр: <%= product_category_label(@current_category) %></span>
+        <% end %>
+      </p>
+    </div>
 
-    <% current_category = params[:category].presence %>
-    <% current_category = nil unless current_category && Product::CATEGORIES.include?(current_category) %>
     <% chip_inactive_classes =
       "inline-flex items-center justify-center rounded-full border border-line bg-card/40 px-4 py-2 font-ui text-xs font-medium uppercase tracking-wide text-ink-muted transition hover:scale-[1.02] hover:bg-card/60 hover:border-glow hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 active:scale-[0.98] motion-reduce:active:scale-100 motion-reduce:transform-none motion-reduce:transition-none" %>
     <% chip_active_classes =
@@ -27,20 +34,32 @@
 
     <div class="mb-8" role="group" aria-label="Фильтры по жанру">
       <div class="flex flex-wrap items-center gap-3">
-        <span class="font-ui text-xs uppercase tracking-wide text-ink-muted">
-          Жанры
-        </span>
+        <div class="flex flex-col gap-1">
+          <span class="font-ui text-xs uppercase tracking-wide text-ink-muted">
+            Жанры
+          </span>
+          <span class="text-xs text-ink-faint">
+            Выберите жанр, чтобы сузить каталог.
+          </span>
+        </div>
         <div class="flex flex-wrap gap-2">
           <%= link_to "Все",
             products_path,
-            class: (current_category.blank? ? chip_active_classes : chip_inactive_classes),
-            aria: { current: (current_category.blank? ? "page" : nil) } %>
+            class: (@current_category.blank? ? chip_active_classes : chip_inactive_classes),
+            aria: { current: (@current_category.blank? ? "page" : nil) } %>
 
           <% Product::CATEGORIES.each do |category| %>
             <%= link_to product_category_label(category),
               products_path(category: category),
-              class: (current_category == category ? chip_active_classes : chip_inactive_classes),
-              aria: { current: (current_category == category ? "page" : nil) } %>
+              class: (@current_category == category ? chip_active_classes : chip_inactive_classes),
+              aria: { current: (@current_category == category ? "page" : nil) } %>
+          <% end %>
+
+          <% if @current_category.present? %>
+            <%= link_to "Сбросить",
+              products_path,
+              class: chip_inactive_classes,
+              aria: { label: "Сбросить фильтр по жанру" } %>
           <% end %>
         </div>
       </div>
