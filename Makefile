@@ -10,7 +10,7 @@ export KAMAL_REGISTRY_PASSWORD
 KAMAL_SSH_ARGS := $(if $(SSH_AUTH_SOCK),-e SSH_AUTH_SOCK=/ssh-agent -v $(SSH_AUTH_SOCK):/ssh-agent,-v $$HOME/.ssh:/root/.ssh:ro)
 # Git 2.35+ blocks operations on repos with "dubious ownership" (common when the repo is bind-mounted).
 # We do NOT persist any git config; we only set safe.directory for this process.
-KAMAL_GIT_SAFE_ARGS := -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/app/.git
+KAMAL_GIT_SAFE_ARGS := -e GIT_CONFIG_COUNT=2 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/app -e GIT_CONFIG_KEY_1=safe.directory -e GIT_CONFIG_VALUE_1=/app/.git
 KAMAL_RUN := $(COMPOSE) run --rm --entrypoint bash -e KAMAL_REGISTRY_PASSWORD -e RAILS_MASTER_KEY $(KAMAL_GIT_SAFE_ARGS) $(KAMAL_SSH_ARGS) web -lc
 KAMAL_CMD := bundle check || bundle install && bin/kamal
 
