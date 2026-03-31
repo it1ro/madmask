@@ -16,6 +16,12 @@
 - `app/assets/tailwind/application.css` — `--font-heading` → Anton, uppercase для заголовков, Inter line-height/weight, Orbitron letter-spacing.
 - `app/assets/stylesheets/00_fonts.css` — `@font-face` для локального Anton (`app/assets/fonts/anton/Anton.otf` + fallback `Anton-Regular.ttf`).
 
+## Обновление: единый шрифт Cascadia Code
+
+- `app/views/layouts/application.html.erb` — убраны подключения Google Fonts (Inter/Orbitron).
+- `app/assets/stylesheets/00_fonts.css` — добавлен self-hosted `@font-face` для Cascadia Code (latin/cyrillic, normal/italic).
+- `app/assets/stylesheets/0_madmask_design_tokens.css` — все `--font-*` сведены к единому стеку Cascadia Code.
+
 ## Примечание по плану
 
 - В актуальном `IMPLEMENTATION_PLAN.md` «Итерация 9» соответствует типографике; бэкапы SQLite и мониторинг вынесены в «Итерацию 9.5» (опционально).
