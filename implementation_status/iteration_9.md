@@ -15,3 +15,7 @@
 - `app/assets/tailwind/application.css` — `--font-heading` → Anton, uppercase для заголовков, Inter line-height/weight, Orbitron letter-spacing.
 - `app/assets/stylesheets/00_fonts.css` — `@font-face` для локального Anton (`app/assets/fonts/anton/Anton.otf` + fallback `Anton-Regular.ttf`).
 
+## Примечание по плану
+
+- В актуальном `IMPLEMENTATION_PLAN.md` «Итерация 9» соответствует типографике; бэкапы SQLite и мониторинг вынесены в «Итерацию 9.5» (опционально).
+

@@ -3,6 +3,7 @@
 | Подзадача | Статус |
 |-----------|--------|
 | 8.5.1 Секреты и ключи (критично) | выполнено (локальные секреты удалены из рабочего дерева; gitignore покрывает ключи/окружение) |
+| 8.5.6 Документация и статус итераций | выполнено (актуализирован `IMPLEMENTATION_PLAN.md`; Solid* конфиги отмечены как стандартные для Rails 8; `implementation_status/*` согласованы с фактами репозитория) |
 | 8.5.5 Производительность и масштабируемость | выполнено (добавлен preload Active Storage для `products#index/#show` и admin списка; включён WAL для SQLite в production; индексы `products(category)`, `products(created_at)` гарантируются на boot для primary DB) |
 | 8.5.4 Безопасность зависимостей и CI | выполнено (CI прогоняет brakeman/bundler-audit/importmap audit/rubocop/тесты; `bin/bundler-audit` по умолчанию делает `check --update`; `config/bundler-audit.yml` без фиктивных CVE и с правилами осознанных игноров) |
 | 8.5.3 CSP и базовые security headers | выполнено (включён CSP с nonce для importmap, разрешены Google Fonts; в `production` ограничены `config.hosts` и настроен `host_authorization` с исключением `/up`; расширен `filter_parameters`) |
@@ -12,4 +13,10 @@
 - `.gitignore` уже содержит игнор `/.env*`, `/.envrc` и `/config/*.key` (включая `config/master.key`).
 - `config/master.key` в рабочем дереве существует, но **не отслеживается** git.
 - Локальный `.envrc` (с реальными `KAMAL_REGISTRY_PASSWORD` и `RAILS_MASTER_KEY`) удалён из рабочего дерева; используйте `.envrc.example` как шаблон.
+
+## Пояснение по Solid* конфигам (Rails 8)
+
+- `config/cache.yml`: настройки Solid Cache (в production — отдельная SQLite DB `cache`).
+- `config/queue.yml`: настройки Solid Queue (воркеры/пуллинг/конкурентность).
+- `config/recurring.yml`: расписания recurring jobs для Solid Queue.
 

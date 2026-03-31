@@ -119,10 +119,10 @@
 **Цель:** Подключить Three.js и OrbitControls на страницу товара.
 
 **Подзадачи:**
-1. В `app/views/layouts/application.html.erb` добавить скрипты Three.js и OrbitControls из CDN (например, https://cdn.skypack.dev/three и https://cdn.skypack.dev/three/examples/jsm/controls/OrbitControls.js).
-2. Убедиться, что глобальный объект `THREE` доступен в консоли.
-3. Создать на странице `show.html.erb` контейнер для canvas: `data-webgl-preview-model-url-value` из `effective_model_url` (URL блоба вложенного GLB при наличии).
-4. Проверить, что контейнер отображается.
+1. В `app/views/layouts/application.html.erb` подключить Three.js и OrbitControls **как ES modules**, зафиксировав версии через **importmap** (например, jsDelivr) и загрузку через `type="module"`.
+2. Убедиться, что на странице товара доступны `THREE` и `OrbitControls` (для отладки можно временно выставить в `window.*`).
+3. Создать на странице `products#show` контейнер для canvas: `data-webgl-preview-model-url-value` из `effective_model_url` (URL блоба вложенного GLB при наличии).
+4. Проверить, что контейнер отображается, а скрипты не грузятся на других страницах (лендинг/каталог).
 
 ---
 
@@ -245,15 +245,28 @@
    - Подтвердить настройки SQLite для production (WAL, volume, бэкапы) с учётом Solid Cache/Queue/Cable отдельных файлов БД.
 
 6. **Документация и статус итераций**
-   - Обновить `IMPLEMENTATION_PLAN.md`: убрать устаревшие пункты (например, Three.js «через CDN», если по факту importmap+vendor), добавить эту итерацию как обязательную.
+   - Обновить `IMPLEMENTATION_PLAN.md`: убрать устаревшие пункты (например, Three.js «через CDN», если по факту importmap), добавить эту итерацию как обязательную.
    - Сверить и привести в соответствие `implementation_status/*` с фактическими файлами в репозитории (без противоречий).
-   - Добавить пояснение, что `config/cache.yml`, `config/queue.yml`, `config/recurring.yml` — стандартные конфиги Solid* (Rails 8), а не «странные» файлы.
+   - Добавить пояснение, что `config/cache.yml`, `config/queue.yml`, `config/recurring.yml` — стандартные конфиги Solid* (Rails 8: Solid Cache / Solid Queue / recurring jobs), а не «странные» файлы.
 
 ---
 
-### Итерация 9: Бэкапы SQLite и мониторинг (опционально)
+### Итерация 9: Типографика (Anton / Inter / Orbitron)
 
-**Цель:** Обеспечить автоматическое резервное копирование базы данных.
+**Цель:** Привести типографику к дизайн‑системе: выразительные заголовки, читаемый основной текст, «техно»-акценты, при этом Anton — локально (self-hosted) для контроля и стабильности.
+
+**Подзадачи:**
+1. Подключить Google Fonts для `Inter` и `Orbitron`, а `Anton` — **self-hosted** (через `@font-face`).
+2. Заголовки `h1–h3` и ключевые секции перевести на Anton (через `font-heading`) и uppercase.
+3. Основной текст перевести на Inter (целевой `line-height` около 1.5, веса 400/500/600/700 по необходимости).
+4. Бейджи/фильтры/«tech»-акценты перевести на Orbitron (через `font-ui`) и настроить tracking.
+5. Зафиксировать локальный шрифт Anton (`Anton-Regular.ttf` v2.3+ или эквивалент) и пути в ассетах.
+
+---
+
+### Итерация 9.5: Бэкапы SQLite и мониторинг (опционально)
+
+**Цель:** Обеспечить автоматическое резервное копирование базы данных и базовый мониторинг.
 
 **Подзадачи:**
 1. Настроить Litestream для репликации SQLite в S3-совместимое хранилище (например, AWS S3 или Hetzner Storage Box).
