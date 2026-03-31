@@ -30,7 +30,8 @@
 
 - Экспортировать токен GHCR (нужен `write:packages`):
   - `export KAMAL_REGISTRY_PASSWORD="***"`
-- Убедиться, что `config/master.key` присутствует локально (он используется для `RAILS_MASTER_KEY` через `.kamal/secrets`).
+- Экспортировать master key Rails (никогда не коммитить `config/master.key`):
+  - `export RAILS_MASTER_KEY="***"`
 
 ### 1) Сервер: подготовка (один раз)
 
