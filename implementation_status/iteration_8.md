@@ -58,3 +58,11 @@
 - Логи: `make kamal-logs`
 - Консоль: `make kamal-console`
 
+### 5) CI деплой (GitHub Actions)
+
+- Добавить secrets в GitHub Environment `production`:
+  - `KAMAL_REGISTRY_PASSWORD` (GHCR token с `write:packages`)
+  - `RAILS_MASTER_KEY`
+  - `SSH_PRIVATE_KEY` (ключ для доступа к серверу)
+- Workflow: `.github/workflows/deploy.yml` (запуск вручную или при push в `main`)
+

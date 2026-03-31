@@ -5,7 +5,8 @@ COMPOSE ?= docker compose
 RUN_WEB := $(COMPOSE) run --rm web
 RUN_TAILWIND := $(COMPOSE) run --rm tailwind
 EXEC_WEB := $(COMPOSE) exec web
-KAMAL_RUN := $(COMPOSE) run --rm --entrypoint bash -e KAMAL_REGISTRY_PASSWORD -e RAILS_MASTER_KEY -v $$HOME/.ssh:/root/.ssh:ro web -lc
+KAMAL_SSH_ARGS := $(if $(SSH_AUTH_SOCK),-e SSH_AUTH_SOCK=/ssh-agent -v $(SSH_AUTH_SOCK):/ssh-agent,-v $$HOME/.ssh:/root/.ssh:ro)
+KAMAL_RUN := $(COMPOSE) run --rm --entrypoint bash -e KAMAL_REGISTRY_PASSWORD -e RAILS_MASTER_KEY $(KAMAL_SSH_ARGS) web -lc
 
 .PHONY: help up up-d down build logs bash shell rails console routes test lint \
 	db-prepare db-migrate db-rollback db-seed db-reset \
