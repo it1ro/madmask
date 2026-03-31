@@ -26,7 +26,12 @@ npm-debug.log
 # Docker/Kamal local state
 .kamal
 
-# Project docs / internal planning
+# Local data (not needed in image build context)
+storage
+db/*.sqlite3
+db/*.sqlite3-*
+db/*.db
+
+# Project docs / internal planning (keep README in build context)
 implementation_status
 agent-transcripts
-*.md

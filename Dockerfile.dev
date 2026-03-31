@@ -21,6 +21,11 @@ RUN apt-get update -qq && \
       pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
+# Git 2.35+ blocks repos with "dubious ownership" in containers when the
+# bind-mounted working tree UID/GID differs. We explicitly allow /app
+# so tools like Kamal can read git metadata inside the dev container.
+RUN git config --system --add safe.directory /app
+
 # Ensure Bundler is available explicitly (base image may ship an older pin).
 RUN gem install bundler --no-document
 
