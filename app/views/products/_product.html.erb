@@ -7,19 +7,10 @@
     <div
       class="relative h-36 w-full shrink-0 overflow-hidden rounded-xl border border-line bg-panel sm:h-32 sm:w-32"
     >
-      <% hero = product.hero_image %>
-      <% if hero.present? %>
-        <%= image_tag hero.variant(resize_to_limit: [512, 512]),
+      <% if product.cover_image.attached? %>
+        <%= image_tag product.cover_image.variant(resize_to_limit: [512, 512]),
           class: "h-full w-full object-cover",
           alt: product.name %>
-        <% if product.gallery_extra_count.positive? %>
-          <span
-            class="pointer-events-none absolute bottom-1.5 right-1.5 rounded-md border border-cyber/60 bg-page/90 px-1.5 py-0.5 font-mono text-[0.6875rem] font-medium leading-none text-cyber shadow-sm"
-            aria-label="Дополнительных фотографий в галерее: <%= product.gallery_extra_count %>"
-          >
-            +<%= product.gallery_extra_count %>
-          </span>
-        <% end %>
       <% else %>
         <div
           class="flex h-full w-full items-center justify-center text-xs text-ink-faint"

@@ -7,15 +7,14 @@ class ProductsController < ApplicationController
 
     @products = Product
       .with_attached_cover_image
-      .with_attached_gallery_images
-      .with_attached_model_file
+      .includes(:model_file_attachment)
       .order(created_at: :desc)
 
     if @current_category.present?
       @products = @products.where(category: @current_category)
     end
 
-    @results_count = @products.size
+    @results_count = @products.count
   end
 
   def show
