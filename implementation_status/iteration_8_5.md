@@ -3,6 +3,7 @@
 | Подзадача | Статус |
 |-----------|--------|
 | 8.5.1 Секреты и ключи (критично) | выполнено (локальные секреты удалены из рабочего дерева; gitignore покрывает ключи/окружение) |
+| 8.5.4 Безопасность зависимостей и CI | выполнено (CI прогоняет brakeman/bundler-audit/importmap audit/rubocop/тесты; `bin/bundler-audit` по умолчанию делает `check --update`; `config/bundler-audit.yml` без фиктивных CVE и с правилами осознанных игноров) |
 | 8.5.3 CSP и базовые security headers | выполнено (включён CSP с nonce для importmap, разрешены Google Fonts; в `production` ограничены `config.hosts` и настроен `host_authorization` с исключением `/up`; расширен `filter_parameters`) |
 
 ## Проверки по 8.5.1

@@ -1,5 +1,12 @@
 # Audit all gems listed in the Gemfile for known security problems by running bin/bundler-audit.
-# CVEs that are not relevant to the application can be enumerated on the ignore list below.
+#
+# If you must ignore a CVE, do it deliberately:
+# - Add a short justification (with a link if possible) in the PR description.
+# - Add a follow-up task to remove the ignore.
+# - Revisit ignores regularly (e.g. monthly) and after each dependency update.
+#
+# Example:
+# ignore:
+#   - CVE-2026-XXXX
 
-ignore:
-  - CVE-THAT-DOES-NOT-APPLY
+ignore: []
