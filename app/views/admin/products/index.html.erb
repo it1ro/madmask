@@ -34,6 +34,12 @@
           </p>
         <% end %>
       </div>
+
+      <% if defined?(@pagy) && @pagy.pages > 1 %>
+        <nav class="mt-10 flex justify-center">
+          <%== @pagy.series_nav %>
+        </nav>
+      <% end %>
     </div>
   </div>
 </section>

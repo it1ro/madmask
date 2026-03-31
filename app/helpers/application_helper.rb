@@ -1,4 +1,7 @@
 module ApplicationHelper
+  include Pagy::Method
+  include Pagy::NumericHelpers
+
   # Russian pluralization helper for small UI counters.
   # Example: russian_plural(3, "товар", "товара", "товаров") => "товара"
   def russian_plural(count, one, few, many)

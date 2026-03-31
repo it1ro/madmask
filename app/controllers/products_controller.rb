@@ -5,16 +5,17 @@ class ProductsController < ApplicationController
     @current_category = params[:category].presence
     @current_category = nil unless @current_category && Product::CATEGORIES.include?(@current_category)
 
-    @products = Product
+    products_scope = Product
       .with_attached_cover_image
       .includes(:model_file_attachment)
       .order(created_at: :desc)
 
     if @current_category.present?
-      @products = @products.where(category: @current_category)
+      products_scope = products_scope.where(category: @current_category)
     end
 
-    @results_count = @products.count
+    @results_count = products_scope.count
+    @pagy, @products = pagy(:offset, products_scope, limit: 12, size: [1, 2, 2, 1])
   end
 
   def show
