@@ -15,5 +15,8 @@ pin "three/addons/loaders/GLTFLoader.js",
 pin "three/addons/loaders/RGBELoader.js",
   to: "three/addons/loaders/RGBELoader.js"
 
+pin "three/addons/utils/BufferGeometryUtils.js",
+  to: "three/addons/utils/BufferGeometryUtils.js"
+
 pin "three/addons/lights/LightProbeGenerator.js",
   to: "three/addons/lights/LightProbeGenerator.js"
