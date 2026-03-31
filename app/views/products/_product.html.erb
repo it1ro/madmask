@@ -1,13 +1,13 @@
 <%# locals: product: %>
 <article
-  class="group relative overflow-hidden rounded-2xl border border-line bg-card p-5 shadow-card transition duration-200 hover:-translate-y-1.5 hover:shadow-[0_0_18px_var(--color-accent-glow),inset_0_0_0_1px_rgba(183,111,224,0.14)] motion-reduce:transform-none motion-reduce:transition-none"
+  class="group relative overflow-hidden rounded-2xl border border-line bg-card p-4 shadow-card transition duration-200 hover:-translate-y-1.5 hover:shadow-[0_0_18px_var(--color-accent-glow),inset_0_0_0_1px_rgba(183,111,224,0.14)] motion-reduce:transform-none motion-reduce:transition-none sm:p-5"
   style="--product-cat: <%= product_category_css_var(product.category) %>"
 >
   <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
     <%= link_to product_path(product),
       aria: { label: "Открыть товар: #{product.name}" },
       class:
-        "group/cover relative block h-36 w-full shrink-0 overflow-hidden rounded-xl border border-line bg-panel transition hover:border-glow hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 sm:h-32 sm:w-32" do %>
+        "group/cover relative block h-32 w-full shrink-0 overflow-hidden rounded-xl border border-line bg-panel transition hover:border-glow hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 sm:h-32 sm:w-32" do %>
       <% if product.cover_image.attached? %>
         <%= image_tag product.cover_image.variant(resize_to_limit: [512, 512]),
           class: "h-full w-full object-cover",
@@ -36,12 +36,12 @@
       </div>
 
       <% if product.description.present? %>
-        <p class="mt-2 line-clamp-2 text-sm text-ink-muted">
+        <p class="mt-2 line-clamp-2 text-sm text-ink-muted sm:line-clamp-2">
           <%= product.description %>
         </p>
       <% end %>
 
-      <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+      <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 sm:mt-3">
         <p class="font-mono text-lg text-price">
           <%= number_to_currency(product.price, unit: "₽", separator: ",", delimiter: " ", format: "%n %u") %>
         </p>
@@ -55,7 +55,7 @@
         <% end %>
       </div>
 
-      <div class="mt-4 flex flex-wrap gap-3">
+      <div class="mt-3 flex flex-wrap gap-3 sm:mt-4">
         <%= link_to "Подробнее",
           product_path(product),
           class:
@@ -66,7 +66,7 @@
 
   <% if product.model_file.attached? %>
     <div
-      class="mt-4 flex flex-col gap-2 rounded-xl border border-line bg-page/50 bg-gradient-to-r from-page/90 to-accent-deep/25 px-4 py-3 shadow-[inset_0_0_0_1px_rgba(183,111,224,0.12)] sm:flex-row sm:items-center sm:justify-between"
+      class="mt-3 flex flex-col gap-2 rounded-xl border border-line bg-page/50 bg-gradient-to-r from-page/90 to-accent-deep/25 px-4 py-3 shadow-[inset_0_0_0_1px_rgba(183,111,224,0.12)] sm:mt-4 sm:flex-row sm:items-center sm:justify-between"
       role="region"
       aria-label="Интерактивное 3D превью"
     >

@@ -5,23 +5,18 @@
   aria-labelledby="catalog-heading"
   data-controller="catalog-loading"
 >
+  <% has_pagination = defined?(@pagy) && @pagy.pages > 1 %>
+
   <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
     <div>
       <h1 id="catalog-heading" class="font-heading text-3xl font-semibold tracking-wide text-ink md:text-4xl">
         Каталог
       </h1>
-      <p class="mt-2 max-w-xl text-ink-muted">
-        Маски и артефакты коллекции. Управление товарами — в
-        <%= link_to "админ-панели", admin_root_path, class: "text-cyber underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 rounded-sm" %>.
-      </p>
     </div>
   </div>
 
   <div class="mt-10">
     <div class="mb-4 flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
-      <h2 class="font-heading text-lg font-semibold tracking-wide text-ink">
-        Все товары
-      </h2>
       <p class="font-ui text-xs uppercase tracking-wide text-ink-muted">
         <%= @results_count %> <%= russian_plural(@results_count, "товар", "товара", "товаров") %>
         <% if @current_category.present? %>
@@ -30,6 +25,12 @@
         <% end %>
       </p>
     </div>
+
+    <% if has_pagination %>
+      <div class="mb-6 flex justify-center">
+        <%== @pagy.series_nav %>
+      </div>
+    <% end %>
 
     <% chip_inactive_classes =
       "inline-flex items-center justify-center rounded-full border border-line bg-card/40 px-4 py-2 font-ui text-xs font-medium uppercase tracking-wide text-ink-muted transition hover:scale-[1.02] hover:bg-card/60 hover:border-glow hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 active:scale-[0.98] motion-reduce:active:scale-100 motion-reduce:transform-none motion-reduce:transition-none" %>
@@ -93,10 +94,18 @@
       <% end %>
     </div>
 
-    <% if defined?(@pagy) && @pagy.pages > 1 %>
-      <nav class="mt-10 flex justify-center">
+    <% if has_pagination %>
+      <div class="mt-10 flex justify-center">
         <%== @pagy.series_nav %>
-      </nav>
+      </div>
+
+      <div class="catalog-pagination-sticky md:hidden">
+        <div class="catalog-pagination-sticky__inner">
+          <%== @pagy.series_nav %>
+        </div>
+      </div>
+
+      <div class="h-20 md:hidden" aria-hidden="true"></div>
     <% end %>
   </div>
 </section>

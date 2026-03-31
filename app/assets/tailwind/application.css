@@ -122,6 +122,36 @@ body {
     gap: 0.5rem;
   }
 
+  .catalog-pagination-sticky {
+    position: sticky;
+    bottom: 0;
+    z-index: 40;
+    margin-top: 1rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .catalog-pagination-sticky__inner {
+    margin-inline: auto;
+    width: fit-content;
+    max-width: min(100%, 34rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-border) 85%, var(--color-accent-glow) 15%);
+    background: color-mix(in srgb, var(--color-bg-primary) 72%, transparent);
+    backdrop-filter: blur(8px);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-accent-glow) 10%, transparent),
+      0 12px 28px rgba(0, 0, 0, 0.35);
+    padding: 0.5rem;
+  }
+
+  .catalog-pagination-sticky__inner nav.pagy.series-nav {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
   nav.pagy.series-nav > a {
     display: inline-flex;
     min-height: 2.25rem;
