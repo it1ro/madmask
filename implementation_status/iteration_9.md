@@ -26,3 +26,7 @@
 
 - В актуальном `IMPLEMENTATION_PLAN.md` «Итерация 9» соответствует типографике; бэкапы SQLite и мониторинг вынесены в «Итерацию 9.5» (опционально).
 
+## Обновление (деплой / Kamal)
+
+- Починен деплой: `config/initializers/ensure_products_indexes.rb` больше не ломает `assets:precompile` в Docker build (ActiveRecord pool API), индексы создаются через `with_connection`, а на этапе сборки образа инициалайзер пропускается.
+
