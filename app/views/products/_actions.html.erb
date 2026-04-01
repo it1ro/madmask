@@ -1,20 +1,20 @@
 <%# locals: product: %>
 <div
   id="product_card_actions_<%= product.id %>"
-  class="flex flex-nowrap items-center gap-2 overflow-x-auto"
+  class="flex flex-wrap items-center gap-2 overflow-x-hidden"
 >
   <%= link_to "Подробнее",
     product_path(product),
     class:
       "inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg border border-accent px-4 py-2 font-ui text-xs font-medium uppercase tracking-wide text-ink transition active:scale-[0.98] hover:scale-[1.02] hover:shadow-[0_0_18px_var(--color-accent-glow)] hover:bg-accent-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:active:scale-100 motion-reduce:transform-none motion-reduce:transition-none" %>
 
-  <div class="relative shrink-0">
+  <div class="group relative shrink-0">
     <%= button_to(
       add_cart_path(product_id: product.id),
       method: :post,
       aria: { label: "Добавить в корзину" },
       class:
-        "group inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-accent bg-page/30 px-3 text-ink transition active:scale-[0.98] hover:bg-accent-deep hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
+        "inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-accent bg-page/30 px-3 text-ink transition active:scale-[0.98] hover:bg-accent-deep hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
     ) do %>
       <svg
         class="h-5 w-5 shrink-0"
@@ -32,13 +32,13 @@
         <circle cx="18" cy="20" r="1" />
       </svg>
       <span class="sr-only">Добавить в корзину</span>
-      <span
-        class="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-line bg-page/90 px-2 py-1 font-ui text-[11px] font-semibold tracking-[0.12em] text-ink opacity-0 shadow-card transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
-        role="tooltip"
-      >
-        В корзину
-      </span>
     <% end %>
+    <span
+      class="pointer-events-none absolute left-1/2 bottom-full z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-line bg-page/90 px-2 py-1 font-ui text-[11px] font-semibold tracking-[0.12em] text-ink opacity-0 shadow-card transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+      role="tooltip"
+    >
+      В корзину
+    </span>
   </div>
 
   <% wishlist_on = in_wishlist?(product.id) %>
