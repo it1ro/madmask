@@ -125,282 +125,284 @@
   </section>
 </div>
 
-<% if @featured_products.any? %>
-  <section class="px-0 py-10 md:py-12" aria-labelledby="featured-heading">
-    <div class="mb-8 text-center">
-      <h2 id="featured-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl">
-        Новинки
-      </h2>
-      <p class="mt-2 font-ui text-sm tracking-wide text-ink-muted">
-        Новые позиции в каталоге. Открой карточку и проверь силуэт, фактуру и пропорции.
-      </p>
-    </div>
-    <div class="flex flex-col gap-5">
-      <%= render partial: "products/product", collection: @featured_products, as: :product %>
-    </div>
-    <div class="mt-8 text-center">
-      <%= link_to products_path, class: "hero-cta inline-flex" do %>
-        Весь каталог
-      <% end %>
-    </div>
+<div class="landing-stack">
+  <% if @featured_products.any? %>
+    <section class="px-0 py-10 md:py-12" aria-labelledby="featured-heading">
+      <div class="mb-8 text-center">
+        <h2 id="featured-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl">
+          Новинки
+        </h2>
+        <p class="mt-2 font-ui text-sm tracking-wide text-ink-muted">
+          Новые позиции в каталоге. Открой карточку и проверь силуэт, фактуру и пропорции.
+        </p>
+      </div>
+      <div class="flex flex-col gap-5">
+        <%= render partial: "products/product", collection: @featured_products, as: :product %>
+      </div>
+      <div class="mt-8 text-center">
+        <%= link_to products_path, class: "hero-cta inline-flex" do %>
+          Весь каталог
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <%# Categories 2b.5 — genre chips; links include category for future catalog filters %>
+  <section class="categories-section" aria-labelledby="categories-heading">
+    <h2 id="categories-heading" class="categories-section__title">
+      Жанры коллекции
+    </h2>
+    <p class="categories-section__lead">
+      Жанровые линии — в&nbsp;каталоге. Нужен индивидуальный заказ? Оставь заявку и&nbsp;приложи референсы — обсудим задачу.
+    </p>
+    <ul class="categories-grid">
+      <li>
+        <%= link_to products_path(category: "fantasy"), class: "category-card category-card--fantasy" do %>
+          <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path
+              d="M12 2l2.2 6.8L21 9.5l-5.5 4 2.1 6.7L12 17.8 6.4 20.2l2.1-6.7L3 9.5l6.8-.7L12 2z"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span class="category-card__label">Fantasy</span>
+        <% end %>
+      </li>
+      <li>
+        <%= link_to products_path(category: "horror"), class: "category-card category-card--horror" do %>
+          <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path
+              d="M12 4c-3.2 0-5.5 2.1-5.5 5v2.2L8 13v3h8v-3l1.5-1.8V9c0-2.9-2.3-5-5.5-5z"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path d="M9 11h.01M15 11h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <path d="M10 15.5h4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+          </svg>
+          <span class="category-card__label">Horror</span>
+        <% end %>
+      </li>
+      <li>
+        <%= link_to products_path(category: "sci-fi"), class: "category-card category-card--scifi" do %>
+          <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.25" />
+            <ellipse
+              cx="12"
+              cy="12"
+              rx="9"
+              ry="3"
+              stroke="currentColor"
+              stroke-width="1.25"
+              transform="rotate(-18 12 12)"
+            />
+            <path d="M12 2v3M12 19v3M4.5 12h-2M21.5 12h-2" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+          </svg>
+          <span class="category-card__label">Sci‑fi</span>
+        <% end %>
+      </li>
+      <li>
+        <%= link_to products_path(category: "cyberpunk"), class: "category-card category-card--cyberpunk" do %>
+          <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="5" y="7" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.25" />
+            <path d="M9 11h2v2H9v-2zm4 0h2v2h-2v-2z" fill="currentColor" />
+            <path d="M12 2v3M12 19v3M4 12H2M22 12h-2" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+          </svg>
+          <span class="category-card__label">Cyberpunk</span>
+        <% end %>
+      </li>
+      <li>
+        <%= link_to new_inquiry_path,
+          class: "category-card category-card--custom",
+          aria: { label: "Custom — маски на индивидуальный заказ" } do %>
+          <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path
+              d="M17 3a2.85 2.85 0 00-4 4L7 13v4h4l6-6a2.85 2.85 0 004-4l-1-1"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path d="M6 21h12" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+          </svg>
+          <span class="category-card__label">Custom</span>
+        <% end %>
+      </li>
+    </ul>
   </section>
-<% end %>
 
-<%# Categories 2b.5 — genre chips; links include category for future catalog filters %>
-<section class="categories-section" aria-labelledby="categories-heading">
-  <h2 id="categories-heading" class="categories-section__title">
-    Жанры коллекции
-  </h2>
-  <p class="categories-section__lead">
-    Жанровые линии — в&nbsp;каталоге. Нужен индивидуальный заказ? Оставь заявку и&nbsp;приложи референсы — обсудим задачу.
-  </p>
-  <ul class="categories-grid">
-    <li>
-      <%= link_to products_path(category: "fantasy"), class: "category-card category-card--fantasy" do %>
-        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path
-            d="M12 2l2.2 6.8L21 9.5l-5.5 4 2.1 6.7L12 17.8 6.4 20.2l2.1-6.7L3 9.5l6.8-.7L12 2z"
-            stroke="currentColor"
-            stroke-width="1.25"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span class="category-card__label">Fantasy</span>
-      <% end %>
-    </li>
-    <li>
-      <%= link_to products_path(category: "horror"), class: "category-card category-card--horror" do %>
-        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path
-            d="M12 4c-3.2 0-5.5 2.1-5.5 5v2.2L8 13v3h8v-3l1.5-1.8V9c0-2.9-2.3-5-5.5-5z"
-            stroke="currentColor"
-            stroke-width="1.25"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path d="M9 11h.01M15 11h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          <path d="M10 15.5h4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
-        </svg>
-        <span class="category-card__label">Horror</span>
-      <% end %>
-    </li>
-    <li>
-      <%= link_to products_path(category: "sci-fi"), class: "category-card category-card--scifi" do %>
-        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.25" />
-          <ellipse
-            cx="12"
-            cy="12"
-            rx="9"
-            ry="3"
-            stroke="currentColor"
-            stroke-width="1.25"
-            transform="rotate(-18 12 12)"
-          />
-          <path d="M12 2v3M12 19v3M4.5 12h-2M21.5 12h-2" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
-        </svg>
-        <span class="category-card__label">Sci‑fi</span>
-      <% end %>
-    </li>
-    <li>
-      <%= link_to products_path(category: "cyberpunk"), class: "category-card category-card--cyberpunk" do %>
-        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <rect x="5" y="7" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.25" />
-          <path d="M9 11h2v2H9v-2zm4 0h2v2h-2v-2z" fill="currentColor" />
-          <path d="M12 2v3M12 19v3M4 12H2M22 12h-2" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
-        </svg>
-        <span class="category-card__label">Cyberpunk</span>
-      <% end %>
-    </li>
-    <li>
-      <%= link_to new_inquiry_path,
-        class: "category-card category-card--custom",
-        aria: { label: "Custom — маски на индивидуальный заказ" } do %>
-        <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path
-            d="M17 3a2.85 2.85 0 00-4 4L7 13v4h4l6-6a2.85 2.85 0 004-4l-1-1"
-            stroke="currentColor"
-            stroke-width="1.25"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path d="M6 21h12" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
-        </svg>
-        <span class="category-card__label">Custom</span>
-      <% end %>
-    </li>
-  </ul>
-</section>
-
-<%# How it works 2b.6 — steps + scroll reveal (Stimulus + Intersection Observer) %>
-<section
-  class="how-it-works"
-  data-controller="reveal-on-scroll"
-  data-reveal-on-scroll-revealed-class="how-it-works--revealed"
-  aria-labelledby="how-it-works-heading"
->
-  <h2 id="how-it-works-heading" class="how-it-works__title">
-    Как это работает
-  </h2>
-  <p class="how-it-works__lead">
-    Выбери → осмотри детали → оставь заявку. Мы ответим по наличию, финишу и&nbsp;срокам.
-  </p>
-  <ol class="how-it-works__grid">
-    <li class="how-it-works__card" style="--reveal-delay: 0ms">
-      <div class="how-it-works__icon-wrap" aria-hidden="true">
-        <svg class="how-it-works__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M12 3c-2.8 0-5 1.6-5 3.6v1.2c0 .6.2 1.2.5 1.7l.9 1.4c.3.5.5 1.1.5 1.7V14c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-1.4c0-.6.2-1.2.5-1.7l.9-1.4c.3-.5.5-1.1.5-1.7V6.6C19 4.6 16.8 3 14 3h-2z"
-            stroke="currentColor"
-            stroke-width="1.25"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path d="M9 18h6M10 21h4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
-        </svg>
-      </div>
-      <h3 class="how-it-works__step-title">Выбери маску</h3>
-      <p class="how-it-works__text">
-        Найди артефакт в каталоге по жанру или опиши идею для индивидуального заказа.
-      </p>
-    </li>
-    <li class="how-it-works__card" style="--reveal-delay: 90ms">
-      <div class="how-it-works__icon-wrap" aria-hidden="true">
-        <svg class="how-it-works__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"
-            stroke="currentColor"
-            stroke-width="1.25"
-            stroke-linejoin="round"
-          />
-          <path d="M12 12l8-4.5M12 12v9M12 12L4 7.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </div>
-      <h3 class="how-it-works__step-title">Осмотри детали</h3>
-      <p class="how-it-works__text">
-        На странице товара осмотри форму и детали со всех сторон, чтобы быстрее принять решение.
-      </p>
-    </li>
-    <li class="how-it-works__card" style="--reveal-delay: 180ms">
-      <div class="how-it-works__icon-wrap" aria-hidden="true">
-        <svg class="how-it-works__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z"
-            stroke="currentColor"
-            stroke-width="1.25"
-            stroke-linejoin="round"
-          />
-          <path d="M5 20h14" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
-        </svg>
-      </div>
-      <h3 class="how-it-works__step-title">Воплоти образ</h3>
-      <p class="how-it-works__text">
-        Оставь заявку по понравившейся позиции — и мы вернёмся с наличием, финишем и сроками.
-      </p>
-    </li>
-  </ol>
-
-  <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-    <%= link_to new_inquiry_path, class: "hero-cta hero-cta--secondary" do %>
-      Оставить заявку
-    <% end %>
-    <%= link_to products_path, class: "hero-cta" do %>
-      Открыть каталог
-    <% end %>
-  </div>
-</section>
-
-<%# Process / materials (variant B) %>
-<section class="px-4 py-12 md:px-6 md:py-16" aria-labelledby="process-heading">
-  <div class="mx-auto max-w-6xl">
-    <h2 id="process-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl text-center">
-      Как мы делаем
+  <%# How it works 2b.6 — steps + scroll reveal (Stimulus + Intersection Observer) %>
+  <section
+    class="how-it-works"
+    data-controller="reveal-on-scroll"
+    data-reveal-on-scroll-revealed-class="how-it-works--revealed"
+    aria-labelledby="how-it-works-heading"
+  >
+    <h2 id="how-it-works-heading" class="how-it-works__title">
+      Как это работает
     </h2>
-    <div class="mt-8 grid gap-4 md:grid-cols-3">
-      <div class="rounded-xl border border-line bg-card p-5">
-        <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Материалы</h3>
-        <p class="mt-2 text-sm text-ink-muted">
-          Подбираем базу и финиш под задачу (сцена/съёмка/косплей). Уточним варианты в ответе на заявку.
-        </p>
-      </div>
-      <div class="rounded-xl border border-line bg-card p-5">
-        <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Посадка</h3>
-        <p class="mt-2 text-sm text-ink-muted">
-          Крепление и посадка — под комфорт и стабильность. Если есть требования — напиши в заявке.
-        </p>
-      </div>
-      <div class="rounded-xl border border-line bg-card p-5">
-        <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Сроки</h3>
-        <p class="mt-2 text-sm text-ink-muted">
-          Готовые позиции зависят от наличия, custom — от сложности. Сориентируем после заявки.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<%# Brand / social proof — IMPLEMENTATION_PLAN 2b.7 %>
-<section
-  class="brand-story"
-  data-controller="reveal-on-scroll"
-  data-reveal-on-scroll-revealed-class="brand-story--revealed"
-  aria-labelledby="brand-story-heading"
->
-  <div class="brand-story__inner">
-    <h2 id="brand-story-heading" class="brand-story__title">
-      Крафт и характер
-    </h2>
-    <p class="brand-story__body">
-      Madmask — это малые серии и custom. Мы делаем артефакты под жанр: от тёмного fantasy до неона cyberpunk.
-      В карточке товара ты сначала смотришь форму и детали, а затем оставляешь заявку — мы подтверждаем наличие, финиш и сроки.
-      Если нужна уникальная маска — приложи референсы и опиши задачу: сцена/съёмка/косплей.
+    <p class="how-it-works__lead">
+      Выбери → осмотри детали → оставь заявку. Мы ответим по наличию, финишу и&nbsp;срокам.
     </p>
-    <figure class="brand-story__quote-wrap">
-      <blockquote class="brand-story__quote">
-        <span class="sr-only">Не носи маску — стань ею.</span>
-        <span
-          class="brand-story__typewriter"
-          data-controller="typewriter"
-          data-typewriter-text-value="Не носи маску — стань ею."
-          data-typewriter-speed-value="48"
-          aria-hidden="true"
-        >
-          <span data-typewriter-target="output" class="brand-story__typewriter-out"></span>
-          <span data-typewriter-target="cursor" class="brand-story__cursor">▍</span>
-        </span>
-      </blockquote>
-      <figcaption class="brand-story__attribution">Слоган коллекции</figcaption>
-    </figure>
-  </div>
-</section>
+    <ol class="how-it-works__grid">
+      <li class="how-it-works__card" style="--reveal-delay: 0ms">
+        <div class="how-it-works__icon-wrap" aria-hidden="true">
+          <svg class="how-it-works__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 3c-2.8 0-5 1.6-5 3.6v1.2c0 .6.2 1.2.5 1.7l.9 1.4c.3.5.5 1.1.5 1.7V14c0 1.1.9 2 2 2h4c1.1 0 2-.9 2-2v-1.4c0-.6.2-1.2.5-1.7l.9-1.4c.3-.5.5-1.1.5-1.7V6.6C19 4.6 16.8 3 14 3h-2z"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path d="M9 18h6M10 21h4" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+          </svg>
+        </div>
+        <h3 class="how-it-works__step-title">Выбери маску</h3>
+        <p class="how-it-works__text">
+          Найди артефакт в каталоге по жанру или опиши идею для индивидуального заказа.
+        </p>
+      </li>
+      <li class="how-it-works__card" style="--reveal-delay: 90ms">
+        <div class="how-it-works__icon-wrap" aria-hidden="true">
+          <svg class="how-it-works__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linejoin="round"
+            />
+            <path d="M12 12l8-4.5M12 12v9M12 12L4 7.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <h3 class="how-it-works__step-title">Осмотри детали</h3>
+        <p class="how-it-works__text">
+          На странице товара осмотри форму и детали со всех сторон, чтобы быстрее принять решение.
+        </p>
+      </li>
+      <li class="how-it-works__card" style="--reveal-delay: 180ms">
+        <div class="how-it-works__icon-wrap" aria-hidden="true">
+          <svg class="how-it-works__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z"
+              stroke="currentColor"
+              stroke-width="1.25"
+              stroke-linejoin="round"
+            />
+            <path d="M5 20h14" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" />
+          </svg>
+        </div>
+        <h3 class="how-it-works__step-title">Воплоти образ</h3>
+        <p class="how-it-works__text">
+          Оставь заявку по понравившейся позиции — и мы вернёмся с наличием, финишем и сроками.
+        </p>
+      </li>
+    </ol>
 
-<%# Closing CTA (variant B) %>
-<section class="px-4 pb-14 pt-10 md:px-6 md:pb-20" aria-labelledby="closing-cta-heading">
-  <div class="mx-auto max-w-6xl rounded-2xl border border-line bg-card px-6 py-10 text-center md:px-10">
-    <h2 id="closing-cta-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl">
-      Хочешь свою маску?
-    </h2>
-    <p class="mx-auto mt-3 max-w-2xl text-sm text-ink-muted md:text-base">
-      Выбери готовую позицию или закажи custom. Оставь заявку — мы ответим по наличию, материалам и срокам.
-      VK — только для просмотра работ и новостей.
-    </p>
-    <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
       <%= link_to new_inquiry_path, class: "hero-cta hero-cta--secondary" do %>
         Оставить заявку
       <% end %>
       <%= link_to products_path, class: "hero-cta" do %>
-        В каталог
+        Открыть каталог
       <% end %>
-      <a
-        href="https://vk.com/madmask73"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-2 text-xs font-ui uppercase tracking-[0.14em] text-ink-muted hover:text-cyber-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transition-none"
-      >
-        Смотреть VK
-      </a>
     </div>
-  </div>
-</section>
+  </section>
+
+  <%# Process / materials (variant B) %>
+  <section class="px-4 py-12 md:px-6 md:py-16" aria-labelledby="process-heading">
+    <div class="mx-auto max-w-6xl">
+      <h2 id="process-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl text-center">
+        Как мы делаем
+      </h2>
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        <div class="rounded-xl border border-line bg-card p-5">
+          <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Материалы</h3>
+          <p class="mt-2 text-sm text-ink-muted">
+            Подбираем базу и финиш под задачу (сцена/съёмка/косплей). Уточним варианты в ответе на заявку.
+          </p>
+        </div>
+        <div class="rounded-xl border border-line bg-card p-5">
+          <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Посадка</h3>
+          <p class="mt-2 text-sm text-ink-muted">
+            Крепление и посадка — под комфорт и стабильность. Если есть требования — напиши в заявке.
+          </p>
+        </div>
+        <div class="rounded-xl border border-line bg-card p-5">
+          <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Сроки</h3>
+          <p class="mt-2 text-sm text-ink-muted">
+            Готовые позиции зависят от наличия, custom — от сложности. Сориентируем после заявки.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# Brand / social proof — IMPLEMENTATION_PLAN 2b.7 %>
+  <section
+    class="brand-story"
+    data-controller="reveal-on-scroll"
+    data-reveal-on-scroll-revealed-class="brand-story--revealed"
+    aria-labelledby="brand-story-heading"
+  >
+    <div class="brand-story__inner">
+      <h2 id="brand-story-heading" class="brand-story__title">
+        Крафт и характер
+      </h2>
+      <p class="brand-story__body">
+        Madmask — это малые серии и custom. Мы делаем артефакты под жанр: от тёмного fantasy до неона cyberpunk.
+        В карточке товара ты сначала смотришь форму и детали, а затем оставляешь заявку — мы подтверждаем наличие, финиш и сроки.
+        Если нужна уникальная маска — приложи референсы и опиши задачу: сцена/съёмка/косплей.
+      </p>
+      <figure class="brand-story__quote-wrap">
+        <blockquote class="brand-story__quote">
+          <span class="sr-only">Не носи маску — стань ею.</span>
+          <span
+            class="brand-story__typewriter"
+            data-controller="typewriter"
+            data-typewriter-text-value="Не носи маску — стань ею."
+            data-typewriter-speed-value="48"
+            aria-hidden="true"
+          >
+            <span data-typewriter-target="output" class="brand-story__typewriter-out"></span>
+            <span data-typewriter-target="cursor" class="brand-story__cursor">▍</span>
+          </span>
+        </blockquote>
+        <figcaption class="brand-story__attribution">Слоган коллекции</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <%# Closing CTA (variant B) %>
+  <section class="px-4 pb-14 pt-10 md:px-6 md:pb-20" aria-labelledby="closing-cta-heading">
+    <div class="mx-auto max-w-6xl rounded-2xl border border-line bg-card px-6 py-10 text-center md:px-10">
+      <h2 id="closing-cta-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl">
+        Хочешь свою маску?
+      </h2>
+      <p class="mx-auto mt-3 max-w-2xl text-sm text-ink-muted md:text-base">
+        Выбери готовую позицию или закажи custom. Оставь заявку — мы ответим по наличию, материалам и срокам.
+        VK — только для просмотра работ и новостей.
+      </p>
+      <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <%= link_to new_inquiry_path, class: "hero-cta hero-cta--secondary" do %>
+          Оставить заявку
+        <% end %>
+        <%= link_to products_path, class: "hero-cta" do %>
+          В каталог
+        <% end %>
+        <a
+          href="https://vk.com/madmask73"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-2 text-xs font-ui uppercase tracking-[0.14em] text-ink-muted hover:text-cyber-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transition-none"
+        >
+          Смотреть VK
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
 
 <%# Form is on a separate page now: `inquiries#new` %>

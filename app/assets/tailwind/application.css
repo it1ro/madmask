@@ -473,6 +473,42 @@ body {
 }
 
 /* Landing categories — IMPLEMENTATION_PLAN 2b.5 */
+.landing-stack > section {
+  position: relative;
+  padding-block: clamp(3.5rem, 7vw, 5.75rem);
+}
+
+.landing-stack > section:first-child {
+  padding-top: clamp(2.75rem, 5.5vw, 4.25rem);
+}
+
+.landing-stack > section:last-child {
+  padding-bottom: clamp(4rem, 8vw, 6.25rem);
+}
+
+.landing-stack > section + section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-accent-glow) 16%, var(--color-border)),
+    color-mix(in srgb, var(--color-accent-cyber) 14%, var(--color-border)),
+    transparent
+  );
+  opacity: 0.9;
+  transform: translateY(-1.25rem);
+  filter: blur(0.15px);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--color-accent-glow) 18%, transparent),
+    0 0 16px color-mix(in srgb, var(--color-accent-cyber) 14%, transparent);
+  pointer-events: none;
+}
+
 .categories-section {
   padding-block: 3rem 2.5rem;
 }
