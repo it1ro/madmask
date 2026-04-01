@@ -1,7 +1,7 @@
 <span
   id="header_cart_counter"
-  class="inline-flex min-w-[1.75rem] items-center justify-center rounded-full bg-accent-deep px-2 py-0.5 font-ui text-[11px] font-semibold tracking-[0.14em] text-ink"
+  class="inline-flex min-w-[1.75rem] items-center justify-center rounded-full bg-accent-deep px-2 py-0.5 font-ui text-[11px] font-semibold tracking-[0.14em] text-ink <%= "hidden" if cart_units_count.to_i.zero? %>"
   aria-label="Товаров в корзине: <%= cart_units_count %>"
 >
-  <%= cart_units_count %>
+  <%= cart_units_count unless cart_units_count.to_i.zero? %>
 </span>
