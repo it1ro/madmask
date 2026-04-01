@@ -50,7 +50,7 @@
           В каталог
         <% end %>
 
-        <%= link_to "#contact", class: "hero-cta hero-cta--secondary" do %>
+        <%= link_to new_inquiry_path, class: "hero-cta hero-cta--secondary" do %>
           Оставить заявку
         <% end %>
       </div>
@@ -158,7 +158,7 @@
       <% end %>
     </li>
     <li>
-      <%= link_to "#contact",
+      <%= link_to new_inquiry_path,
         class: "category-card category-card--custom",
         aria: { label: "Custom — маски на индивидуальный заказ" } do %>
         <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -246,7 +246,7 @@
   </ol>
 
   <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-    <%= link_to "#contact", class: "hero-cta hero-cta--secondary" do %>
+    <%= link_to new_inquiry_path, class: "hero-cta hero-cta--secondary" do %>
       Оставить заявку
     <% end %>
     <%= link_to products_path, class: "hero-cta" do %>
@@ -330,7 +330,7 @@
       VK — только для просмотра работ и новостей.
     </p>
     <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <%= link_to "#contact", class: "hero-cta hero-cta--secondary" do %>
+      <%= link_to new_inquiry_path, class: "hero-cta hero-cta--secondary" do %>
         Оставить заявку
       <% end %>
       <%= link_to products_path, class: "hero-cta" do %>
@@ -348,47 +348,4 @@
   </div>
 </section>
 
-<%# Contact form (feedback) %>
-<section id="contact" class="px-4 pb-16 md:px-6" aria-labelledby="contact-heading">
-  <div class="mx-auto max-w-3xl rounded-2xl border border-line bg-card px-6 py-10 md:px-10">
-    <h2 id="contact-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl text-center">
-      Форма обратной связи
-    </h2>
-    <p class="mt-3 text-center text-sm text-ink-muted md:text-base">
-      Опиши задачу и оставь контакт — ответим по наличию, вариантам и срокам.
-    </p>
-
-    <%= form_with model: Inquiry.new, url: inquiries_path, class: "mt-8 space-y-4" do |f| %>
-      <div class="grid gap-4 md:grid-cols-2">
-        <div>
-          <%= f.label :name, "Имя (необязательно)", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
-          <%= f.text_field :name,
-            autocomplete: "name",
-            class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
-        </div>
-        <div>
-          <%= f.label :contact, "Контакт (VK/Telegram/телефон/email)", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
-          <%= f.text_field :contact,
-            required: true,
-            autocomplete: "email",
-            class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
-        </div>
-      </div>
-      <div>
-        <%= f.label :message, "Сообщение", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
-        <%= f.text_area :message,
-          required: true,
-          rows: 5,
-          class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
-      </div>
-      <div class="pt-2 flex flex-col items-center justify-center gap-3 sm:flex-row">
-        <%= f.submit "Отправить",
-          class: "hero-cta hero-cta--secondary",
-          data: { disable_with: "Отправляем..." } %>
-        <p class="text-xs text-ink-muted text-center">
-          Ответим, как только увидим сообщение.
-        </p>
-      </div>
-    <% end %>
-  </div>
-</section>
+<%# Form is on a separate page now: `inquiries#new` %>

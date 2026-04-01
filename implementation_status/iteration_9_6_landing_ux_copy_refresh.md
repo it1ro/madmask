@@ -15,9 +15,11 @@
 ## Реализация (факт, в коде)
 
 - **CTA и контакт**: основной путь “связаться” теперь через **форму обратной связи** на `/` (`#contact`), без “пишите в VK” как основного шага.
+- **UX формы**: форма обратной связи вынесена **на отдельную страницу** (`/inquiries/new`).
 - **VK**: оставлен как **доп. медиа-присутствие** (витрина работ/новости) в hero/closing CTA и явнее в футере.
 - **Новые/изменённые файлы**:
-  - `app/views/pages/home.html.erb`: тексты варианта B + секции “Как мы делаем”, closing CTA, форма обратной связи.
+  - `app/views/pages/home.html.erb`: тексты варианта B + секции “Как мы делаем”, closing CTA, CTA ведут на страницу заявки.
+  - `app/views/inquiries/create.html.erb`, `app/controllers/inquiries_controller.rb`, `config/routes.rb`: отдельная страница формы (`inquiries#new`).
   - `app/models/inquiry.rb`, `app/controllers/inquiries_controller.rb`, `config/routes.rb`, миграция `db/migrate/*create_inquiries.rb`: приём заявок в БД.
   - `app/views/shared/_flash.html.erb`, `app/views/layouts/application.html.erb`: вывод `flash` для подтверждения отправки.
   - `app/views/shared/_footer.html.erb`: подпись VK и более явная семантика “витрина”.

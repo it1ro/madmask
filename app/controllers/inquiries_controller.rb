@@ -1,18 +1,23 @@
 class InquiriesController < ApplicationController
+  def new
+    @inquiry = Inquiry.new
+    render :create
+  end
+
   def create
     @inquiry = Inquiry.new(inquiry_params)
 
     if @inquiry.save
-      redirect_to root_path(anchor: "contact"), notice: "Сообщение отправлено. Мы свяжемся с вами."
+      redirect_to new_inquiry_path, notice: "Сообщение отправлено. Мы свяжемся с вами."
     else
-      flash[:alert] = "Проверьте поля формы и попробуйте ещё раз."
-      redirect_to root_path(anchor: "contact"), status: :see_other
+      flash.now[:alert] = "Проверьте поля формы и попробуйте ещё раз."
+      render :create, status: :unprocessable_entity
     end
   end
 
   private
 
   def inquiry_params
-    params.require(:inquiry).permit(:name, :contact, :message)
+    params.require(:inquiry).permit(:name, :phone, :email, :message)
   end
 end

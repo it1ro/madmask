@@ -1,4 +1,70 @@
-<div>
-  <h1 class="font-bold text-4xl">Inquiries#create</h1>
-  <p>Find me in app/views/inquiries/create.html.erb</p>
-</div>
+<section class="px-4 pb-16 pt-10 md:px-6 md:pb-20" aria-labelledby="inquiry-heading">
+  <div class="mx-auto w-full max-w-3xl rounded-2xl border border-line bg-card px-6 py-10 md:px-10">
+    <h1 id="inquiry-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl text-center">
+      Форма обратной связи
+    </h1>
+    <p class="mt-3 text-center text-sm text-ink-muted md:text-base">
+      Опиши задачу и оставь телефон — ответим по наличию, вариантам и срокам.
+    </p>
+
+    <% if @inquiry.errors.any? %>
+      <div class="mt-6 rounded-xl border border-[rgba(255,110,140,0.35)] bg-[rgba(255,110,140,0.08)] px-4 py-3 text-sm text-ink">
+        <p class="font-ui tracking-wide">
+          Проверь форму:
+        </p>
+        <ul class="mt-2 list-disc pl-5 text-ink-muted">
+          <% @inquiry.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_with model: @inquiry, url: inquiries_path, class: "mt-8 space-y-4" do |f| %>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div>
+          <%= f.label :name, "Имя", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+          <%= f.text_field :name,
+            required: true,
+            autocomplete: "name",
+            class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
+        </div>
+        <div>
+          <%= f.label :phone, "Телефон (основной)", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+          <%= f.telephone_field :phone,
+            required: true,
+            autocomplete: "tel",
+            inputmode: "tel",
+            placeholder: "+7…",
+            class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
+        </div>
+      </div>
+      <div>
+        <%= f.label :email, "Email (альтернативный)", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+        <%= f.email_field :email,
+          autocomplete: "email",
+          placeholder: "name@example.com",
+          class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
+        <p class="mt-2 text-xs text-ink-muted">
+          Если неудобно отвечать по телефону — оставь email.
+        </p>
+      </div>
+      <div>
+        <%= f.label :message, "Сообщение", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+        <%= f.text_area :message,
+          required: true,
+          rows: 6,
+          class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
+      </div>
+      <div class="pt-2 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <%= f.submit "Отправить",
+          class: "hero-cta hero-cta--secondary",
+          data: { disable_with: "Отправляем..." } %>
+      </div>
+    <% end %>
+
+    <div class="mt-8 text-center">
+      <%= link_to "Вернуться на главную", root_path, class: "text-xs font-ui uppercase tracking-[0.14em] text-ink-muted hover:text-cyber-bright underline decoration-[var(--color-accent-glow)] underline-offset-4" %>
+    </div>
+  </div>
+</section>
