@@ -10,9 +10,9 @@
 - **Done**: Phase 2 / **2.3 Turbo Stream ответ как “единый пакет UI-обновлений”** (turbo_stream templates обновляют header counters / popover / product actions / page containers)
 - **Done**: Phase 3 / **3.1 Product card: добавить две CTA‑кнопки** (`products/_actions` + target `product_card_actions_<id>`, add-to-cart + wishlist toggle)
 - **Done**: Phase 3 / **3.4 Страницы `/cart` и `/wishlist`** (`cart/show` + `cart/_page` с qty controls; `wishlist/show` + `wishlist/_page` с toggle)
-- **Done**: Phase 4 / **4.1 Единые DOM targets** (`header_cart_counter`, `header_wishlist_counter`, `cart_popover`, `cart_page`, `product_card_actions_<id>`)
+- **Done**: Phase 4 / **4.1 Единые DOM targets** (`header_cart_counter`, `header_wishlist_counter`, `cart_page`, `product_card_actions_<id>`)
 - **Done**: Phase 4 / **4.2 Turbo Stream операции**:
-  - Cart `add/remove/update`: replace `header_cart_counter`, `cart_popover`, (опционально) `product_card_actions_<id>`, `cart_page`
+  - Cart `add/remove/update`: replace `header_cart_counter`, (опционально) `product_card_actions_<id>`, `cart_page`
   - Wishlist `toggle`: replace `header_wishlist_counter`, (опционально) `product_card_actions_<id>`, `wishlist_page`
 - **Done**: Phase 4 / **4.3 Контроллер-helpers для доступа к состоянию** (в `ApplicationController`: `cart_contract`, `wishlist_contract` + helper methods `cart_units_count`, `wishlist_count`, `in_wishlist?`, `cart_qty`)
 - **Done**: Phase 5 / **Routing** (`resource :cart` + `add/remove/update`, `resource :wishlist` + `toggle`)
@@ -20,7 +20,7 @@
 ## Fixups (после первичной сборки)
 - Turbo Stream мутации подготавливают page state (чтобы `cart/_page` и `wishlist/_page` рендерили названия/цены, а не только `#id`).
 - Turbo Stream шаблоны передают в `products/_actions` корректный local `product:` (вместо несуществующего `product_id:`).
-- Cart popover в header: desktop hover/focus (CSS `group-hover`/`group-focus-within`), mobile click через `<details>/<summary>`, popover остаётся в DOM как `turbo_frame_tag "cart_popover"` для Turbo replace.
+- Cart popover в header: удалён (см. `implementation_status/remove_header_cart_popover.md`).
 - Header приведён к композиции: использует `shared/_cart_button` и `shared/_wishlist_button` вместо дублирующей разметки.
 
 ## Contracts API (фиксировано)

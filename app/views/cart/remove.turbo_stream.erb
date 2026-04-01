@@ -1,5 +1,4 @@
 <%= turbo_stream.replace "header_cart_counter", partial: "shared/cart_counter" %>
-<%= turbo_stream.replace "cart_popover", partial: "cart/popover" %>
 
 <% if @product %>
   <%= turbo_stream.replace "product_card_actions_#{@product.id}", partial: "products/actions", locals: { product: @product } %>

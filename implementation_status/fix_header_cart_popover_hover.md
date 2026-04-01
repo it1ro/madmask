@@ -11,5 +11,5 @@
 - `app/javascript/controllers/cart_popover_controller.js`
 
 ## Notes
-- Mobile header cart uses `<details>/<summary>` and remains unchanged.
+- Mobile header cart used `<details>/<summary>` at the time of this change.
 

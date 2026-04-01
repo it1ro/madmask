@@ -114,34 +114,6 @@
         </div>
       </div>
 
-      <details class="relative md:hidden">
-        <summary
-          class="list-none inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-line bg-page/30 px-3 text-ink transition hover:border-glow hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2"
-          aria-label="Корзина"
-        >
-          <svg
-            class="h-5 w-5 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M6 6h15l-2 9H7L6 6Z" />
-            <path d="M6 6 5 3H2" />
-            <circle cx="9" cy="20" r="1" />
-            <circle cx="18" cy="20" r="1" />
-          </svg>
-          <span class="sr-only">Корзина</span>
-        </summary>
-
-        <div class="absolute right-0 top-full mt-2 w-72">
-          <%= render "cart/popover" %>
-        </div>
-      </details>
-
       <%= render "shared/cart_button" %>
       <%= render "shared/wishlist_button" %>
     </div>
