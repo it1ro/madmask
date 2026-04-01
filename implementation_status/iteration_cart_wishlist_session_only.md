@@ -5,6 +5,7 @@
 - **Done**: Phase 1 / **1.2 Session storage schema**
 - **Done**: Phase 1 / **1.3 Где хранить контракты и как инжектить session**
 - **Done**: Phase 1 / **1.4 Минимальные unit-tests контрактов**
+- **Done**: Phase 2 / **2.1 Создать контроллеры** (`CartController`, `WishlistController`)
 
 ## Contracts API (фиксировано)
 
