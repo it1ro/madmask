@@ -3,12 +3,29 @@
 <%# Three.js 0.170: pins in config/importmap.rb; Stimulus webgl_preview loads via dynamic import on this page only. %>
 
 <article class="py-4 md:py-8">
-  <p class="mb-6">
-    <%= link_to "← К каталогу",
-      products_path,
-      class:
-        "inline-flex min-h-[44px] items-center text-sm text-cyber underline-offset-2 transition active:scale-[0.98] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 rounded-sm motion-reduce:active:scale-100" %>
-  </p>
+  <nav class="mb-6" aria-label="Хлебные крошки">
+    <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--color-text-secondary)]">
+      <li>
+        <%= link_to "Каталог",
+          products_path,
+          class:
+            "inline-flex min-h-[44px] items-center rounded-sm text-cyber underline-offset-2 transition hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+      </li>
+      <li aria-hidden="true" class="select-none text-[var(--color-text-muted)]">/</li>
+      <li>
+        <%= link_to product_category_label(@product.category),
+          products_path(category: @product.category),
+          class:
+            "inline-flex min-h-[44px] items-center rounded-sm text-cyber underline-offset-2 transition hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+      </li>
+      <li aria-hidden="true" class="select-none text-[var(--color-text-muted)]">/</li>
+      <li class="min-w-0">
+        <span class="block max-w-full truncate text-[var(--color-text-primary)]" aria-current="page">
+          <%= @product.name %>
+        </span>
+      </li>
+    </ol>
+  </nav>
 
   <div class="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12">
     <div class="flex min-w-0 flex-col gap-6">
@@ -237,7 +254,7 @@
     </div>
 
     <div
-      class="product-show-info"
+      class="product-show-info lg:sticky lg:top-28 lg:self-start"
       data-controller="reveal-on-scroll"
       data-reveal-on-scroll-revealed-class="product-show-info--revealed"
     >
@@ -249,7 +266,7 @@
           <%= @product.name %>
         </h1>
         <p class="mt-4 font-mono text-2xl text-price">
-          <%= number_to_currency(@product.price, unit: "₽", separator: ",", delimiter: " ", format: "%n %u") %>
+          <%= number_to_currency(@product.price, unit: "₽", delimiter: " ", format: "%n %u", precision: 0) %>
         </p>
 
         <% if @product.description.present? %>
