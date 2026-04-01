@@ -8,6 +8,7 @@
 - **Done**: Phase 2 / **2.1 Создать контроллеры** (`CartController`, `WishlistController`)
 - **Done**: Phase 2 / **2.2 Экшены и контрактная граница** (валидация параметров, вызов контрактов, Turbo Stream vs HTML redirect fallback)
 - **Done**: Phase 2 / **2.3 Turbo Stream ответ как “единый пакет UI-обновлений”** (turbo_stream templates обновляют header counters / popover / product actions / page containers)
+- **Done**: Phase 3 / **3.1 Product card: добавить две CTA‑кнопки** (`products/_actions` + target `product_card_actions_<id>`, add-to-cart + wishlist toggle)
 
 ## Contracts API (фиксировано)
 
