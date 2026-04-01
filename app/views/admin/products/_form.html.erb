@@ -15,21 +15,62 @@
     </div>
   <% end %>
 
-  <div>
-    <%= f.label :name, "Название", class: "mb-1 block text-sm font-medium text-ink-muted" %>
-    <%= f.text_field :name,
-      required: true,
-      autocomplete: "off",
-      class:
-        "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
-  </div>
+  <% ru = product.translation_for(:ru, build: true) %>
+  <% en = product.translation_for(:en, build: true) %>
 
-  <div>
-    <%= f.label :description, "Описание", class: "mb-1 block text-sm font-medium text-ink-muted" %>
-    <%= f.text_area :description,
-      rows: 4,
-      class:
-        "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
+  <div class="grid gap-4 lg:grid-cols-2">
+    <section class="rounded-xl border border-line bg-page/30 p-4">
+      <div class="mb-3 flex items-center justify-between">
+        <h3 class="font-ui text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted">RU</h3>
+        <p class="text-xs text-ink-faint">Основной язык</p>
+      </div>
+
+      <%= f.fields_for :translations, ru do |tf| %>
+        <%= tf.hidden_field :locale %>
+        <div>
+          <%= tf.label :name, "Название", class: "mb-1 block text-sm font-medium text-ink-muted" %>
+          <%= tf.text_field :name,
+            required: true,
+            autocomplete: "off",
+            class:
+              "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
+        </div>
+
+        <div class="mt-4">
+          <%= tf.label :description, "Описание", class: "mb-1 block text-sm font-medium text-ink-muted" %>
+          <%= tf.text_area :description,
+            rows: 4,
+            class:
+              "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="rounded-xl border border-line bg-page/30 p-4">
+      <div class="mb-3 flex items-center justify-between">
+        <h3 class="font-ui text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted">EN</h3>
+        <p class="text-xs text-ink-faint">Дополнительно</p>
+      </div>
+
+      <%= f.fields_for :translations, en do |tf| %>
+        <%= tf.hidden_field :locale %>
+        <div>
+          <%= tf.label :name, "Name", class: "mb-1 block text-sm font-medium text-ink-muted" %>
+          <%= tf.text_field :name,
+            autocomplete: "off",
+            class:
+              "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
+        </div>
+
+        <div class="mt-4">
+          <%= tf.label :description, "Description", class: "mb-1 block text-sm font-medium text-ink-muted" %>
+          <%= tf.text_area :description,
+            rows: 4,
+            class:
+              "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
+        </div>
+      <% end %>
+    </section>
   </div>
 
   <div class="grid gap-4 sm:grid-cols-2">

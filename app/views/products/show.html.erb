@@ -1,4 +1,4 @@
-<% content_for :title, "#{@product.name} — Madmask" %>
+<% content_for :title, "#{@product.translated_name} — Madmask" %>
 
 <%# Three.js 0.170: pins in config/importmap.rb; Stimulus webgl_preview loads via dynamic import on this page only. %>
 
@@ -21,7 +21,7 @@
       <li aria-hidden="true" class="select-none text-[var(--color-text-muted)]">/</li>
       <li class="min-w-0">
         <span class="block max-w-full truncate text-[var(--color-text-primary)]" aria-current="page">
-          <%= @product.name %>
+          <%= @product.translated_name %>
         </span>
       </li>
     </ol>
@@ -86,7 +86,7 @@
                     sizes: "(max-width: 640px) 100vw, 90vw",
                     class:
                       "pointer-events-none absolute inset-0 block h-full w-full object-cover object-center motion-reduce:transition-none transition-opacity duration-200 group-hover:opacity-95",
-                    alt: @product.name,
+                    alt: @product.translated_name,
                     data: { product_gallery_target: "main" } %>
                 <% else %>
                   <span class="absolute inset-0 flex items-center justify-center px-4 text-center text-sm text-[var(--color-text-muted)]">
@@ -233,7 +233,7 @@
                     <% lb0 = image_slides.first %>
                     <%= image_tag lb0.fetch(:src),
                       srcset: lb0.fetch(:srcset),
-                      alt: @product.name,
+                      alt: @product.translated_name,
                       sizes: "(max-width: 640px) 96vw, min(92vw, 2400px)",
                       class:
                         "max-h-[min(88dvh,92vh)] max-w-full object-contain object-center shadow-[0_0_40px_rgba(0,0,0,0.45)] motion-reduce:transition-none transition-opacity duration-150 #{preview_images.many? ? "cursor-pointer" : "cursor-default"}",
@@ -295,15 +295,15 @@
           <%= product_category_label(@product.category) %>
         </p>
         <h1 class="font-heading mt-2 text-3xl font-semibold tracking-wide text-ink md:text-4xl">
-          <%= @product.name %>
+          <%= @product.translated_name %>
         </h1>
         <p class="mt-4 font-mono text-2xl text-price">
           <%= number_to_currency(@product.price, unit: "₽", delimiter: " ", format: "%n %u", precision: 0) %>
         </p>
 
-        <% if @product.description.present? %>
+        <% if @product.translated_description.present? %>
           <div class="mt-6 max-w-prose whitespace-pre-line text-ink-muted leading-relaxed">
-            <%= @product.description %>
+            <%= @product.translated_description %>
           </div>
         <% end %>
 
