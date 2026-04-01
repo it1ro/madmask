@@ -4,12 +4,17 @@
     <% page_title = content_for(:title).presence || "Madmask" %>
     <title><%= page_title %></title>
     <% meta_description = content_for(:meta_description).presence %>
-    <% meta_image = content_for(:meta_image).presence || "/images/site-hero.png" %>
-    <% meta_url = content_for(:meta_url).presence || request.original_url %>
+    <% meta_image = absolute_url(content_for(:meta_image).presence || "/images/site-hero.png") %>
+    <% meta_url = content_for(:meta_url).presence || canonical_url %>
+    <% meta_robots = meta_robots_content %>
 
     <% if meta_description.present? %>
       <meta name="description" content="<%= meta_description %>">
     <% end %>
+    <% if meta_robots.present? %>
+      <meta name="robots" content="<%= meta_robots %>">
+    <% end %>
+    <link rel="canonical" href="<%= meta_url %>">
     <meta property="og:site_name" content="Madmask">
     <meta property="og:title" content="<%= page_title %>">
     <% if meta_description.present? %>

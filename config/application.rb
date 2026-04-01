@@ -26,5 +26,9 @@ module Madmask
 
     # Optional; primary resolution is ENV/credentials in ProductsHelper#madmask_contact_email
     config.x.contact_email = ENV.fetch("MADMASK_CONTACT_EMAIL", "").presence
+
+    # SEO: canonical host used for redirects, canonical URLs, and sitemap.
+    default_canonical_host = Rails.env.development? ? "localhost:3000" : "madmask.ilmir.tech"
+    config.x.canonical_host = ENV.fetch("APP_HOST", default_canonical_host)
   end
 end

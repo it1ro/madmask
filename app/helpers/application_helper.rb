@@ -2,6 +2,52 @@ module ApplicationHelper
   include Pagy::Method
   include Pagy::NumericHelpers
 
+  def canonical_host
+    Rails.configuration.x.canonical_host
+  end
+
+  def canonical_protocol
+    "https"
+  end
+
+  def canonical_base_url
+    "#{canonical_protocol}://#{canonical_host}"
+  end
+
+  def canonical_url
+    return request.original_url if canonical_host.blank?
+
+    uri = URI.parse(request.original_url)
+    uri.scheme = canonical_protocol
+    uri.host = canonical_host
+    uri.to_s
+  end
+
+  def absolute_url(path_or_url)
+    value = path_or_url.to_s
+    return canonical_base_url if value.blank?
+    return value if value.match?(/\Ahttps?:\/\//)
+    return value if canonical_host.blank?
+
+    value = "/#{value}" unless value.start_with?("/")
+    "#{canonical_base_url}#{value}"
+  end
+
+  def noindex_page?
+    return true if request.path.start_with?("/admin")
+    return true if request.path == "/cart" || request.path.start_with?("/cart/")
+    return true if request.path == "/wishlist" || request.path.start_with?("/wishlist/")
+    return true if request.path == "/up"
+    return true if request.path.start_with?("/users")
+    return true if request.path == "/inquiries/thanks"
+
+    false
+  end
+
+  def meta_robots_content
+    content_for(:meta_robots).presence || (noindex_page? ? "noindex, follow" : nil)
+  end
+
   # Russian pluralization helper for small UI counters.
   # Example: russian_plural(3, "товар", "товара", "товаров") => "товара"
   def russian_plural(count, one, few, many)

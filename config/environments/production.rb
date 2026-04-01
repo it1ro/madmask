@@ -102,4 +102,9 @@ Rails.application.configure do
 
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  canonical_host = config.x.canonical_host
+  if canonical_host.present?
+    config.middleware.insert_before Rack::Runtime, CanonicalHostRedirect, canonical_host: canonical_host
+  end
 end
