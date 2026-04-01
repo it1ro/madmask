@@ -14,6 +14,8 @@
 - **Done**: Phase 4 / **4.2 Turbo Stream операции**:
   - Cart `add/remove/update`: replace `header_cart_counter`, `cart_popover`, (опционально) `product_card_actions_<id>`, `cart_page`
   - Wishlist `toggle`: replace `header_wishlist_counter`, (опционально) `product_card_actions_<id>`, `wishlist_page`
+- **Done**: Phase 4 / **4.3 Контроллер-helpers для доступа к состоянию** (в `ApplicationController`: `cart_contract`, `wishlist_contract` + helper methods `cart_units_count`, `wishlist_count`, `in_wishlist?`, `cart_qty`)
+- **Done**: Phase 5 / **Routing** (`resource :cart` + `add/remove/update`, `resource :wishlist` + `toggle`)
 
 ## Fixups (после первичной сборки)
 - Turbo Stream мутации подготавливают page state (чтобы `cart/_page` и `wishlist/_page` рендерили названия/цены, а не только `#id`).
