@@ -42,9 +42,12 @@ class Product < ApplicationRecord
   MAX_GALLERY_IMAGES = 10
   MAX_GALLERY_IMAGE_SIZE = 5.megabytes
 
+  MIN_DESCRIPTION_CHARS = 200
+
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :category, presence: true, inclusion: { in: CATEGORIES }
   validate :must_have_translated_name
+  validate :must_have_translated_description
   validate :model_file_must_be_gltf_or_glb, if: -> { model_file.attached? }
   validate :validate_gallery_images
 
@@ -89,6 +92,17 @@ class Product < ApplicationRecord
 
     errors.add(:translations, :blank)
     errors.add(:base, "Название на языке по умолчанию обязательно")
+  end
+
+  def must_have_translated_description
+    desc = translation_for(I18n.default_locale)&.description.to_s
+    return if desc.present? && desc.length >= MIN_DESCRIPTION_CHARS
+
+    errors.add(:translations, :blank)
+    errors.add(
+      :base,
+      "Описание на языке по умолчанию обязательно (минимум #{MIN_DESCRIPTION_CHARS} символов)"
+    )
   end
 
   def validate_gallery_images

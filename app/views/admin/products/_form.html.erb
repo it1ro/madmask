@@ -40,8 +40,19 @@
           <%= tf.label :description, "Описание", class: "mb-1 block text-sm font-medium text-ink-muted" %>
           <%= tf.text_area :description,
             rows: 4,
+            placeholder: <<~TEXT,
+              Кратко и по делу (желательно 120–250 слов):
+              • Что это за маска и какой вайб/жанр
+              • Для чего подходит (сцена/съёмка/косплей)
+              • Материалы/посадка/крепление/уход
+              • Сроки/наличие
+              • Короткий FAQ (1–3 вопроса)
+            TEXT
             class:
               "w-full rounded-lg border border-line bg-panel px-3 py-2 text-ink placeholder:text-ink-faint focus:border-glow focus:outline-none focus:ring-1 focus:ring-glow" %>
+          <p class="mt-1 text-xs text-ink-faint">
+            Для SEO описание на RU обязательно (минимум 200 символов). Делайте уникальным для каждого товара.
+          </p>
         </div>
       <% end %>
     </section>
