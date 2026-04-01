@@ -2,7 +2,7 @@ class WishlistContract
   SESSION_KEY = :wishlist_product_ids
 
   def initialize(session:)
-    @session = session
+    @store = SessionStore.new(session)
   end
 
   def toggle(product_id)
@@ -27,10 +27,10 @@ class WishlistContract
 
   private
 
-  attr_reader :session
+  attr_reader :store
 
   def session_ids
-    raw = session[SESSION_KEY]
+    raw = store.read(SESSION_KEY)
     return [] unless raw.is_a?(Array)
 
     raw.filter_map do |v|
@@ -39,7 +39,7 @@ class WishlistContract
   end
 
   def write_session_ids!(ids)
-    session[SESSION_KEY] = ids
+    store.write(SESSION_KEY, ids)
   end
 
   def normalize_product_id(product_id)

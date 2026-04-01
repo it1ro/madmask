@@ -2,7 +2,7 @@ class CartContract
   SESSION_KEY = :cart_items
 
   def initialize(session:)
-    @session = session
+    @store = SessionStore.new(session)
   end
 
   def add(product_id)
@@ -50,10 +50,10 @@ class CartContract
 
   private
 
-  attr_reader :session
+  attr_reader :store
 
   def session_items
-    raw = session[SESSION_KEY]
+    raw = store.read(SESSION_KEY)
 
     return {} unless raw.is_a?(Hash)
 
@@ -69,7 +69,7 @@ class CartContract
   end
 
   def write_session_items!(items)
-    session[SESSION_KEY] = items
+    store.write(SESSION_KEY, items)
   end
 
   def normalize_product_id(product_id)

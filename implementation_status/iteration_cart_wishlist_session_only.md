@@ -3,6 +3,7 @@
 ## Status
 - **Done**: Phase 1 / **1.1 Определить интерфейсы**
 - **Done**: Phase 1 / **1.2 Session storage schema**
+- **Done**: Phase 1 / **1.3 Где хранить контракты и как инжектить session**
 
 ## Contracts API (фиксировано)
 
@@ -22,6 +23,9 @@
 - Session schema (фиксировано и реализовано в контрактах):
   - Cart: `session[:cart_items]` → Hash `{ "<product_id>" => qty_integer }`
   - Wishlist: `session[:wishlist_product_ids]` → Array of String IDs `["1", "2", ...]`
+- Session injection pattern:
+  - Контракты лежат в `app/contracts/*` и инициализируются через keyword-аргумент `session:`
+  - Внутри используется мини-адаптер `SessionStore` (`app/contracts/session_store.rb`) как прослойка над `session` (чтобы проще менять ключи/формат и удобнее тестировать)
 - Инварианты:
   - `product_id` нормализуется в `String` (blank → noop)
   - `qty` всегда integer; `qty <= 0` трактуется как удаление позиции
