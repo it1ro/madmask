@@ -36,6 +36,7 @@
   - Hero/logo SVG продублированы в `public/images/` и подключаются по `/images/...` для надёжности (обход проблемы Propshaft load path):
     - `public/images/madmask-hero.svg`
     - `public/images/madmask-logo.svg`
+    - `public/images/madmask-label.png` (используется в шапке вместо `madmask-logo.svg`)
 
 ### Метрики (что замерить)
 
