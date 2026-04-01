@@ -34,14 +34,38 @@
         Артефакты для&nbsp;образа
       </h1>
       <p class="hero-subtitle text-base md:text-lg">
-        Коллекция масок в&nbsp;духе fantasy, horror, sci‑fi и&nbsp;cyberpunk.
-        На&nbsp;странице товара — интерактивный 3D‑просмотр: вращай модель и&nbsp;рассмотри детали до&nbsp;заказа.
+        Маски Madmask — для сцены, съёмок и&nbsp;косплея. Сначала смотри форму в&nbsp;3D (в карточке товара),
+        затем оставь заявку — подскажем наличие, финиш и&nbsp;сроки.
       </p>
-      <%= link_to products_path,
-        class: "hero-cta",
-        data: { controller: "catalog-flash", action: "mouseenter->catalog-flash#flashOnce" } do %>
-        В каталог
-      <% end %>
+      <ul class="hero-proof-list" aria-label="Коротко о Madmask">
+        <li>Ручная сборка, малые серии</li>
+        <li>3D‑просмотр деталей до решения</li>
+        <li>Custom по твоим референсам</li>
+      </ul>
+
+      <div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <%= link_to products_path,
+          class: "hero-cta",
+          data: { controller: "catalog-flash", action: "mouseenter->catalog-flash#flashOnce" } do %>
+          В каталог
+        <% end %>
+
+        <%= link_to "#contact", class: "hero-cta hero-cta--secondary" do %>
+          Оставить заявку
+        <% end %>
+      </div>
+
+      <p class="mt-1 text-xs text-ink-muted font-ui tracking-wide">
+        VK — витрина работ и бэкстейдж:
+        <a
+          href="https://vk.com/madmask73"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="underline decoration-[var(--color-accent-glow)] underline-offset-4 hover:text-cyber-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2"
+        >
+          смотреть
+        </a>
+      </p>
     </div>
   </section>
 </div>
@@ -53,7 +77,7 @@
         Новинки
       </h2>
       <p class="mt-2 font-ui text-sm tracking-wide text-ink-muted">
-        Свежие позиции в каталоге — с 3D на странице товара.
+        Новые позиции — в реальном масштабе и с&nbsp;3D‑просмотром. Открой карточку и&nbsp;проверь силуэт, фактуру и&nbsp;пропорции.
       </p>
     </div>
     <div class="flex flex-col gap-5">
@@ -73,7 +97,7 @@
     Жанры коллекции
   </h2>
   <p class="categories-section__lead">
-    Жанровые линии и&nbsp;индивидуальный заказ — маски по&nbsp;твоим вводным, отдельно от&nbsp;готовых позиций в&nbsp;каталоге.
+    Жанровые линии — в&nbsp;каталоге. Нужен индивидуальный заказ? Оставь заявку и&nbsp;приложи референсы — обсудим задачу.
   </p>
   <ul class="categories-grid">
     <li>
@@ -134,7 +158,7 @@
       <% end %>
     </li>
     <li>
-      <%= link_to products_path(category: "custom"),
+      <%= link_to "#contact",
         class: "category-card category-card--custom",
         aria: { label: "Custom — маски на индивидуальный заказ" } do %>
         <svg class="category-card__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -164,7 +188,7 @@
     Как это работает
   </h2>
   <p class="how-it-works__lead">
-    Три шага от выбора маски до образа — без лишней суеты.
+    Выбери → проверь в&nbsp;3D → оставь заявку. Мы ответим по наличию, финишу и&nbsp;срокам.
   </p>
   <ol class="how-it-works__grid">
     <li class="how-it-works__card" style="--reveal-delay: 0ms">
@@ -216,10 +240,48 @@
       </div>
       <h3 class="how-it-works__step-title">Воплоти образ</h3>
       <p class="how-it-works__text">
-        Свяжись с нами по понравившейся позиции — маска станет частью твоего характера и сцены.
+        Оставь заявку по понравившейся позиции — и мы вернёмся с наличием, финишем и сроками.
       </p>
     </li>
   </ol>
+
+  <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+    <%= link_to "#contact", class: "hero-cta hero-cta--secondary" do %>
+      Оставить заявку
+    <% end %>
+    <%= link_to products_path, class: "hero-cta" do %>
+      Открыть каталог
+    <% end %>
+  </div>
+</section>
+
+<%# Process / materials (variant B) %>
+<section class="px-4 py-12 md:px-6 md:py-16" aria-labelledby="process-heading">
+  <div class="mx-auto max-w-6xl">
+    <h2 id="process-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl text-center">
+      Как мы делаем
+    </h2>
+    <div class="mt-8 grid gap-4 md:grid-cols-3">
+      <div class="rounded-xl border border-line bg-card p-5">
+        <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Материалы</h3>
+        <p class="mt-2 text-sm text-ink-muted">
+          Подбираем базу и финиш под задачу (сцена/съёмка/косплей). Уточним варианты в ответе на заявку.
+        </p>
+      </div>
+      <div class="rounded-xl border border-line bg-card p-5">
+        <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Посадка</h3>
+        <p class="mt-2 text-sm text-ink-muted">
+          Крепление и посадка — под комфорт и стабильность. Если есть требования — напиши в заявке.
+        </p>
+      </div>
+      <div class="rounded-xl border border-line bg-card p-5">
+        <h3 class="font-ui text-xs uppercase tracking-[0.14em] text-ink">Сроки</h3>
+        <p class="mt-2 text-sm text-ink-muted">
+          Готовые позиции зависят от наличия, custom — от сложности. Сориентируем после заявки.
+        </p>
+      </div>
+    </div>
+  </div>
 </section>
 
 <%# Brand / social proof — IMPLEMENTATION_PLAN 2b.7 %>
@@ -234,9 +296,9 @@
       Крафт и характер
     </h2>
     <p class="brand-story__body">
-      Madmask — не конвейер: маски собираются вручную и в малых сериях, с вниманием к деталям и к жанру —
-      от тёмного fantasy до холодного sci‑fi и неона cyberpunk. Коллекция растёт осмысленно: каждая позиция
-      со своим настроением, чтобы ты нашёл артефакт под роль, а не «ещё один аксессуар».
+      Madmask — это малые серии и custom. Мы делаем артефакты под жанр: от тёмного fantasy до неона cyberpunk.
+      В карточке товара ты сначала смотришь форму в 3D, а затем оставляешь заявку — мы подтверждаем наличие, финиш и сроки.
+      Если нужна уникальная маска — приложи референсы и опиши задачу: сцена/съёмка/косплей.
     </p>
     <figure class="brand-story__quote-wrap">
       <blockquote class="brand-story__quote">
@@ -254,5 +316,79 @@
       </blockquote>
       <figcaption class="brand-story__attribution">Слоган коллекции</figcaption>
     </figure>
+  </div>
+</section>
+
+<%# Closing CTA (variant B) %>
+<section class="px-4 pb-14 pt-10 md:px-6 md:pb-20" aria-labelledby="closing-cta-heading">
+  <div class="mx-auto max-w-6xl rounded-2xl border border-line bg-card px-6 py-10 text-center md:px-10">
+    <h2 id="closing-cta-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl">
+      Хочешь свою маску?
+    </h2>
+    <p class="mx-auto mt-3 max-w-2xl text-sm text-ink-muted md:text-base">
+      Выбери готовую позицию или закажи custom. Оставь заявку — мы ответим по наличию, материалам и срокам.
+      VK — только для просмотра работ и новостей.
+    </p>
+    <div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <%= link_to "#contact", class: "hero-cta hero-cta--secondary" do %>
+        Оставить заявку
+      <% end %>
+      <%= link_to products_path, class: "hero-cta" do %>
+        В каталог
+      <% end %>
+      <a
+        href="https://vk.com/madmask73"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-2 text-xs font-ui uppercase tracking-[0.14em] text-ink-muted hover:text-cyber-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transition-none"
+      >
+        Смотреть VK
+      </a>
+    </div>
+  </div>
+</section>
+
+<%# Contact form (feedback) %>
+<section id="contact" class="px-4 pb-16 md:px-6" aria-labelledby="contact-heading">
+  <div class="mx-auto max-w-3xl rounded-2xl border border-line bg-card px-6 py-10 md:px-10">
+    <h2 id="contact-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl text-center">
+      Форма обратной связи
+    </h2>
+    <p class="mt-3 text-center text-sm text-ink-muted md:text-base">
+      Опиши задачу и оставь контакт — ответим по наличию, вариантам и срокам.
+    </p>
+
+    <%= form_with model: Inquiry.new, url: inquiries_path, class: "mt-8 space-y-4" do |f| %>
+      <div class="grid gap-4 md:grid-cols-2">
+        <div>
+          <%= f.label :name, "Имя (необязательно)", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+          <%= f.text_field :name,
+            autocomplete: "name",
+            class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
+        </div>
+        <div>
+          <%= f.label :contact, "Контакт (VK/Telegram/телефон/email)", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+          <%= f.text_field :contact,
+            required: true,
+            autocomplete: "email",
+            class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
+        </div>
+      </div>
+      <div>
+        <%= f.label :message, "Сообщение", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+        <%= f.text_area :message,
+          required: true,
+          rows: 5,
+          class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
+      </div>
+      <div class="pt-2 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <%= f.submit "Отправить",
+          class: "hero-cta hero-cta--secondary",
+          data: { disable_with: "Отправляем..." } %>
+        <p class="text-xs text-ink-muted text-center">
+          Ответим, как только увидим сообщение.
+        </p>
+      </div>
+    <% end %>
   </div>
 </section>

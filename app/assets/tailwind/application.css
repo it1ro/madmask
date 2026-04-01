@@ -410,6 +410,44 @@ body {
   filter: drop-shadow(0 0 18px rgba(183, 111, 224, 0.18));
 }
 
+.hero-cta--secondary {
+  background: transparent;
+  border-color: rgba(102, 252, 241, 0.45);
+  box-shadow:
+    0 0 18px rgba(102, 252, 241, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.hero-cta--secondary:hover {
+  box-shadow:
+    0 0 28px rgba(102, 252, 241, 0.35),
+    0 0 16px rgba(183, 111, 224, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.hero-proof-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+  font-family: var(--font-orbitron);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+}
+
+.hero-proof-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.hero-proof-list li::before {
+  content: "—";
+  color: rgba(102, 252, 241, 0.8);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-section__gradient-shift {
     animation: none;
