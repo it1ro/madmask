@@ -7,7 +7,10 @@ RUN_TAILWIND := $(COMPOSE) run --rm tailwind
 EXEC_WEB := $(COMPOSE) exec web
 export RAILS_MASTER_KEY ?= $(shell [ -f config/master.key ] && cat config/master.key)
 export KAMAL_REGISTRY_PASSWORD
-KAMAL_SSH_ARGS := $(if $(SSH_AUTH_SOCK),-e SSH_AUTH_SOCK=/ssh-agent -v $(SSH_AUTH_SOCK):/ssh-agent,-v $$HOME/.ssh:/root/.ssh:ro)
+# When GitHub Actions uses ssh-agent, we still need known_hosts inside the container
+# because Kamal hooks (e.g. .kamal/hooks/pre-app-boot) call ssh directly.
+KAMAL_KNOWN_HOSTS_ARGS := -v $$HOME/.ssh/known_hosts:/root/.ssh/known_hosts:ro
+KAMAL_SSH_ARGS := $(if $(SSH_AUTH_SOCK),-e SSH_AUTH_SOCK=/ssh-agent -v $(SSH_AUTH_SOCK):/ssh-agent $(KAMAL_KNOWN_HOSTS_ARGS),-v $$HOME/.ssh:/root/.ssh:ro)
 # Git 2.35+ blocks operations on repos with "dubious ownership" (common when the repo is bind-mounted).
 # We do NOT persist any git config; we only set safe.directory for this process.
 KAMAL_GIT_SAFE_ARGS := -e GIT_CONFIG_COUNT=2 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/app -e GIT_CONFIG_KEY_1=safe.directory -e GIT_CONFIG_VALUE_1=/app/.git
