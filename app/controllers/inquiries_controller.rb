@@ -13,6 +13,7 @@ class InquiriesController < ApplicationController
     end
 
     if @inquiry.save
+      InquiryMailer.with(inquiry: @inquiry).new_inquiry.deliver_later
       redirect_to thanks_inquiries_path, notice: "Заявка отправлена — скоро свяжемся."
     else
       flash.now[:alert] = "Проверь поля формы и попробуй ещё раз."

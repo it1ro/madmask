@@ -25,6 +25,7 @@
 - **Страница “Спасибо”**: отдельный шаблон `app/views/pages/inquiry_thanks.html.erb`, рендерится из `InquiriesController#thanks`.
 - **Stimulus**: `inquiry_form_controller.js` — inline‑проверки и отключение submit, если форма очевидно невалидна.
 - **Вложения**: добавлена возможность прикреплять файлы к заявке через Active Storage (до 5 файлов, до 10 МБ каждый).
+- **Email-уведомление**: при успешном создании заявки отправляется письмо на `code.for.func@gmail.com` (с вложениями, если они есть).
 - **Тесты**: обновлены контроллерные тесты и добавлены модельные тесты на правило `phone/email`.
 
 ### Изменённые/добавленные файлы
@@ -35,6 +36,9 @@
 - `app/views/inquiries/create.html.erb`
 - `app/views/pages/inquiry_thanks.html.erb`
 - `app/javascript/controllers/inquiry_form_controller.js`
+- `app/mailers/inquiry_mailer.rb`
+- `app/views/inquiry_mailer/new_inquiry.html.erb`
+- `app/views/inquiry_mailer/new_inquiry.text.erb`
 - `test/controllers/inquiries_controller_test.rb`
 - `test/models/inquiry_test.rb`
 

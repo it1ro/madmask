@@ -1,0 +1,12 @@
+Новая заявка
+
+Имя: <%= @inquiry.name.presence || "—" %>
+Телефон: <%= @inquiry.phone.presence || "—" %>
+Email: <%= @inquiry.email.presence || "—" %>
+
+Сообщение:
+<%= @inquiry.message.to_s %>
+
+<% if @inquiry.attachments.attached? %>
+Вложения: <%= @inquiry.attachments.size %>
+<% end %>

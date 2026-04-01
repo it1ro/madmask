@@ -1,0 +1,15 @@
+<h1>Новая заявка</h1>
+
+<p><strong>Имя:</strong> <%= @inquiry.name.presence || "—" %></p>
+<p><strong>Телефон:</strong> <%= @inquiry.phone.presence || "—" %></p>
+<p><strong>Email:</strong> <%= @inquiry.email.presence || "—" %></p>
+
+<hr>
+
+<p><strong>Сообщение:</strong></p>
+<pre style="white-space: pre-wrap"><%= @inquiry.message.to_s %></pre>
+
+<% if @inquiry.attachments.attached? %>
+  <hr>
+  <p><strong>Вложения:</strong> <%= @inquiry.attachments.size %></p>
+<% end %>
