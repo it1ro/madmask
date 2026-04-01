@@ -9,8 +9,8 @@
   - счётчик вынесен в отдельный блок и позиционируется абсолютно (`absolute -right-2 -top-2`) как угловой бейдж.
 - Выравнял стили бейджа избранного под корзину в `shared/_wishlist_counter.html.erb` (фон `bg-accent-deep`).
 - Сделал скрытие бейджа при нулевом количестве:
-  - `shared/_cart_counter.html.erb` и `shared/_wishlist_counter.html.erb` добавляют `hidden` при `count == 0`,
-  - при нуле число не выводится, но DOM-узел с `id` сохраняется для Turbo Stream `replace`.
+  - `shared/_cart_counter.html.erb` и `shared/_wishlist_counter.html.erb` теперь рендерят бейдж **только если `count > 0`**,
+  - `id` оставлен на пустой обёртке (`div#header_*_counter`) без размеров, чтобы Turbo Stream `replace` работал и при нуле.
 - DOM target для Turbo Stream обновления (`id="header_wishlist_counter"`) сохранён, `wishlist/toggle.turbo_stream.erb` продолжает работать без изменений.
 
 ## Файлы
