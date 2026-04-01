@@ -6,6 +6,8 @@ export default class extends Controller {
     "phone",
     "email",
     "message",
+    "attachments",
+    "attachmentsSummary",
     "submit",
     "nameError",
     "phoneError",
@@ -16,11 +18,26 @@ export default class extends Controller {
 
   connect() {
     this.refresh()
+    this.filesChanged()
   }
 
   refresh() {
     const errors = this.validate()
     this.render(errors)
+  }
+
+  filesChanged() {
+    if (!this.hasAttachmentsTarget || !this.hasAttachmentsSummaryTarget) return
+
+    const files = Array.from(this.attachmentsTarget.files || [])
+    if (files.length === 0) {
+      this.attachmentsSummaryTarget.textContent = "Файлы не выбраны"
+      return
+    }
+
+    const names = files.map((file) => file.name).filter(Boolean)
+    const joined = names.join(", ")
+    this.attachmentsSummaryTarget.textContent = joined || `Выбрано файлов: ${files.length}`
   }
 
   validate() {

@@ -32,6 +32,7 @@
 
           <%= form_with model: @inquiry,
             url: inquiries_path,
+            multipart: true,
             class: "space-y-7",
             data: { turbo: true, controller: "inquiry-form", action: "input->inquiry-form#refresh blur->inquiry-form#refresh" } do |f| %>
             <div class="hidden" aria-hidden="true">
@@ -158,6 +159,43 @@
                   </p>
                 <% else %>
                   <p class="mt-2 hidden text-xs text-[rgba(255,110,140,0.9)]" data-inquiry-form-target="messageError"></p>
+                <% end %>
+              </div>
+
+              <div class="mt-5">
+                <% attachments_errors = @inquiry.errors.full_messages_for(:attachments) %>
+                <% attachments_hint_id = "inquiry_attachments_hint" %>
+                <% attachments_error_id = "inquiry_attachments_error" %>
+                <% attachments_describedby = [attachments_hint_id, (attachments_errors.any? ? attachments_error_id : nil)].compact.join(" ") %>
+                <%= f.label :attachments, "Файлы", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+                <div class="mt-2 flex flex-wrap items-center gap-3">
+                  <%= f.file_field :attachments,
+                    multiple: true,
+                    include_hidden: false,
+                    accept: "image/*,application/pdf",
+                    "aria-invalid": attachments_errors.any?,
+                    "aria-describedby": attachments_describedby,
+                    data: { action: "change->inquiry-form#filesChanged", inquiry_form_target: "attachments" },
+                    class: "sr-only" %>
+
+                  <label
+                    for="inquiry_attachments"
+                    class="inline-flex cursor-pointer items-center rounded-md border border-line bg-[rgba(183,111,224,0.18)] px-3 py-2 text-xs font-ui uppercase tracking-[0.14em] text-ink transition hover:bg-[rgba(183,111,224,0.26)] focus-within:ring-2 focus-within:ring-[rgba(183,111,224,0.25)]"
+                  >
+                    Выбрать файлы
+                  </label>
+
+                  <span class="text-xs text-ink-muted" data-inquiry-form-target="attachmentsSummary">
+                    Файлы не выбраны
+                  </span>
+                </div>
+                <p id="<%= attachments_hint_id %>" class="mt-2 text-xs text-ink-muted">
+                  Можно приложить до 5 файлов (JPG/PNG/PDF), до 10 МБ каждый.
+                </p>
+                <% if attachments_errors.any? %>
+                  <p id="<%= attachments_error_id %>" class="mt-2 text-xs text-[rgba(255,110,140,0.9)]">
+                    <%= attachments_errors.first %>
+                  </p>
                 <% end %>
               </div>
             </div>
