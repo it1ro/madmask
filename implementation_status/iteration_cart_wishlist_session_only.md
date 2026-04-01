@@ -6,6 +6,7 @@
 - **Done**: Phase 1 / **1.3 Где хранить контракты и как инжектить session**
 - **Done**: Phase 1 / **1.4 Минимальные unit-tests контрактов**
 - **Done**: Phase 2 / **2.1 Создать контроллеры** (`CartController`, `WishlistController`)
+- **Done**: Phase 2 / **2.2 Экшены и контрактная граница** (валидация параметров, вызов контрактов, Turbo Stream vs HTML redirect fallback)
 
 ## Contracts API (фиксировано)
 
