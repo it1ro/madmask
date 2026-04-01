@@ -34,4 +34,3 @@ class WishlistController < ApplicationController
     id
   end
 end
-

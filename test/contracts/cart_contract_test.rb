@@ -10,11 +10,11 @@ class CartContractTest < ActiveSupport::TestCase
     assert_equal [], @contract.list
 
     @contract.add(1)
-    assert_equal([{ product_id: "1", qty: 1 }], @contract.list)
+    assert_equal([ { product_id: "1", qty: 1 } ], @contract.list)
     assert_equal({ "1" => 1 }, @session[:cart_items])
 
     @contract.add("1")
-    assert_equal([{ product_id: "1", qty: 2 }], @contract.list)
+    assert_equal([ { product_id: "1", qty: 2 } ], @contract.list)
     assert_equal({ "1" => 2 }, @session[:cart_items])
   end
 
@@ -24,15 +24,15 @@ class CartContractTest < ActiveSupport::TestCase
     assert_equal 2, @contract.list.size
 
     @contract.remove("1")
-    assert_equal([{ product_id: "2", qty: 1 }], @contract.list)
+    assert_equal([ { product_id: "2", qty: 1 } ], @contract.list)
     assert_equal({ "2" => 1 }, @session[:cart_items])
 
-    assert_equal([{ product_id: "2", qty: 1 }], @contract.remove("   "))
+    assert_equal([ { product_id: "2", qty: 1 } ], @contract.remove("   "))
   end
 
   test "update sets qty, and qty <= 0 removes" do
     @contract.update("1", 3)
-    assert_equal([{ product_id: "1", qty: 3 }], @contract.list)
+    assert_equal([ { product_id: "1", qty: 3 } ], @contract.list)
     assert_equal({ "1" => 3 }, @session[:cart_items])
 
     @contract.update("1", 0)
@@ -51,7 +51,7 @@ class CartContractTest < ActiveSupport::TestCase
   end
 
   test "list sanitizes malformed session data (no blanks, no non-positive qty, no non-hash)" do
-    @session[:cart_items] = ["bad"]
+    @session[:cart_items] = [ "bad" ]
     assert_equal [], @contract.list
 
     @session[:cart_items] = {
@@ -71,4 +71,3 @@ class CartContractTest < ActiveSupport::TestCase
     )
   end
 end
-

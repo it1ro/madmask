@@ -10,8 +10,8 @@ class WishlistContractTest < ActiveSupport::TestCase
     assert_equal [], @contract.list
 
     @contract.toggle(1)
-    assert_equal ["1"], @contract.list
-    assert_equal ["1"], @session[:wishlist_product_ids]
+    assert_equal [ "1" ], @contract.list
+    assert_equal [ "1" ], @session[:wishlist_product_ids]
 
     @contract.toggle("1")
     assert_equal [], @contract.list
@@ -27,8 +27,7 @@ class WishlistContractTest < ActiveSupport::TestCase
     @session[:wishlist_product_ids] = "bad"
     assert_equal [], @contract.list
 
-    @session[:wishlist_product_ids] = [" 1 ", "1", "", "  ", 2, 2, "3"]
-    assert_equal ["1", "2", "3"], @contract.list
+    @session[:wishlist_product_ids] = [ " 1 ", "1", "", "  ", 2, 2, "3" ]
+    assert_equal [ "1", "2", "3" ], @contract.list
   end
 end
-

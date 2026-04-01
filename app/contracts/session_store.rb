@@ -15,4 +15,3 @@ class SessionStore
 
   attr_reader :session
 end
-
