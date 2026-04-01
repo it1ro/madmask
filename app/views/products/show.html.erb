@@ -307,24 +307,91 @@
           </div>
         <% end %>
 
-        <% contact_href = product_contact_mailto_url(@product) %>
-        <div class="mt-8">
-          <% if contact_href.present? %>
-            <%= link_to "Связаться",
-              contact_href,
-              class: "product-cta cta-pulse-shadow inline-flex w-full min-h-[44px] justify-center sm:w-auto sm:min-w-[12rem]" %>
-          <% else %>
-            <button
-              type="button"
-              disabled
-              class="product-cta inline-flex w-full min-h-[44px] cursor-not-allowed justify-center opacity-50 sm:w-auto sm:min-w-[12rem]"
-            >
-              Связаться
-            </button>
-            <p class="mt-2 text-xs text-ink-faint">
-              Контакт для связи не настроен. Для администратора: env <code class="rounded bg-panel px-1 py-0.5 text-[0.7rem]">MADMASK_CONTACT_EMAIL</code> или credentials <code class="rounded bg-panel px-1 py-0.5 text-[0.7rem]">madmask.contact_email</code>.
-            </p>
-          <% end %>
+        <div class="mt-8 flex flex-col gap-3">
+          <% qty = cart_qty(@product.id) %>
+          <% wishlist_on = in_wishlist?(@product.id) %>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="inline-flex items-stretch overflow-hidden rounded-lg border border-line bg-page/40">
+              <%= button_to(
+                cart_path(product_id: @product.id, qty: qty - 1),
+                method: :patch,
+                aria: { label: "Уменьшить количество" },
+                class:
+                  "inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-ink transition active:scale-[0.98] hover:bg-accent-deep hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
+              ) do %>
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                  <path d="M5 12h14" />
+                </svg>
+              <% end %>
+
+              <div
+                class="flex min-h-[44px] min-w-[3.5rem] items-center justify-center border-x border-line px-3 font-ui text-sm font-semibold text-ink"
+                aria-label="Количество в корзине: <%= qty %>"
+              >
+                <%= qty %>
+              </div>
+
+              <%= button_to(
+                cart_path(product_id: @product.id, qty: qty + 1),
+                method: :patch,
+                aria: { label: "Увеличить количество" },
+                class:
+                  "inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-ink transition active:scale-[0.98] hover:bg-accent-deep hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
+              ) do %>
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                  <path d="M12 5v14" />
+                  <path d="M5 12h14" />
+                </svg>
+              <% end %>
+            </div>
+
+            <% if qty.positive? %>
+              <%= button_to(
+                remove_cart_path(product_id: @product.id),
+                method: :post,
+                aria: { label: "Убрать из корзины" },
+                class:
+                  "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-line bg-page/40 px-3 font-ui text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted transition active:scale-[0.98] hover:border-glow hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
+              ) do %>
+                Убрать
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <%= button_to(
+              add_cart_path(product_id: @product.id),
+              method: :post,
+              class:
+                "inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border border-accent bg-page/30 px-4 py-2 font-ui text-xs font-semibold uppercase tracking-[0.14em] text-ink transition active:scale-[0.98] hover:bg-accent-deep hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none sm:w-auto sm:min-w-[12rem]",
+              aria: { label: "Добавить в корзину" }
+            ) do %>
+              <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 6h15l-2 9H7L6 6Z" />
+                <path d="M6 6 5 3H2" />
+                <circle cx="9" cy="20" r="1" />
+                <circle cx="18" cy="20" r="1" />
+              </svg>
+              В корзину
+            <% end %>
+
+            <%= button_to(
+              toggle_wishlist_path(product_id: @product.id),
+              method: :post,
+              aria: { pressed: wishlist_on, label: (wishlist_on ? "Убрать из избранного" : "Добавить в избранное") },
+              class:
+                class_names(
+                  "inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border px-4 py-2 font-ui text-xs font-semibold uppercase tracking-[0.14em] transition active:scale-[0.98] hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none sm:w-auto sm:min-w-[12rem]",
+                  wishlist_on ? "border-cyber/70 bg-accent-deep/40 text-cyber" : "border-line bg-page/40 text-ink hover:border-glow hover:text-glow"
+                )
+            ) do %>
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="<%= wishlist_on ? "currentColor" : "none" %>" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.84 4.61c-1.54-1.34-3.78-1.13-5.12.31L12 8.09 8.28 4.92c-1.34-1.44-3.58-1.65-5.12-.31-1.7 1.48-1.79 4.1-.25 5.7L12 21l9.09-10.69c1.54-1.6 1.45-4.22-.25-5.7Z" />
+              </svg>
+              В избранное
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
