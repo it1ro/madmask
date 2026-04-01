@@ -1,5 +1,5 @@
 class InquiryMailer < ApplicationMailer
-  TO_ADDRESS = "code.for.func@gmail.com"
+  TO_ADDRESS = ENV.fetch("INQUIRY_TO_ADDRESS", "code.for.func@gmail.com")
 
   def new_inquiry
     @inquiry = params.fetch(:inquiry)

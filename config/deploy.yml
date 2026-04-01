@@ -41,6 +41,8 @@ registry:
 env:
   secret:
     - RAILS_MASTER_KEY
+    - SMTP_USERNAME
+    - SMTP_PASSWORD
   clear:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
@@ -58,6 +60,14 @@ env:
 
     # Log everything from Rails
     # RAILS_LOG_LEVEL: debug
+
+    # ActionMailer / inquiries (production)
+    INQUIRY_TO_ADDRESS: code.for.func@gmail.com
+    MAIL_FROM: no-reply@madmask.ilmir.tech
+    SMTP_ADDRESS: smtp.gmail.com
+    SMTP_PORT: 587
+    SMTP_AUTHENTICATION: plain
+    SMTP_ENABLE_STARTTLS_AUTO: "true"
 
 # Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
 # "bin/kamal logs -r job" will tail logs from the first server in the job section.
