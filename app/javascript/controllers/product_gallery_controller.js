@@ -7,11 +7,6 @@ export default class extends Controller {
     "imageButton",
     "webglHost",
     "counterMain",
-    "dialog",
-    "lightboxImage",
-    "counterLightbox",
-    "prevButton",
-    "nextButton",
     "thumbStrip",
     "thumbScrollPrev",
     "thumbScrollNext"
@@ -24,24 +19,15 @@ export default class extends Controller {
     this.normalizeSlidesValue()
     this.currentIndex = this.resolveCurrentIndexFromDom()
     this.previousActiveElement = null
-    this.boundKeydown = this.onKeydown.bind(this)
     this.boundThumbStripScroll = this.updateThumbScrollButtons.bind(this)
     this.boundWindowResize = this.updateThumbScrollButtons.bind(this)
     this.applyCurrentSlideToMain()
     this.updateCounters()
-    this.updateNavVisibility()
     this.setupThumbStripObservers()
   }
 
   disconnect() {
     this.teardownThumbStripObservers()
-    document.removeEventListener("keydown", this.boundKeydown)
-    document.body.classList.remove("overflow-hidden")
-    if (this.hasDialogTarget) {
-      this.dialogTarget.classList.add("hidden")
-      this.dialogTarget.classList.remove("flex", "items-center", "justify-center")
-      this.dialogTarget.setAttribute("hidden", "")
-    }
   }
 
   select(event) {
@@ -131,50 +117,6 @@ export default class extends Controller {
     }
   }
 
-  openLightbox(event) {
-    event?.preventDefault()
-    if (!this.hasDialogTarget || !this.hasLightboxImageTarget) return
-    if (!this.isCurrentSlideImage()) return
-
-    this.previousActiveElement = document.activeElement
-    this.currentIndex = this.resolveCurrentIndexFromDom()
-    if (!this.isCurrentSlideImage()) {
-      this.currentIndex = this.firstImageSlideIndex() ?? 0
-    }
-    this.applySlideToLightbox()
-    this.updateCounters()
-
-    this.dialogTarget.classList.remove("hidden")
-    this.dialogTarget.classList.add("flex", "items-center", "justify-center")
-    this.dialogTarget.removeAttribute("hidden")
-    document.body.classList.add("overflow-hidden")
-    document.addEventListener("keydown", this.boundKeydown)
-    this.updateNavVisibility()
-
-    requestAnimationFrame(() => {
-      this.element.querySelector("[data-product-gallery-focus-on-open]")?.focus()
-    })
-  }
-
-  closeLightbox(event) {
-    if (!this.hasDialogTarget) return
-    if (this.dialogTarget.classList.contains("hidden")) return
-    if (event) {
-      const target = event.target
-      if (target instanceof Element) {
-        if (target.closest('[data-product-gallery-ignore-close="true"]')) return
-        if (target.closest("header[role='banner']")) return
-      }
-    }
-
-    this.dialogTarget.classList.add("hidden")
-    this.dialogTarget.classList.remove("flex", "items-center", "justify-center")
-    this.dialogTarget.setAttribute("hidden", "")
-    document.body.classList.remove("overflow-hidden")
-    document.removeEventListener("keydown", this.boundKeydown)
-    this.previousActiveElement?.focus?.()
-    this.previousActiveElement = null
-  }
 
   setupThumbStripObservers() {
     if (!this.hasThumbStripTarget) return
@@ -260,88 +202,6 @@ export default class extends Controller {
     else next.setAttribute("tabindex", "-1")
   }
 
-  stopPropagation(event) {
-    event.stopPropagation()
-  }
-
-  onKeydown(event) {
-    if (event.key === "Escape") {
-      event.preventDefault()
-      this.closeLightbox()
-    } else if (event.key === "ArrowLeft") {
-      event.preventDefault()
-      this.showPrevious()
-    } else if (event.key === "ArrowRight") {
-      event.preventDefault()
-      this.showNext()
-    }
-  }
-
-  showPrevious(event) {
-    event?.stopPropagation()
-    if (this.slidesValue.length <= 1) return
-    this.currentIndex = this.advanceIndex(-1, { imagesOnly: this.isLightboxOpen() })
-    this.applySlideToLightbox()
-    this.syncMainWithLightboxSlide()
-    this.syncThumbnailsAria()
-    this.updateCounters()
-  }
-
-  showNext(event) {
-    event?.stopPropagation()
-    if (this.slidesValue.length <= 1) return
-    this.currentIndex = this.advanceIndex(1, { imagesOnly: this.isLightboxOpen() })
-    this.applySlideToLightbox()
-    this.syncMainWithLightboxSlide()
-    this.syncThumbnailsAria()
-    this.updateCounters()
-  }
-
-  applySlideToLightbox() {
-    const slide = this.slidesValue[this.currentIndex]
-    if (!slide || !this.hasLightboxImageTarget) return
-
-    if (slide.type !== "image") return
-
-    this.lightboxImageTarget.src = slide.src
-    if (slide.srcset) this.lightboxImageTarget.srcset = slide.srcset
-    else this.lightboxImageTarget.removeAttribute("srcset")
-    if (this.hasMainTarget) {
-      this.lightboxImageTarget.alt = this.mainTarget.alt
-    }
-  }
-
-  syncMainWithLightboxSlide() {
-    const slide = this.slidesValue[this.currentIndex]
-    if (!slide || !this.hasMainTarget) return
-    if (slide.type !== "image") return
-
-    const thumb = this.element.querySelector(
-      `[data-product-gallery-thumb="true"][data-gallery-index="${this.currentIndex}"]`
-    )
-    if (thumb) {
-      const mainUrl =
-        thumb.dataset.thumbMainUrl || thumb.getAttribute("data-thumb-main-url")
-      const srcset = thumb.dataset.thumbSrcset || thumb.getAttribute("data-thumb-srcset")
-      if (mainUrl) {
-        this.mainTarget.src = mainUrl
-        if (srcset && srcset.trim().length > 0) {
-          this.mainTarget.srcset = srcset
-        } else {
-          this.mainTarget.removeAttribute("srcset")
-        }
-        return
-      }
-    }
-
-    this.mainTarget.src = slide.src
-    if (slide.srcset) {
-      this.mainTarget.srcset = slide.srcset
-    } else {
-      this.mainTarget.removeAttribute("srcset")
-    }
-  }
-
   syncThumbnailsAria() {
     this.element.querySelectorAll('[data-product-gallery-thumb="true"]').forEach((el) => {
       const idx = parseInt(el.getAttribute("data-gallery-index") || "0", 10)
@@ -349,39 +209,13 @@ export default class extends Controller {
     })
   }
 
-  updateNavVisibility() {
-    const multi = this.isLightboxOpen()
-      ? (this.imageSlideIndices().length > 1)
-      : (this.slidesValue.length > 1)
-    if (this.hasPrevButtonTarget) {
-      this.prevButtonTarget.classList.toggle("hidden", !multi)
-      this.prevButtonTarget.toggleAttribute("hidden", !multi)
-      this.prevButtonTarget.disabled = !multi
-    }
-    if (this.hasNextButtonTarget) {
-      this.nextButtonTarget.classList.toggle("hidden", !multi)
-      this.nextButtonTarget.toggleAttribute("hidden", !multi)
-      this.nextButtonTarget.disabled = !multi
-    }
-  }
-
   updateCounters() {
     const totalAll = Array.isArray(this.slidesValue) ? this.slidesValue.length : 0
     const currentAll = totalAll > 0 ? this.currentIndex + 1 : 0
 
     let textMain = `${currentAll} / ${totalAll}`
-    let textLightbox = textMain
-
-    if (this.isLightboxOpen()) {
-      const images = this.imageSlideIndices()
-      const totalImages = images.length
-      const pos = images.indexOf(this.currentIndex)
-      const currentImage = totalImages > 0 ? (pos >= 0 ? pos + 1 : 1) : 0
-      textLightbox = `${currentImage} / ${totalImages}`
-    }
 
     if (this.hasCounterMainTarget) this.counterMainTarget.textContent = textMain
-    if (this.hasCounterLightboxTarget) this.counterLightboxTarget.textContent = textLightbox
   }
 
   resolveCurrentIndexFromDom() {
@@ -416,27 +250,6 @@ export default class extends Controller {
   isCurrentSlideImage() {
     const slide = this.currentSlide()
     return !!slide && slide.type === "image"
-  }
-
-  firstImageSlideIndex() {
-    const idxs = this.imageSlideIndices()
-    return idxs.length ? idxs[0] : null
-  }
-
-  imageSlideIndices() {
-    if (!Array.isArray(this.slidesValue)) return []
-    const out = []
-    this.slidesValue.forEach((s, i) => {
-      if (s && s.type === "image") out.push(i)
-    })
-    return out
-  }
-
-  isLightboxOpen() {
-    if (!this.hasDialogTarget) return false
-    if (this.dialogTarget.classList.contains("hidden")) return false
-    if (this.dialogTarget.hasAttribute("hidden")) return false
-    return true
   }
 
   advanceIndex(direction, { imagesOnly }) {
