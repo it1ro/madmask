@@ -13,13 +13,13 @@ Rails.application.routes.draw do
   resources :products, only: %i[index show]
   resources :inquiries, only: %i[new create]
 
-  resource :cart, only: :show do
+  resource :cart, only: :show, controller: "cart" do
     post :add
     post :remove
     patch :update
   end
 
-  resource :wishlist, only: :show do
+  resource :wishlist, only: :show, controller: "wishlist" do
     post :toggle
   end
 

@@ -20,6 +20,8 @@
 ## Fixups (после первичной сборки)
 - Turbo Stream мутации подготавливают page state (чтобы `cart/_page` и `wishlist/_page` рендерили названия/цены, а не только `#id`).
 - Turbo Stream шаблоны передают в `products/_actions` корректный local `product:` (вместо несуществующего `product_id:`).
+- Cart popover в header: desktop hover/focus (CSS `group-hover`/`group-focus-within`), mobile click через `<details>/<summary>`, popover остаётся в DOM как `turbo_frame_tag "cart_popover"` для Turbo replace.
+- Header приведён к композиции: использует `shared/_cart_button` и `shared/_wishlist_button` вместо дублирующей разметки.
 
 ## Contracts API (фиксировано)
 
