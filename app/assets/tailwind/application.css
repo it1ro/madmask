@@ -27,28 +27,6 @@
   --shadow-card: 0 0 20px rgba(0, 0, 0, 0.25);
 }
 
-/* Main content fade-in after Turbo navigation — iteration 6 */
-.page-main {
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.page-main.page-main--visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .page-main {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
 html {
   overflow-x: clip;
 }
