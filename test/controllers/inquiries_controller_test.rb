@@ -3,9 +3,9 @@ require "test_helper"
 class InquiriesControllerTest < ActionDispatch::IntegrationTest
   test "should create inquiry" do
     assert_difference("Inquiry.count", 1) do
-      post inquiries_url, params: { inquiry: { name: "Test", contact: "test@example.com", message: "Hello" } }
+      post inquiries_url, params: { inquiry: { name: "Test", email: "test@example.com", message: "Hello" } }
     end
 
-    assert_redirected_to new_inquiry_url
+    assert_redirected_to thanks_inquiries_url
   end
 end
