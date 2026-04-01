@@ -33,4 +33,3 @@ class SitemapsController < ApplicationController
     xml
   end
 end
-

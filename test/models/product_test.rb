@@ -45,7 +45,8 @@ class ProductTest < ActiveSupport::TestCase
     product.gallery_images.attach(
       io: StringIO.new("g"), filename: "g.png", content_type: "image/png"
     )
-    assert_equal product.cover_image.blob_id, product.hero_image.blob_id
+    assert product.save
+    assert_equal product.cover_image.blob.id, product.hero_image.id
   end
 
   test "hero_image uses first gallery image when no cover" do
@@ -60,7 +61,8 @@ class ProductTest < ActiveSupport::TestCase
       filename: "g2.png",
       content_type: "image/png"
     )
-    assert_equal product.gallery_images.first.blob_id, product.hero_image.blob_id
+    assert product.save
+    assert_equal product.gallery_images.blobs.first.id, product.hero_image.id
   end
 
   test "gallery_extra_count counts gallery when cover exists" do
@@ -112,14 +114,14 @@ class ProductTest < ActiveSupport::TestCase
         content_type: "image/png"
       )
     end
-    assert product.valid?
+    assert product.save
 
     product.gallery_images.attach(
       io: StringIO.new("overflow"),
       filename: "overflow.png",
       content_type: "image/png"
     )
-    assert_not product.valid?
+    assert_not product.save
     assert product.errors.key?(:gallery_images)
   end
 end

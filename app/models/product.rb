@@ -5,7 +5,7 @@ class Product < ApplicationRecord
   has_many_attached :gallery_images
   has_one_attached :model_file
 
-  ASSET_ATTACHMENT_NAMES = %w[cover_image gallery_images model_file].freeze
+  ASSET_ATTACHMENT_NAMES = %w[ cover_image gallery_images model_file ].freeze
 
   scope :order_assets_first, lambda {
     order(
@@ -23,7 +23,7 @@ class Product < ApplicationRecord
     )
   }
 
-  CATEGORIES = %w[fantasy horror sci-fi cyberpunk].freeze
+  CATEGORIES = %w[ fantasy horror sci-fi cyberpunk ].freeze
 
   ALLOWED_MODEL_CONTENT_TYPES = %w[
     model/gltf-binary
@@ -53,9 +53,9 @@ class Product < ApplicationRecord
 
   # Cover if present, else first gallery image — for catalog preview and hero fallback.
   def hero_image
-    return cover_image if cover_image.attached?
+    return cover_image.blob if cover_image.blob.present?
 
-    gallery_images.first
+    gallery_images.blobs.first
   end
 
   # Extra frames beyond the hero thumbnail (for "+N" badge on catalog cards).
@@ -79,9 +79,12 @@ class Product < ApplicationRecord
 
   # URL for WebGL loader: only from attached GLB/GLTF (Active Storage).
   def effective_model_url
-    return unless model_file.attached?
+    return unless model_file.attachment.present?
 
-    Rails.application.routes.url_helpers.rails_blob_path(model_file, only_path: true)
+    blob = model_file.blob
+    blob.save! if blob&.new_record?
+
+    Rails.application.routes.url_helpers.rails_blob_path(blob, only_path: true)
   end
 
   private
@@ -97,6 +100,7 @@ class Product < ApplicationRecord
   def must_have_translated_description
     desc = translation_for(I18n.default_locale)&.description.to_s
     return if desc.present? && desc.length >= MIN_DESCRIPTION_CHARS
+    return if self[:description].to_s.length >= MIN_DESCRIPTION_CHARS # legacy fallback while columns still exist
 
     errors.add(:translations, :blank)
     errors.add(
@@ -106,14 +110,14 @@ class Product < ApplicationRecord
   end
 
   def validate_gallery_images
-    return unless gallery_images.attached?
+    return unless gallery_images.attachments.any?
 
-    if gallery_images.count > MAX_GALLERY_IMAGES
+    if gallery_images.attachments.size > MAX_GALLERY_IMAGES
       errors.add(:gallery_images, :too_many, count: MAX_GALLERY_IMAGES)
       return
     end
 
-    gallery_images.each do |blob|
+    gallery_images.blobs.each do |blob|
       unless ALLOWED_IMAGE_CONTENT_TYPES.include?(blob.content_type)
         errors.add(:gallery_images, :invalid_image_type)
         break
@@ -129,7 +133,7 @@ class Product < ApplicationRecord
   def model_file_must_be_gltf_or_glb
     blob = model_file.blob
     ext = File.extname(blob.filename.to_s).downcase
-    unless %w[.glb .gltf].include?(ext)
+    unless %w[ .glb .gltf ].include?(ext)
       errors.add(:model_file, :invalid_extension)
       return
     end

@@ -9,7 +9,7 @@ class CanonicalHostRedirect
 
     if needs_redirect?(req)
       target = canonical_url_for(req)
-      return [301, { "Location" => target, "Content-Type" => "text/html" }, ["Moved Permanently"]]
+      return [ 301, { "Location" => target, "Content-Type" => "text/html" }, [ "Moved Permanently" ] ]
     end
 
     @app.call(env)
@@ -28,4 +28,3 @@ class CanonicalHostRedirect
     uri.to_s
   end
 end
-

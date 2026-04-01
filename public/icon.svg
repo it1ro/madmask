@@ -1,3 +1,45 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Madmask icon">
+  <rect width="512" height="512" rx="96" fill="#0B0B10"/>
+
+  <!-- Mask (simple, high-contrast, works at small sizes) -->
+  <path
+    fill="#F3F4F6"
+    fill-rule="evenodd"
+    d="
+      M256 92
+      C192 92 140 118 116 164
+      C96 202 100 248 112 290
+      C128 346 170 394 226 416
+      C243 423 260 428 276 428
+      C292 428 309 423 326 416
+      C382 394 424 346 440 290
+      C452 248 456 202 436 164
+      C412 118 320 92 256 92
+      Z
+
+      M196 230
+      C176 230 160 244 160 262
+      C160 284 182 302 206 302
+      C230 302 250 286 250 266
+      C250 244 226 230 196 230
+      Z
+
+      M316 230
+      C286 230 262 244 262 266
+      C262 286 282 302 306 302
+      C330 302 352 284 352 262
+      C352 244 336 230 316 230
+      Z
+    "
+  />
+
+  <!-- Subtle accent -->
+  <path
+    d="M168 326 C186 350 214 366 242 370"
+    stroke="#E11D48"
+    stroke-width="18"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.95"
+  />
 </svg>

@@ -2,12 +2,12 @@
 
 one:
   name: Eldritch Visage
-  description: Handcrafted mask for cosmic horror cosplay.
+  description: Handcrafted mask for cosmic horror cosplay. Designed for comfortable long sessions, with durable materials and careful finishing. The fit is balanced, the padding is soft, and the straps are adjustable for different head sizes. Every edge is smoothed, and the finish is sealed for durability. This description is intentionally long to satisfy minimum length validations in the Product model during tests.
   price: 129.99
   category: horror
 
 two:
   name: Neon Phantom
-  description: Cyberpunk-inspired wearable art.
+  description: Cyberpunk-inspired wearable art. Built with layered details, reflective accents, and a balanced fit for extended wear. Materials are chosen for durability, and the interior is shaped for comfort during long events. The silhouette reads well under neon lighting, and the finishing holds up to repeated use. This test fixture description is deliberately verbose to meet the model's minimum description length requirement.
   price: 149.00
   category: cyberpunk

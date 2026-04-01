@@ -63,4 +63,3 @@ module Translatable
     attrs["name"].blank? && attrs["description"].blank?
   end
 end
-
