@@ -376,6 +376,18 @@
               В корзину
             <% end %>
 
+            <%= link_to new_inquiry_path(product_id: @product.id),
+              class:
+                "inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg border border-line bg-page/40 px-4 py-2 font-ui text-xs font-semibold uppercase tracking-[0.14em] text-ink transition active:scale-[0.98] hover:border-glow hover:text-glow hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none sm:w-auto sm:min-w-[12rem]",
+              aria: { label: "Оставить заявку по товару" } do %>
+              <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15a4 4 0 0 1-4 4H7l-4 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z" />
+                <path d="M7.5 8.5h9" />
+                <path d="M7.5 12h6.5" />
+              </svg>
+              Заявка
+            <% end %>
+
             <%= button_to(
               toggle_wishlist_path(product_id: @product.id),
               method: :post,

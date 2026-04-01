@@ -1,6 +1,17 @@
 class InquiriesController < ApplicationController
   def new
     @inquiry = Inquiry.new
+    @product = Product.find_by(id: params[:product_id])
+
+    if @product.present? && @inquiry.message.blank?
+      product_link = "#{request.base_url}#{product_path(@product)}"
+      @inquiry.message = <<~TEXT.strip
+        Интересует товар: #{@product.translated_name}
+        Ссылка: #{product_link}
+
+        Вопрос:
+      TEXT
+    end
     render :create
   end
 
