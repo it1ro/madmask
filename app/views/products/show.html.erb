@@ -195,7 +195,7 @@
             <% if has_image_previews %>
               <div
                 data-product-gallery-target="dialog"
-                class="product-gallery-lightbox fixed inset-0 z-[2147483647] hidden p-3 sm:p-6"
+                class="product-gallery-lightbox fixed inset-0 z-[1000] hidden p-3 sm:p-6"
                 role="dialog"
                 aria-modal="true"
                 aria-label="Просмотр фотографии"
@@ -203,7 +203,7 @@
                 data-action="click->product-gallery#closeLightbox"
               >
                 <div
-                  class="absolute inset-0 bg-[rgba(2,1,6,0.97)] backdrop-blur-md motion-reduce:backdrop-blur-none"
+                  class="absolute inset-0 cursor-zoom-out bg-[rgba(2,1,6,0.97)] backdrop-blur-md motion-reduce:backdrop-blur-none"
                   aria-hidden="true"
                 ></div>
                 <span
@@ -231,15 +231,20 @@
                   </button>
                   <div class="flex min-h-0 min-w-0 flex-1 items-center justify-center">
                     <% lb0 = image_slides.first %>
-                    <%= image_tag lb0.fetch(:src),
-                      srcset: lb0.fetch(:srcset),
-                      alt: @product.translated_name,
-                      sizes: "(max-width: 640px) 96vw, min(92vw, 2400px)",
-                      class:
-                        "max-h-[min(88dvh,92vh)] max-w-full object-contain object-center shadow-[0_0_40px_rgba(0,0,0,0.45)] motion-reduce:transition-none transition-opacity duration-150 #{preview_images.many? ? "cursor-pointer" : "cursor-default"}",
-                      data: {
-                        product_gallery_target: "lightboxImage"
-                      }.merge(preview_images.many? ? { action: "click->product-gallery#showNext" } : {}) %>
+                    <div
+                      class="flex h-[min(82dvh,820px)] w-[min(96vw,1200px)] items-center justify-center"
+                      aria-hidden="true"
+                    >
+                      <%= image_tag lb0.fetch(:src),
+                        srcset: lb0.fetch(:srcset),
+                        alt: @product.translated_name,
+                        sizes: "(max-width: 640px) 96vw, min(92vw, 1200px)",
+                        class:
+                          "max-h-full max-w-full object-contain object-center shadow-[0_0_40px_rgba(0,0,0,0.45)] motion-reduce:transition-none transition-opacity duration-150 #{preview_images.many? ? "cursor-pointer" : "cursor-default"}",
+                        data: {
+                          product_gallery_target: "lightboxImage"
+                        }.merge(preview_images.many? ? { action: "click->product-gallery#showNext" } : {}) %>
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -253,19 +258,25 @@
                 </div>
                 <button
                   type="button"
-                  class="product-gallery-lightbox-nav absolute right-3 top-3 z-[2147483647] inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-white/70 bg-black/90 px-3 text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_0_0_2px_rgba(0,0,0,0.55),0_0_18px_rgba(102,252,241,0.3)] motion-reduce:transition-none transition-[background-color,border-color,box-shadow] hover:border-[var(--color-accent-cyber)] hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 sm:right-5 sm:top-5 sm:min-h-[3.25rem] sm:px-4"
+                  class="fixed right-[calc(0.75rem+env(safe-area-inset-right))] top-[calc(0.75rem+env(safe-area-inset-top))] z-[1010] inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-white/80 bg-black/95 px-3 text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_0_0_2px_rgba(0,0,0,0.55),0_0_18px_rgba(102,252,241,0.3)] motion-reduce:transition-none transition-[background-color,border-color,box-shadow,transform] hover:border-[var(--color-accent-cyber)] hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 active:scale-[0.98] motion-reduce:active:scale-100 sm:min-h-[3.25rem] sm:px-4"
                   data-action="click->product-gallery#closeLightbox"
                   aria-label="Закрыть просмотр"
                   data-product-gallery-focus-on-open="true"
                 >
                   <svg
-                    class="h-5 w-5 shrink-0"
+                    class="h-6 w-6 shrink-0"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     aria-hidden="true"
+                    focusable="false"
                   >
-                    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                    <path
+                      d="M6 6L18 18M18 6L6 18"
+                      stroke="currentColor"
+                      stroke-width="2.75"
+                      stroke-linecap="round"
+                    />
                   </svg>
                   <span class="hidden sm:inline">Закрыть</span>
                 </button>
