@@ -11,7 +11,11 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resources :products, only: %i[index show]
-  resources :inquiries, only: %i[new create]
+  resources :inquiries, only: %i[new create] do
+    collection do
+      get :thanks
+    end
+  end
 
   resource :cart, only: :show, controller: "cart" do
     post :add

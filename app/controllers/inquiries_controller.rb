@@ -13,16 +13,20 @@ class InquiriesController < ApplicationController
     end
 
     if @inquiry.save
-      redirect_to new_inquiry_path, notice: "Заявка отправлена — скоро свяжемся."
+      redirect_to thanks_inquiries_path, notice: "Заявка отправлена — скоро свяжемся."
     else
       flash.now[:alert] = "Проверь поля формы и попробуй ещё раз."
       render :create, status: :unprocessable_entity
     end
   end
 
+  def thanks
+    render "pages/inquiry_thanks"
+  end
+
   private
 
   def inquiry_params
-    params.require(:inquiry).permit(:name, :contact, :message, :website)
+    params.require(:inquiry).permit(:name, :phone, :email, :message, :website)
   end
 end
