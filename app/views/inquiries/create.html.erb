@@ -1,10 +1,10 @@
 <section class="px-4 pb-16 pt-10 md:px-6 md:pb-20" aria-labelledby="inquiry-heading">
   <div class="mx-auto w-full max-w-3xl rounded-2xl border border-line bg-card px-6 py-10 md:px-10">
     <h1 id="inquiry-heading" class="font-heading text-2xl font-semibold tracking-wide text-ink md:text-3xl text-center">
-      Форма обратной связи
+      Оставь заявку
     </h1>
     <p class="mt-3 text-center text-sm text-ink-muted md:text-base">
-      Опиши задачу и оставь телефон — ответим по наличию, вариантам и срокам.
+      Опиши задачу и оставь телефон — ответим по вариантам и срокам.
     </p>
 
     <% if @inquiry.errors.any? %>
@@ -30,7 +30,7 @@
             class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
         </div>
         <div>
-          <%= f.label :phone, "Телефон (основной)", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+          <%= f.label :phone, "Телефон", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
           <%= f.telephone_field :phone,
             required: true,
             autocomplete: "tel",
@@ -40,13 +40,13 @@
         </div>
       </div>
       <div>
-        <%= f.label :email, "Email (альтернативный)", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
+        <%= f.label :email, "Email", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
         <%= f.email_field :email,
           autocomplete: "email",
           placeholder: "name@example.com",
           class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
         <p class="mt-2 text-xs text-ink-muted">
-          Если неудобно отвечать по телефону — оставь email.
+          Если неудобна связь по телефону — оставь email.
         </p>
       </div>
       <div>
