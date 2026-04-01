@@ -1,8 +1,19 @@
-<div class="group relative hidden md:block">
+<div
+  class="relative hidden md:block"
+  data-controller="cart-popover"
+  data-cart-popover-hide-delay-value="300"
+  data-action="
+    mouseenter->cart-popover#show
+    mouseleave->cart-popover#scheduleHide
+    focusin->cart-popover#show
+    focusout->cart-popover#scheduleHide
+  "
+>
   <%= link_to cart_path,
     class:
       "group relative inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-line bg-page/30 px-3 text-ink transition hover:border-glow hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2",
-    aria: { label: "Корзина" } do %>
+    aria: { label: "Корзина", expanded: "false" },
+    data: { cart_popover_target: "trigger" } do %>
     <svg
       class="h-5 w-5 shrink-0"
       viewBox="0 0 24 24"
@@ -26,7 +37,9 @@
   </div>
 
   <div
-    class="invisible absolute right-0 top-full mt-2 w-64 opacity-0 transition duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+    class="invisible pointer-events-none absolute right-0 top-full mt-2 w-64 opacity-0 transition duration-150"
+    data-cart-popover-target="panel"
+    data-action="mouseenter->cart-popover#cancelHide mouseleave->cart-popover#scheduleHide"
   >
     <%= render "cart/popover" %>
   </div>
