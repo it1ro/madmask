@@ -19,6 +19,8 @@
 - **Hero / визуальная иерархия**:
   - Снижена высота первого экрана и разложено на 2 колонки на desktop (текст+CTA слева, арт справа): `app/views/pages/home.html.erb`.
   - Добавлен **trust bar** рядом с CTA: доставка/оплата/сроки (коротко, сканируемо): `app/views/pages/home.html.erb`.
+  - Hero-арт переведён на PNG и перенесён в `public/images/site-hero.png` (также используется как OG/Twitter image по умолчанию): `app/views/pages/home.html.erb`, `app/views/layouts/application.html.erb`.
+  - Добавлен CSS fallback для раскладки hero в 2 колонки на desktop в браузерах без поддержки media query range syntax: `app/assets/tailwind/application.css`.
 - **Навигация**:
   - Ссылка **«Админ» скрыта от гостей** (показывается только при `user_signed_in?`): `app/views/shared/_header.html.erb`.
 - **Копирайт / повторы**:

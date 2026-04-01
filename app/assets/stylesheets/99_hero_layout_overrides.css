@@ -1,0 +1,18 @@
+/*
+ * Hero layout overrides.
+ *
+ * This file lives under `app/assets/stylesheets/` so Propshaft serves it via
+ * `stylesheet_link_tag :app` without relying on Tailwind rebuilds.
+ */
+
+.hero-section__content {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .hero-section__content {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    text-align: left;
+  }
+}

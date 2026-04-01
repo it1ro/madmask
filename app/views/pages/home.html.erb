@@ -1,6 +1,6 @@
 <% content_for :title, "Madmask — мастерская масок" %>
 <% content_for :meta_description, "Маски Madmask для сцены, съёмок и косплея. Каталог по жанрам, ручная сборка, доставка по РФ. Осмотри детали товара и оставь заявку." %>
-<% content_for :meta_image, "/images/madmask-hero.svg" %>
+<% content_for :meta_image, "/images/site-hero.png" %>
 
 <%# Schema.org Organization (minimal) %>
 <% content_for :head do %>
@@ -32,7 +32,7 @@
       <div class="hero-section__vignette"></div>
     </div>
 
-    <div class="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-8 md:grid-cols-2 md:gap-10 md:text-left">
+    <div class="hero-section__content relative z-10 mx-auto grid w-full max-w-6xl items-center gap-8 sm:grid-cols-2 sm:gap-10 sm:text-left">
       <div class="flex flex-col items-center gap-5 md:items-start md:gap-6">
         <h1
           id="hero-heading"
@@ -111,11 +111,9 @@
         </p>
       </div>
 
-      <figure class="hero-brand-image mx-auto w-full max-w-[28rem] md:max-w-none">
-        <%= image_tag "/images/madmask-hero.svg",
+      <figure class="hero-brand-image w-full">
+        <%= image_tag "/images/site-hero.png",
           alt: "Madmask — маски в стиле fantasy, horror, sci‑fi и cyberpunk",
-          width: 1200,
-          height: 1200,
           loading: "eager",
           fetchpriority: "high",
           decoding: "async",
