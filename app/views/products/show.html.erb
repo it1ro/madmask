@@ -30,39 +30,83 @@
   <div class="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12">
     <div class="flex min-w-0 flex-col gap-6">
       <% preview_images = @product.preview_images_ordered %>
-      <% if preview_images.any? %>
-        <% gallery_slides = preview_images.map do |blob_or_attached|
+      <% has_model_preview = @product.model_file.attached? %>
+      <% has_image_previews = preview_images.any? %>
+      <% if has_image_previews || has_model_preview %>
+        <% image_slides = preview_images.map do |blob_or_attached|
           lb800 = blob_or_attached.variant(resize_to_limit: [800, 800])
           lb2400 = blob_or_attached.variant(resize_to_limit: [2400, 2400])
-          { src: url_for(lb2400), srcset: "#{url_for(lb800)} 800w, #{url_for(lb2400)} 2400w" }
+          { type: "image", src: url_for(lb2400), srcset: "#{url_for(lb800)} 800w, #{url_for(lb2400)} 2400w" }
         end %>
+        <% webgl_slide = if has_model_preview
+          {
+            type: "webgl",
+            modelUrl: @product.effective_model_url.to_s,
+            coverImageUrl: (
+              @product.cover_image.attached? ? url_for(@product.cover_image.variant(resize_to_limit: [1200, 1200])) : ""
+            )
+          }
+        end %>
+        <% slides = [] %>
+        <% slides << webgl_slide if webgl_slide.present? %>
+        <% slides.concat(image_slides) %>
         <section
           class="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]"
-          aria-label="Фотографии товара"
+          aria-label="Галерея товара"
         >
           <%= tag.div(
             class: "min-w-0 p-3 sm:p-4",
             data: {
               controller: "product-gallery",
-              product_gallery_slides_value: gallery_slides.to_json
+              product_gallery_slides_value: slides.to_json
             }
           ) do %>
-            <% main_img = preview_images.first %>
-            <% main_v800 = main_img.variant(resize_to_limit: [800, 800]) %>
-            <% main_v1200 = main_img.variant(resize_to_limit: [1200, 1200]) %>
-            <button
-              type="button"
-              class="group relative aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-primary)]/30 text-left motion-reduce:transition-none transition-[box-shadow] duration-200 hover:shadow-[0_0_0_1px_var(--color-accent-glow),0_0_20px_rgba(183,111,224,0.15)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2"
-              data-action="click->product-gallery#openLightbox"
-              aria-label="Открыть фото в полный размер"
-            >
-              <%= image_tag url_for(main_v1200),
-                srcset: "#{url_for(main_v800)} 800w, #{url_for(main_v1200)} 1200w",
-                sizes: "(max-width: 640px) 100vw, 90vw",
-                class:
-                  "pointer-events-none absolute inset-0 block h-full w-full object-cover object-center motion-reduce:transition-none transition-opacity duration-200 group-hover:opacity-95",
-                alt: @product.name,
-                data: { product_gallery_target: "main" } %>
+            <% default_index = has_model_preview ? 0 : 0 %>
+            <% default_image_index_in_slides = has_model_preview ? 1 : 0 %>
+
+            <div class="relative">
+              <% if has_image_previews %>
+                <% main_img = preview_images.first %>
+                <% main_v800 = main_img.variant(resize_to_limit: [800, 800]) %>
+                <% main_v1200 = main_img.variant(resize_to_limit: [1200, 1200]) %>
+              <% end %>
+
+              <%# Main (image) - only visible when current slide is an image %>
+              <button
+                type="button"
+                class="group relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-primary)]/30 text-left motion-reduce:transition-none transition-[box-shadow] duration-200 hover:shadow-[0_0_0_1px_var(--color-accent-glow),0_0_20px_rgba(183,111,224,0.15)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 <%= has_model_preview ? "hidden" : "cursor-zoom-in" %>"
+                data-product-gallery-target="imageButton"
+                data-action="click->product-gallery#openLightbox"
+                aria-label="Открыть фото в полный размер"
+                <%= has_model_preview ? "hidden" : "" %>
+              >
+                <% if has_image_previews %>
+                  <%= image_tag url_for(main_v1200),
+                    srcset: "#{url_for(main_v800)} 800w, #{url_for(main_v1200)} 1200w",
+                    sizes: "(max-width: 640px) 100vw, 90vw",
+                    class:
+                      "pointer-events-none absolute inset-0 block h-full w-full object-cover object-center motion-reduce:transition-none transition-opacity duration-200 group-hover:opacity-95",
+                    alt: @product.name,
+                    data: { product_gallery_target: "main" } %>
+                <% else %>
+                  <span class="absolute inset-0 flex items-center justify-center px-4 text-center text-sm text-[var(--color-text-muted)]">
+                    Нет фотографий
+                  </span>
+                <% end %>
+              </button>
+
+              <%# Main (3D) - lazy activates webgl-preview when selected %>
+              <% if has_model_preview %>
+                <div
+                  class="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--color-border)]/80 bg-[var(--color-bg-primary)]/30 <%= has_model_preview ? "" : "hidden" %>"
+                  data-product-gallery-target="webglHost"
+                  data-webgl-model-url="<%= h(@product.effective_model_url.to_s) %>"
+                  data-webgl-cover-url="<%= h(@product.cover_image.attached? ? url_for(@product.cover_image.variant(resize_to_limit: [1200, 1200])) : "") %>"
+                  role="figure"
+                  aria-label="Интерактивное 3D превью"
+                ></div>
+              <% end %>
+
               <span
                 data-product-gallery-target="counterMain"
                 role="status"
@@ -70,10 +114,11 @@
                 class="pointer-events-none absolute right-3 top-3 z-10 rounded-full border border-[var(--color-border)]/60 bg-[rgba(18,11,26,0.6)] px-2.5 py-1 text-xs text-[var(--color-text-primary)] backdrop-blur-sm"
                 style="font-family: var(--font-jetbrains)"
               >
-                1 / <%= preview_images.size %>
+                1 / <%= slides.size %>
               </span>
-            </button>
-            <% if preview_images.many? %>
+            </div>
+
+            <% if slides.size > 1 %>
               <div class="mt-3 flex min-w-0 items-stretch gap-1.5 sm:gap-2">
                 <button
                   type="button"
@@ -90,7 +135,26 @@
                   aria-label="Миниатюры"
                   data-product-gallery-target="thumbStrip"
                 >
+                  <% if has_model_preview %>
+                    <button
+                      type="button"
+                      class="shrink-0 snap-start overflow-hidden rounded-lg border-2 border-transparent bg-[var(--color-bg-primary)]/40 motion-reduce:transition-none transition-[border-color] duration-150 aria-selected:border-[var(--color-accent-cyber)] aria-selected:ring-1 aria-selected:ring-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 active:opacity-90"
+                      style="min-width: 4.5rem; min-height: 4.5rem"
+                      data-product-gallery-thumb="true"
+                      data-gallery-index="0"
+                      data-action="click->product-gallery#select"
+                      role="tab"
+                      aria-selected="true"
+                      aria-label="Показать 3D превью"
+                    >
+                      <span class="flex h-[4.5rem] w-[4.5rem] items-center justify-center text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-text-primary)]">
+                        3D
+                      </span>
+                    </button>
+                  <% end %>
+
                   <% preview_images.each_with_index do |blob_or_attached, i| %>
+                    <% slide_index = has_model_preview ? (i + 1) : i %>
                     <% thumb = blob_or_attached.variant(resize_to_limit: [120, 120]) %>
                     <% large800 = blob_or_attached.variant(resize_to_limit: [800, 800]) %>
                     <% large1200 = blob_or_attached.variant(resize_to_limit: [1200, 1200]) %>
@@ -99,15 +163,15 @@
                       class="shrink-0 snap-start overflow-hidden rounded-lg border-2 border-transparent bg-[var(--color-bg-primary)]/40 motion-reduce:transition-none transition-[border-color] duration-150 aria-selected:border-[var(--color-accent-cyber)] aria-selected:ring-1 aria-selected:ring-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 active:opacity-90"
                       style="min-width: 4.5rem; min-height: 4.5rem"
                       data-product-gallery-thumb="true"
-                      data-gallery-index="<%= i %>"
+                      data-gallery-index="<%= slide_index %>"
                       data-action="click->product-gallery#select"
                       data-thumb-url="<%= url_for(thumb) %>"
                       data-thumb-src="<%= url_for(thumb) %>"
                       data-thumb-main-url="<%= url_for(large1200) %>"
                       data-thumb-srcset="<%= "#{url_for(large800)} 800w, #{url_for(large1200)} 1200w" %>"
                       role="tab"
-                      aria-selected="<%= i.zero? %>"
-                      aria-label="Выбрать кадр <%= i + 1 %>"
+                      aria-selected="<%= (!has_model_preview && i.zero?) %>"
+                      aria-label="Выбрать кадр <%= slide_index + 1 %>"
                     >
                       <%= image_tag thumb,
                         class: "h-[4.5rem] w-[4.5rem] object-cover",
@@ -128,83 +192,85 @@
             <% end %>
 
             <%# Fullscreen lightbox: larger variants (2400px), arrows, Escape / backdrop to close %>
-            <div
-              data-product-gallery-target="dialog"
-              class="product-gallery-lightbox fixed inset-0 z-[2147483647] hidden p-3 sm:p-6"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Просмотр фотографии"
-              hidden
-              data-action="click->product-gallery#closeLightbox"
-            >
+            <% if has_image_previews %>
               <div
-                class="absolute inset-0 bg-[rgba(2,1,6,0.97)] backdrop-blur-md motion-reduce:backdrop-blur-none"
-                aria-hidden="true"
-              ></div>
-              <span
-                data-product-gallery-target="counterLightbox"
-                role="status"
-                aria-live="polite"
-                class="pointer-events-none absolute left-3 top-3 z-20 rounded-full border border-[var(--color-border)]/60 bg-[rgba(18,11,26,0.6)] px-2.5 py-1 text-xs text-[var(--color-text-primary)] backdrop-blur-sm"
-                style="font-family: var(--font-jetbrains)"
+                data-product-gallery-target="dialog"
+                class="product-gallery-lightbox fixed inset-0 z-[2147483647] hidden p-3 sm:p-6"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Просмотр фотографии"
+                hidden
+                data-action="click->product-gallery#closeLightbox"
               >
-                1 / <%= preview_images.size %>
-              </span>
-              <div
-                class="relative z-10 flex max-h-[min(92dvh,100vh)] w-full max-w-[min(96vw,100vw)] items-center justify-center gap-1 sm:gap-3"
-                data-action="click->product-gallery#stopPropagation"
-                data-product-gallery-ignore-close="true"
-              >
-                <button
-                  type="button"
-                  data-product-gallery-target="prevButton"
-                  class="product-gallery-lightbox-nav inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center rounded-xl border-2 border-[var(--color-border)]/80 bg-[var(--color-surface)]/90 px-2 text-4xl leading-none text-[var(--color-text-primary)] shadow-md motion-reduce:transition-none transition-opacity hover:border-[var(--color-accent-cyber)] hover:text-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-0 sm:min-h-[4.5rem] sm:min-w-[4.5rem] sm:px-3 sm:text-5xl"
-                  data-action="click->product-gallery#showPrevious"
-                  aria-label="Предыдущее фото"
+                <div
+                  class="absolute inset-0 bg-[rgba(2,1,6,0.97)] backdrop-blur-md motion-reduce:backdrop-blur-none"
+                  aria-hidden="true"
+                ></div>
+                <span
+                  data-product-gallery-target="counterLightbox"
+                  role="status"
+                  aria-live="polite"
+                  class="pointer-events-none absolute left-3 top-3 z-20 rounded-full border border-[var(--color-border)]/60 bg-[rgba(18,11,26,0.6)] px-2.5 py-1 text-xs text-[var(--color-text-primary)] backdrop-blur-sm"
+                  style="font-family: var(--font-jetbrains)"
                 >
-                  <span aria-hidden="true">‹</span>
-                </button>
-                <div class="flex min-h-0 min-w-0 flex-1 items-center justify-center">
-                  <% lb0 = gallery_slides.first %>
-                  <%= image_tag lb0.fetch(:src),
-                    srcset: lb0.fetch(:srcset),
-                    alt: @product.name,
-                    sizes: "(max-width: 640px) 96vw, min(92vw, 2400px)",
-                    class:
-                      "max-h-[min(88dvh,92vh)] max-w-full object-contain object-center shadow-[0_0_40px_rgba(0,0,0,0.45)] motion-reduce:transition-none transition-opacity duration-150 #{preview_images.many? ? "cursor-pointer" : "cursor-default"}",
-                    data: {
-                      product_gallery_target: "lightboxImage"
-                    }.merge(preview_images.many? ? { action: "click->product-gallery#showNext" } : {}) %>
+                  1 / <%= preview_images.size %>
+                </span>
+                <div
+                  class="relative z-10 flex max-h-[min(92dvh,100vh)] w-full max-w-[min(96vw,100vw)] items-center justify-center gap-1 sm:gap-3"
+                  data-action="click->product-gallery#stopPropagation"
+                  data-product-gallery-ignore-close="true"
+                >
+                  <button
+                    type="button"
+                    data-product-gallery-target="prevButton"
+                    class="product-gallery-lightbox-nav inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center rounded-xl border-2 border-[var(--color-border)]/80 bg-[var(--color-surface)]/90 px-2 text-4xl leading-none text-[var(--color-text-primary)] shadow-md motion-reduce:transition-none transition-opacity hover:border-[var(--color-accent-cyber)] hover:text-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-0 sm:min-h-[4.5rem] sm:min-w-[4.5rem] sm:px-3 sm:text-5xl"
+                    data-action="click->product-gallery#showPrevious"
+                    aria-label="Предыдущее фото"
+                  >
+                    <span aria-hidden="true">‹</span>
+                  </button>
+                  <div class="flex min-h-0 min-w-0 flex-1 items-center justify-center">
+                    <% lb0 = image_slides.first %>
+                    <%= image_tag lb0.fetch(:src),
+                      srcset: lb0.fetch(:srcset),
+                      alt: @product.name,
+                      sizes: "(max-width: 640px) 96vw, min(92vw, 2400px)",
+                      class:
+                        "max-h-[min(88dvh,92vh)] max-w-full object-contain object-center shadow-[0_0_40px_rgba(0,0,0,0.45)] motion-reduce:transition-none transition-opacity duration-150 #{preview_images.many? ? "cursor-pointer" : "cursor-default"}",
+                      data: {
+                        product_gallery_target: "lightboxImage"
+                      }.merge(preview_images.many? ? { action: "click->product-gallery#showNext" } : {}) %>
+                  </div>
+                  <button
+                    type="button"
+                    data-product-gallery-target="nextButton"
+                    class="product-gallery-lightbox-nav inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center rounded-xl border-2 border-[var(--color-border)]/80 bg-[var(--color-surface)]/90 px-2 text-4xl leading-none text-[var(--color-text-primary)] shadow-md motion-reduce:transition-none transition-opacity hover:border-[var(--color-accent-cyber)] hover:text-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-0 sm:min-h-[4.5rem] sm:min-w-[4.5rem] sm:px-3 sm:text-5xl"
+                    data-action="click->product-gallery#showNext"
+                    aria-label="Следующее фото"
+                  >
+                    <span aria-hidden="true">›</span>
+                  </button>
                 </div>
                 <button
                   type="button"
-                  data-product-gallery-target="nextButton"
-                  class="product-gallery-lightbox-nav inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center rounded-xl border-2 border-[var(--color-border)]/80 bg-[var(--color-surface)]/90 px-2 text-4xl leading-none text-[var(--color-text-primary)] shadow-md motion-reduce:transition-none transition-opacity hover:border-[var(--color-accent-cyber)] hover:text-[var(--color-accent-cyber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-0 sm:min-h-[4.5rem] sm:min-w-[4.5rem] sm:px-3 sm:text-5xl"
-                  data-action="click->product-gallery#showNext"
-                  aria-label="Следующее фото"
+                  class="product-gallery-lightbox-nav absolute right-3 top-3 z-[2147483647] inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-white/70 bg-black/90 px-3 text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_0_0_2px_rgba(0,0,0,0.55),0_0_18px_rgba(102,252,241,0.3)] motion-reduce:transition-none transition-[background-color,border-color,box-shadow] hover:border-[var(--color-accent-cyber)] hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 sm:right-5 sm:top-5 sm:min-h-[3.25rem] sm:px-4"
+                  data-action="click->product-gallery#closeLightbox"
+                  aria-label="Закрыть просмотр"
+                  data-product-gallery-focus-on-open="true"
                 >
-                  <span aria-hidden="true">›</span>
+                  <svg
+                    class="h-5 w-5 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+                  </svg>
+                  <span class="hidden sm:inline">Закрыть</span>
                 </button>
               </div>
-              <button
-                type="button"
-                class="product-gallery-lightbox-nav absolute right-3 top-3 z-[2147483647] inline-flex min-h-[56px] min-w-[56px] shrink-0 touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-white/70 bg-black/90 px-3 text-sm font-semibold uppercase tracking-[0.08em] text-white shadow-[0_0_0_2px_rgba(0,0,0,0.55),0_0_18px_rgba(102,252,241,0.3)] motion-reduce:transition-none transition-[background-color,border-color,box-shadow] hover:border-[var(--color-accent-cyber)] hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-accent-glow)] focus-visible:outline-offset-2 sm:right-5 sm:top-5 sm:min-h-[3.25rem] sm:px-4"
-                data-action="click->product-gallery#closeLightbox"
-                aria-label="Закрыть просмотр"
-                data-product-gallery-focus-on-open="true"
-              >
-                <svg
-                  class="h-5 w-5 shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
-                </svg>
-                <span class="hidden sm:inline">Закрыть</span>
-              </button>
-            </div>
+            <% end %>
           <% end %>
         </section>
       <% else %>
@@ -215,40 +281,6 @@
           <div class="flex aspect-[4/3] w-full items-center justify-center px-4 py-8">
             <p class="text-center text-sm text-[var(--color-text-muted)]">Нет фотографий</p>
           </div>
-        </section>
-      <% end %>
-
-      <%# 3D preview only when GLB/GLTF is attached; no placeholder block otherwise. %>
-      <% if @product.model_file.attached? %>
-        <section
-          id="product-3d-preview"
-          class="relative w-full overflow-hidden rounded-2xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-bg-primary)] to-[var(--color-accent-2)] shadow-[0_0_28px_rgba(183,111,224,0.18)]"
-          aria-labelledby="product-3d-heading"
-        >
-          <div class="flex items-center justify-between gap-3 border-b border-[var(--color-border)]/80 bg-[var(--color-bg-secondary)]/40 px-4 py-3">
-            <h2
-              id="product-3d-heading"
-              class="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]"
-              style="font-family: var(--font-orbitron)"
-            >
-              3D превью
-            </h2>
-            <span class="truncate text-xs text-[var(--color-text-muted)]" title="<%= @product.model_file.filename %>">
-              <%= @product.model_file.filename %>
-            </span>
-          </div>
-          <%# Description for figure — must stay outside canvas-container (Stimulus clears the node). %>
-          <span id="product-3d-desc" class="sr-only">Интерактивное вращение модели мышью или касанием.</span>
-          <div
-            id="canvas-container"
-            class="relative aspect-square w-full min-h-[min(80vw,28rem)] sm:min-h-[22rem]"
-            data-controller="webgl-preview"
-            data-webgl-preview-model-url-value="<%= h(@product.effective_model_url.to_s) %>"
-            data-webgl-preview-cover-image-url-value="<%= h(@product.cover_image.attached? ? url_for(@product.cover_image.variant(resize_to_limit: [1200, 1200])) : "") %>"
-            role="figure"
-            aria-labelledby="product-3d-heading"
-            aria-describedby="product-3d-desc"
-          ></div>
         </section>
       <% end %>
     </div>

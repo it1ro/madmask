@@ -4,6 +4,8 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = [
     "main",
+    "imageButton",
+    "webglHost",
     "counterMain",
     "dialog",
     "lightboxImage",
@@ -19,11 +21,13 @@ export default class extends Controller {
   }
 
   connect() {
+    this.normalizeSlidesValue()
     this.currentIndex = this.resolveCurrentIndexFromDom()
     this.previousActiveElement = null
     this.boundKeydown = this.onKeydown.bind(this)
     this.boundThumbStripScroll = this.updateThumbScrollButtons.bind(this)
     this.boundWindowResize = this.updateThumbScrollButtons.bind(this)
+    this.applyCurrentSlideToMain()
     this.updateCounters()
     this.updateNavVisibility()
     this.setupThumbStripObservers()
@@ -42,22 +46,28 @@ export default class extends Controller {
 
   select(event) {
     const el = event.currentTarget
-    const mainUrl =
-      el.dataset.thumbMainUrl ||
-      el.getAttribute("data-thumb-main-url") ||
-      el.dataset.thumbUrl ||
-      el.getAttribute("data-thumb-url")
-    const srcset = el.dataset.thumbSrcset || el.getAttribute("data-thumb-srcset")
-    if (!mainUrl || !this.hasMainTarget) return
-
     const idx = parseInt(el.getAttribute("data-gallery-index") || "0", 10)
     if (!Number.isNaN(idx)) this.currentIndex = idx
 
-    this.mainTarget.src = mainUrl
-    if (srcset && srcset.trim().length > 0) {
-      this.mainTarget.srcset = srcset
+    const slide = this.slidesValue[this.currentIndex]
+    if (slide && slide.type === "webgl") {
+      this.showWebglMain()
     } else {
-      this.mainTarget.removeAttribute("srcset")
+      const mainUrl =
+        el.dataset.thumbMainUrl ||
+        el.getAttribute("data-thumb-main-url") ||
+        el.dataset.thumbUrl ||
+        el.getAttribute("data-thumb-url")
+      const srcset = el.dataset.thumbSrcset || el.getAttribute("data-thumb-srcset")
+      if (mainUrl && this.hasMainTarget) {
+        this.showImageMain()
+        this.mainTarget.src = mainUrl
+        if (srcset && srcset.trim().length > 0) {
+          this.mainTarget.srcset = srcset
+        } else {
+          this.mainTarget.removeAttribute("srcset")
+        }
+      }
     }
 
     this.element.querySelectorAll('[data-product-gallery-thumb="true"]').forEach((thumb) => {
@@ -124,9 +134,13 @@ export default class extends Controller {
   openLightbox(event) {
     event?.preventDefault()
     if (!this.hasDialogTarget || !this.hasLightboxImageTarget) return
+    if (!this.isCurrentSlideImage()) return
 
     this.previousActiveElement = document.activeElement
     this.currentIndex = this.resolveCurrentIndexFromDom()
+    if (!this.isCurrentSlideImage()) {
+      this.currentIndex = this.firstImageSlideIndex() ?? 0
+    }
     this.applySlideToLightbox()
     this.updateCounters()
 
@@ -266,7 +280,7 @@ export default class extends Controller {
   showPrevious(event) {
     event?.stopPropagation()
     if (this.slidesValue.length <= 1) return
-    this.currentIndex = (this.currentIndex - 1 + this.slidesValue.length) % this.slidesValue.length
+    this.currentIndex = this.advanceIndex(-1, { imagesOnly: this.isLightboxOpen() })
     this.applySlideToLightbox()
     this.syncMainWithLightboxSlide()
     this.syncThumbnailsAria()
@@ -276,7 +290,7 @@ export default class extends Controller {
   showNext(event) {
     event?.stopPropagation()
     if (this.slidesValue.length <= 1) return
-    this.currentIndex = (this.currentIndex + 1) % this.slidesValue.length
+    this.currentIndex = this.advanceIndex(1, { imagesOnly: this.isLightboxOpen() })
     this.applySlideToLightbox()
     this.syncMainWithLightboxSlide()
     this.syncThumbnailsAria()
@@ -287,12 +301,11 @@ export default class extends Controller {
     const slide = this.slidesValue[this.currentIndex]
     if (!slide || !this.hasLightboxImageTarget) return
 
+    if (slide.type !== "image") return
+
     this.lightboxImageTarget.src = slide.src
-    if (slide.srcset) {
-      this.lightboxImageTarget.srcset = slide.srcset
-    } else {
-      this.lightboxImageTarget.removeAttribute("srcset")
-    }
+    if (slide.srcset) this.lightboxImageTarget.srcset = slide.srcset
+    else this.lightboxImageTarget.removeAttribute("srcset")
     if (this.hasMainTarget) {
       this.lightboxImageTarget.alt = this.mainTarget.alt
     }
@@ -301,6 +314,7 @@ export default class extends Controller {
   syncMainWithLightboxSlide() {
     const slide = this.slidesValue[this.currentIndex]
     if (!slide || !this.hasMainTarget) return
+    if (slide.type !== "image") return
 
     const thumb = this.element.querySelector(
       `[data-product-gallery-thumb="true"][data-gallery-index="${this.currentIndex}"]`
@@ -336,7 +350,9 @@ export default class extends Controller {
   }
 
   updateNavVisibility() {
-    const multi = this.slidesValue.length > 1
+    const multi = this.isLightboxOpen()
+      ? (this.imageSlideIndices().length > 1)
+      : (this.slidesValue.length > 1)
     if (this.hasPrevButtonTarget) {
       this.prevButtonTarget.classList.toggle("hidden", !multi)
       this.prevButtonTarget.toggleAttribute("hidden", !multi)
@@ -350,12 +366,22 @@ export default class extends Controller {
   }
 
   updateCounters() {
-    const total = Array.isArray(this.slidesValue) ? this.slidesValue.length : 0
-    const current = total > 0 ? this.currentIndex + 1 : 0
-    const text = `${current} / ${total}`
+    const totalAll = Array.isArray(this.slidesValue) ? this.slidesValue.length : 0
+    const currentAll = totalAll > 0 ? this.currentIndex + 1 : 0
 
-    if (this.hasCounterMainTarget) this.counterMainTarget.textContent = text
-    if (this.hasCounterLightboxTarget) this.counterLightboxTarget.textContent = text
+    let textMain = `${currentAll} / ${totalAll}`
+    let textLightbox = textMain
+
+    if (this.isLightboxOpen()) {
+      const images = this.imageSlideIndices()
+      const totalImages = images.length
+      const pos = images.indexOf(this.currentIndex)
+      const currentImage = totalImages > 0 ? (pos >= 0 ? pos + 1 : 1) : 0
+      textLightbox = `${currentImage} / ${totalImages}`
+    }
+
+    if (this.hasCounterMainTarget) this.counterMainTarget.textContent = textMain
+    if (this.hasCounterLightboxTarget) this.counterLightboxTarget.textContent = textLightbox
   }
 
   resolveCurrentIndexFromDom() {
@@ -367,5 +393,110 @@ export default class extends Controller {
       if (!Number.isNaN(idx)) return idx
     }
     return 0
+  }
+
+  normalizeSlidesValue() {
+    if (!Array.isArray(this.slidesValue)) {
+      this.slidesValue = []
+      return
+    }
+    // Backward compatibility: old format was [{src, srcset}]
+    this.slidesValue = this.slidesValue.map((s) => {
+      if (!s || typeof s !== "object") return null
+      if (s.type) return s
+      if (s.src) return { type: "image", src: s.src, srcset: s.srcset }
+      return null
+    }).filter(Boolean)
+  }
+
+  currentSlide() {
+    return this.slidesValue?.[this.currentIndex]
+  }
+
+  isCurrentSlideImage() {
+    const slide = this.currentSlide()
+    return !!slide && slide.type === "image"
+  }
+
+  firstImageSlideIndex() {
+    const idxs = this.imageSlideIndices()
+    return idxs.length ? idxs[0] : null
+  }
+
+  imageSlideIndices() {
+    if (!Array.isArray(this.slidesValue)) return []
+    const out = []
+    this.slidesValue.forEach((s, i) => {
+      if (s && s.type === "image") out.push(i)
+    })
+    return out
+  }
+
+  isLightboxOpen() {
+    if (!this.hasDialogTarget) return false
+    if (this.dialogTarget.classList.contains("hidden")) return false
+    if (this.dialogTarget.hasAttribute("hidden")) return false
+    return true
+  }
+
+  advanceIndex(direction, { imagesOnly }) {
+    const n = this.slidesValue.length
+    if (n <= 0) return 0
+
+    let next = this.currentIndex
+    for (let guard = 0; guard < n; guard++) {
+      next = (next + direction + n) % n
+      if (!imagesOnly) return next
+      const s = this.slidesValue[next]
+      if (s && s.type === "image") return next
+    }
+    return this.currentIndex
+  }
+
+  applyCurrentSlideToMain() {
+    const slide = this.currentSlide()
+    if (!slide) return
+    if (slide.type === "webgl") {
+      this.showWebglMain()
+      return
+    }
+    if (slide.type === "image") {
+      this.showImageMain()
+      // In case DOM default differs from slidesValue (e.g. initial render), keep it.
+      return
+    }
+  }
+
+  showImageMain() {
+    if (this.hasWebglHostTarget) {
+      this.webglHostTarget.classList.add("hidden")
+      this.webglHostTarget.setAttribute("hidden", "")
+    }
+    if (this.hasImageButtonTarget) {
+      this.imageButtonTarget.classList.remove("hidden")
+      this.imageButtonTarget.removeAttribute("hidden")
+      this.imageButtonTarget.classList.add("cursor-zoom-in")
+    }
+  }
+
+  showWebglMain() {
+    if (this.hasImageButtonTarget) {
+      this.imageButtonTarget.classList.add("hidden")
+      this.imageButtonTarget.setAttribute("hidden", "")
+      this.imageButtonTarget.classList.remove("cursor-zoom-in")
+    }
+    if (!this.hasWebglHostTarget) return
+
+    this.webglHostTarget.classList.remove("hidden")
+    this.webglHostTarget.removeAttribute("hidden")
+
+    // Lazy activate Stimulus controller when 3D is actually selected.
+    if (!this.webglHostTarget.getAttribute("data-controller")) {
+      const modelUrl = (this.webglHostTarget.getAttribute("data-webgl-model-url") || "").trim()
+      const coverUrl = (this.webglHostTarget.getAttribute("data-webgl-cover-url") || "").trim()
+      this.webglHostTarget.setAttribute("data-controller", "webgl-preview")
+      this.webglHostTarget.setAttribute("data-webgl-preview-model-url-value", modelUrl)
+      this.webglHostTarget.setAttribute("data-webgl-preview-cover-image-url-value", coverUrl)
+    }
   }
 }
