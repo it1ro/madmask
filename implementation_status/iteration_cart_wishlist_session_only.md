@@ -4,6 +4,7 @@
 - **Done**: Phase 1 / **1.1 Определить интерфейсы**
 - **Done**: Phase 1 / **1.2 Session storage schema**
 - **Done**: Phase 1 / **1.3 Где хранить контракты и как инжектить session**
+- **Done**: Phase 1 / **1.4 Минимальные unit-tests контрактов**
 
 ## Contracts API (фиксировано)
 
