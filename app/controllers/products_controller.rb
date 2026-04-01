@@ -15,7 +15,7 @@ class ProductsController < ApplicationController
     end
 
     @results_count = products_scope.count
-    @pagy, @products = pagy(:offset, products_scope, limit: 10, size: [1, 2, 2, 1])
+    @pagy, @products = pagy(:offset, products_scope, limit: 10, size: [ 1, 2, 2, 1 ])
   end
 
   def show

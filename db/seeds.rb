@@ -2,7 +2,7 @@ require "bigdecimal"
 
 desired_count = 80
 existing_count = Product.count
-missing_count = [desired_count - existing_count, 0].max
+missing_count = [ desired_count - existing_count, 0 ].max
 
 if missing_count.positive?
   start_index = existing_count

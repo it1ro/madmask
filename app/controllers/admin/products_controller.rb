@@ -8,7 +8,7 @@ module Admin
         .with_attached_gallery_images
         .with_attached_model_file
         .order(created_at: :desc)
-      @pagy, @products = pagy(:offset, products_scope, limit: 20, size: [1, 2, 2, 1])
+      @pagy, @products = pagy(:offset, products_scope, limit: 20, size: [ 1, 2, 2, 1 ])
       @product = Product.new
     end
 

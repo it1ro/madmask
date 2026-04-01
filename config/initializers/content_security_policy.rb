@@ -23,6 +23,6 @@ Rails.application.configure do
   config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }
   # Keep nonces for scripts; don't nonce style-src because it disables `unsafe-inline`
   # for style attributes (and Turbo uses inline styles in a few places).
-  config.content_security_policy_nonce_directives = %w(script-src)
+  config.content_security_policy_nonce_directives = %w[script-src]
   config.content_security_policy_nonce_auto = true
 end

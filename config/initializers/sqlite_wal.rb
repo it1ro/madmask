@@ -15,4 +15,3 @@ ActiveSupport.on_load(:active_record) do
     Rails.logger.warn("[sqlite_wal] Failed to apply pragmas for #{pool.db_config.name}: #{e.class}: #{e.message}")
   end
 end
-
