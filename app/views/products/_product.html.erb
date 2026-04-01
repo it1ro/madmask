@@ -8,8 +8,13 @@
       aria: { label: "Открыть товар: #{product.translated_name}" },
       class:
         "group/cover relative block h-32 w-full shrink-0 overflow-hidden rounded-xl border border-line bg-panel transition hover:border-glow hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 sm:h-32 sm:w-32" do %>
-      <% if product.cover_image.attached? %>
-        <%= image_tag product.cover_image.variant(resize_to_limit: [512, 512]),
+      <% hero = product.hero_image %>
+      <% if hero.present? %>
+        <% v256 = hero.variant(resize_to_limit: [256, 256]) %>
+        <% v512 = hero.variant(resize_to_limit: [512, 512]) %>
+        <%= image_tag url_for(v256),
+          srcset: "#{url_for(v256)} 256w, #{url_for(v512)} 512w",
+          sizes: "(max-width: 640px) 100vw, 128px",
           class: "h-full w-full object-cover",
           alt: product.translated_name,
           loading: "lazy",

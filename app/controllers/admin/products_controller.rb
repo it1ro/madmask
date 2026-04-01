@@ -5,7 +5,9 @@ module Admin
     def index
       products_scope = Product
         .with_attached_cover_image
+        .with_attached_cover_image_optimized
         .with_attached_gallery_images
+        .with_attached_gallery_images_optimized
         .with_attached_model_file
         .includes(:translations)
         .order_assets_first
@@ -28,6 +30,7 @@ module Admin
       @product = Product.new(product_params)
 
       if @product.save
+        enqueue_image_optimization_if_needed
         respond_to do |format|
           format.turbo_stream
           format.html { redirect_to admin_products_path, notice: "Товар добавлен." }
@@ -55,6 +58,7 @@ module Admin
       purge_requested_gallery_images
 
       if @product.update(product_params)
+        enqueue_image_optimization_if_needed
         respond_to do |format|
           format.turbo_stream
           format.html { redirect_to admin_product_path(@product), notice: "Товар обновлён." }
@@ -79,7 +83,9 @@ module Admin
     def set_product
       @product = Product
         .with_attached_cover_image
+        .with_attached_cover_image_optimized
         .with_attached_gallery_images
+        .with_attached_gallery_images_optimized
         .with_attached_model_file
         .includes(:translations)
         .find(params[:id])
@@ -111,6 +117,16 @@ module Admin
         gallery_images: [],
         translations_attributes: %i[id locale name description _destroy]
       )
+    end
+
+    def enqueue_image_optimization_if_needed
+      touched_images = params.dig(:product, :cover_image).present? ||
+        params.dig(:product, :gallery_images).present? ||
+        Array(params.dig(:product, :remove_gallery_image_signed_ids)).any?(&:present?)
+
+      return unless touched_images
+
+      Products::OptimizeImagesJob.perform_later(@product.id)
     end
   end
 end

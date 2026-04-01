@@ -2,10 +2,18 @@ class Product < ApplicationRecord
   include Translatable
 
   has_one_attached :cover_image
+  has_one_attached :cover_image_optimized
   has_many_attached :gallery_images
+  has_many_attached :gallery_images_optimized
   has_one_attached :model_file
 
-  ASSET_ATTACHMENT_NAMES = %w[ cover_image gallery_images model_file ].freeze
+  ASSET_ATTACHMENT_NAMES = %w[
+    cover_image
+    cover_image_optimized
+    gallery_images
+    gallery_images_optimized
+    model_file
+  ].freeze
 
   scope :order_assets_first, lambda {
     order(
@@ -53,17 +61,27 @@ class Product < ApplicationRecord
 
   # Cover if present, else first gallery image — for catalog preview and hero fallback.
   def hero_image
+    return cover_image_optimized.blob if cover_image_optimized.blob.present?
     return cover_image.blob if cover_image.blob.present?
 
-    gallery_images.blobs.first
+    gallery_images_optimized.blobs.first || gallery_images.blobs.first
   end
 
   # Extra frames beyond the hero thumbnail (for "+N" badge on catalog cards).
   def gallery_extra_count
-    if cover_image.attached?
-      gallery_images.attachments.size
+    cover_present = cover_image_optimized.attached? || cover_image.attached?
+    gallery_count = if gallery_images_optimized.attached?
+      gallery_images_optimized.attachments.size
     elsif gallery_images.attached?
-      gallery_images.attachments.size - 1
+      gallery_images.attachments.size
+    else
+      0
+    end
+
+    if cover_present
+      gallery_count
+    elsif gallery_count.positive?
+      gallery_count - 1
     else
       0
     end
@@ -72,8 +90,19 @@ class Product < ApplicationRecord
   # Ordered list for gallery UI: cover first (if any), then all gallery images — no duplicate rule in data.
   def preview_images_ordered
     images = []
-    images << cover_image if cover_image.attached?
-    gallery_images.each { |blob| images << blob }
+
+    if cover_image_optimized.attached?
+      images << cover_image_optimized
+    elsif cover_image.attached?
+      images << cover_image
+    end
+
+    if gallery_images_optimized.attached?
+      gallery_images_optimized.each { |blob| images << blob }
+    else
+      gallery_images.each { |blob| images << blob }
+    end
+
     images
   end
 

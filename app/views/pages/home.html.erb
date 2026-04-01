@@ -101,12 +101,23 @@
       </div>
 
       <figure class="hero-brand-image w-full">
-        <%= image_tag "/images/site-hero.png",
-          alt: "Madmask — маски в стиле fantasy, horror, sci‑fi и cyberpunk",
-          loading: "eager",
-          fetchpriority: "high",
-          decoding: "async",
-          class: "hero-brand-image__img" %>
+        <picture>
+          <source
+            type="image/webp"
+            srcset="/images/site-hero-640.webp 640w, /images/site-hero-1280.webp 1280w, /images/site-hero-1920.webp 1920w"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px"
+          >
+          <%= image_tag "/images/site-hero.png",
+            alt: "Madmask — маски в стиле fantasy, horror, sci‑fi и cyberpunk",
+            loading: "eager",
+            fetchpriority: "high",
+            decoding: "async",
+            width: 1280,
+            height: 960,
+            sizes: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px",
+            srcset: "/images/site-hero-640.png 640w, /images/site-hero-1280.png 1280w, /images/site-hero-1920.png 1920w",
+            class: "hero-brand-image__img" %>
+        </picture>
       </figure>
     </div>
   </section>

@@ -7,6 +7,7 @@ class ProductsController < ApplicationController
 
     products_scope = Product
       .with_attached_cover_image
+      .with_attached_cover_image_optimized
       .includes(:model_file_attachment)
       .order_assets_first
       .order(created_at: :desc)
@@ -30,7 +31,9 @@ class ProductsController < ApplicationController
   def set_product
     @product = Product
       .with_attached_cover_image
+      .with_attached_cover_image_optimized
       .with_attached_gallery_images
+      .with_attached_gallery_images_optimized
       .with_attached_model_file
       .find(params[:id])
   end

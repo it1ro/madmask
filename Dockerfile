@@ -19,8 +19,10 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       ca-certificates \
       curl \
+      libheif1 \
       libsqlite3-0 \
       libvips42 \
+      libwebp7 \
       libyaml-0-2 \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,8 +32,10 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
       build-essential \
       git \
+      libheif-dev \
       libsqlite3-dev \
       libvips-dev \
+      libwebp-dev \
       libyaml-dev \
       pkg-config \
     && rm -rf /var/lib/apt/lists/*
