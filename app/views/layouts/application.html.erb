@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="<%= I18n.locale %>">
   <head>
     <% page_title = content_for(:title).presence || "Madmask" %>
     <title><%= page_title %></title>
@@ -55,7 +55,7 @@
   </head>
 
   <body class="relative flex min-h-screen flex-col antialiased">
-    <a href="#main-content" class="skip-link">Перейти к содержимому</a>
+    <a href="#main-content" class="skip-link"><%= t("nav.skip_to_content") %></a>
 
     <canvas
       data-controller="cursor-smoke"

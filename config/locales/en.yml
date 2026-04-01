@@ -29,6 +29,136 @@
 
 en:
   hello: "Hello world"
+  nav:
+    skip_to_content: "Skip to content"
+    catalog: "Catalog"
+    admin: "Admin"
+    primary_aria_label: "Primary navigation"
+    info_menu: "Info"
+    language: "Language"
+    language_ru: "RU"
+    language_en: "EN"
+    info:
+      about: "About the workshop"
+      delivery_payment: "Delivery & payment"
+      lead_times_custom: "Lead times & custom"
+      materials_care: "Materials & care"
+      faq: "FAQ"
+      contacts: "Contacts"
+  pages:
+    about:
+      title: "About the workshop"
+      meta_description: "Madmask workshop: handmade masks, small batches, and custom work based on your references."
+      lead: "Who we are, how we work, and where to find us."
+      blocks:
+        who:
+          title: "Madmask"
+          body: |
+            We create masks and props for stage, filming, and cosplay.
+            We make small batches and take custom requests based on references.
+        how:
+          title: "How ordering works"
+          body: |
+            Choose an item from the catalog or describe your idea.
+            We confirm materials, finish, lead time, and details — then approve the order.
+        where:
+          title: "Social & contact"
+          body: |
+            News, work-in-progress, and fast replies are in social media.
+            You can also use the inquiry form on the website.
+    delivery_payment:
+      title: "Delivery & payment"
+      meta_description: "Delivery and payment options for Madmask."
+      lead: "Quick overview of delivery, payment, and shipping notes."
+      blocks:
+        delivery:
+          title: "Delivery"
+          body: |
+            Delivery across Russia and local pickup (if available).
+            Exact method and cost are confirmed when we approve the order.
+        payment:
+          title: "Payment"
+          body: |
+            Payment via bank transfer/card (options are confirmed in chat).
+            For custom work, a deposit may be required depending on scope.
+        notes:
+          title: "Notes"
+          body: |
+            Shipping date depends on stock status and production schedule.
+            We pack items to protect the finish and decorative elements.
+    lead_times_custom:
+      title: "Lead times & custom"
+      meta_description: "Lead times and how custom orders work at Madmask."
+      lead: "How to estimate lead time and what we need for custom work."
+      blocks:
+        ready:
+          title: "In stock"
+          body: |
+            Ready items depend on current availability.
+            If it’s in stock, we’ll share the nearest shipping date.
+        custom:
+          title: "Custom"
+          body: |
+            Custom lead time depends on complexity, materials, and finish.
+            We’ll provide an estimate after a short brief and references review.
+        brief:
+          title: "What to send"
+          body: |
+            2–5 references, desired vibe/genre, use case (stage/filming/cosplay),
+            and any fit/strap requirements.
+    materials_care:
+      title: "Materials & care"
+      meta_description: "Materials and care recommendations for Madmask items."
+      lead: "Base, finish, and simple rules to keep the item in great shape."
+      blocks:
+        materials:
+          title: "Materials"
+          body: |
+            We choose materials based on the use case and desired look.
+            Exact build and finish are confirmed during order approval.
+        care:
+          title: "Care"
+          body: |
+            Protect the finish from scratches and harsh chemicals.
+            Store in a dry place, away from heat and direct sunlight.
+        safety:
+          title: "Safety"
+          body: |
+            If you plan to wear it for long events, tell us — we’ll suggest comfort/fit options.
+    faq:
+      title: "FAQ"
+      meta_description: "Frequently asked questions about Madmask orders."
+      lead: "Answers to the most common questions."
+      blocks:
+        how_to_order:
+          title: "How do I order?"
+          body: |
+            Open a product and submit an inquiry, or send a brief for a custom request.
+            We’ll reply with availability and lead times.
+        can_change:
+          title: "Can I change the finish/color?"
+          body: |
+            Yes, in most cases it’s possible.
+            Add your preferences and references in the inquiry.
+        support:
+          title: "Where do you reply faster?"
+          body: |
+            Social media is the fastest.
+            Website inquiries are also checked regularly.
+    contacts:
+      title: "Contacts"
+      meta_description: "Madmask contacts and social links."
+      lead: "Social, messaging, and email."
+      blocks:
+        social:
+          title: "Social"
+          body: |
+            VK: https://vk.com/madmask73
+            Telegram: https://t.me/
+        email:
+          title: "Email"
+          body: |
+            For collaborations and orders, email is available (we’ll share it in the reply if needed).
   activerecord:
     errors:
       models:

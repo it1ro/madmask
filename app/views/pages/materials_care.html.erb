@@ -1,0 +1,10 @@
+<%= render "info_page",
+  title: t("pages.materials_care.title"),
+  meta_description: t("pages.materials_care.meta_description"),
+  lead: t("pages.materials_care.lead"),
+  blocks: [
+    { title: t("pages.materials_care.blocks.materials.title"), body: simple_format(t("pages.materials_care.blocks.materials.body")) },
+    { title: t("pages.materials_care.blocks.care.title"), body: simple_format(t("pages.materials_care.blocks.care.body")) },
+    { title: t("pages.materials_care.blocks.safety.title"), body: simple_format(t("pages.materials_care.blocks.safety.body")) }
+  ] %>
+

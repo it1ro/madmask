@@ -1,0 +1,10 @@
+<%= render "info_page",
+  title: t("pages.faq.title"),
+  meta_description: t("pages.faq.meta_description"),
+  lead: t("pages.faq.lead"),
+  blocks: [
+    { title: t("pages.faq.blocks.how_to_order.title"), body: simple_format(t("pages.faq.blocks.how_to_order.body")) },
+    { title: t("pages.faq.blocks.can_change.title"), body: simple_format(t("pages.faq.blocks.can_change.body")) },
+    { title: t("pages.faq.blocks.support.title"), body: simple_format(t("pages.faq.blocks.support.body")) }
+  ] %>
+

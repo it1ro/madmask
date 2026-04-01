@@ -2,6 +2,18 @@
   class="mt-auto border-t border-line bg-card"
   role="contentinfo"
 >
+  <div class="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
+    <nav aria-label="<%= t("nav.primary_aria_label") %>">
+      <ul class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink-muted">
+        <li><%= link_to t("nav.info.about"), about_path, class: "hover:text-cyber-bright underline decoration-[var(--color-accent-glow)] underline-offset-4" %></li>
+        <li><%= link_to t("nav.info.delivery_payment"), delivery_and_payment_path, class: "hover:text-cyber-bright underline decoration-[var(--color-accent-glow)] underline-offset-4" %></li>
+        <li><%= link_to t("nav.info.lead_times_custom"), lead_times_and_custom_path, class: "hover:text-cyber-bright underline decoration-[var(--color-accent-glow)] underline-offset-4" %></li>
+        <li><%= link_to t("nav.info.materials_care"), materials_and_care_path, class: "hover:text-cyber-bright underline decoration-[var(--color-accent-glow)] underline-offset-4" %></li>
+        <li><%= link_to t("nav.info.faq"), faq_path, class: "hover:text-cyber-bright underline decoration-[var(--color-accent-glow)] underline-offset-4" %></li>
+        <li><%= link_to t("nav.info.contacts"), contacts_path, class: "hover:text-cyber-bright underline decoration-[var(--color-accent-glow)] underline-offset-4" %></li>
+      </ul>
+    </nav>
+  </div>
   <div class="border-t border-line px-4 py-3 text-center md:px-6">
     <p class="font-mono text-xs text-ink-muted">
       © <%= Time.current.year %> Madmask

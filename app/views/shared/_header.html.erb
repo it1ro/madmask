@@ -2,6 +2,7 @@
   class="fixed top-0 z-50 w-full bg-[rgba(10,5,15,0.8)] backdrop-blur-[12px]"
   role="banner"
 >
+  <% current_locale = I18n.locale %>
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
     <%= link_to root_path,
       class:
@@ -14,13 +15,35 @@
           "header-brand-logo h-[3.075rem] w-auto shrink-0 object-contain transition-[filter] duration-200 md:h-[3.375rem] group-hover:drop-shadow-[0_0_12px_var(--color-accent-glow)] motion-reduce:transition-none motion-reduce:group-hover:drop-shadow-none" %>
     <% end %>
 
-    <nav class="flex flex-wrap items-center gap-2 md:gap-6" aria-label="Основная навигация">
-      <%= link_to "Каталог", products_path, class: "site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 #{"site-nav-link--active" if request.path.start_with?("/products")}" %>
+    <nav class="flex flex-wrap items-center gap-2 md:gap-6" aria-label="<%= t("nav.primary_aria_label") %>">
+      <%= link_to t("nav.catalog"),
+        products_path,
+        class:
+          "site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 #{"site-nav-link--active" if request.path.start_with?("/#{current_locale}/products")}" %>
+
+      <details class="relative">
+        <summary
+          class="site-nav-link inline-flex min-h-[44px] min-w-[44px] cursor-pointer list-none items-center justify-center px-2 py-2"
+        >
+          <span class="font-ui text-xs uppercase tracking-[0.12em]"><%= t("nav.info_menu") %></span>
+        </summary>
+        <div class="absolute left-0 top-full mt-2 w-56 rounded-xl border border-line bg-card p-2 shadow-card">
+          <div class="flex flex-col gap-1">
+            <%= link_to t("nav.info.about"), about_path, class: "rounded-lg px-3 py-2 text-sm text-ink hover:bg-page/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+            <%= link_to t("nav.info.delivery_payment"), delivery_and_payment_path, class: "rounded-lg px-3 py-2 text-sm text-ink hover:bg-page/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+            <%= link_to t("nav.info.lead_times_custom"), lead_times_and_custom_path, class: "rounded-lg px-3 py-2 text-sm text-ink hover:bg-page/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+            <%= link_to t("nav.info.materials_care"), materials_and_care_path, class: "rounded-lg px-3 py-2 text-sm text-ink hover:bg-page/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+            <%= link_to t("nav.info.faq"), faq_path, class: "rounded-lg px-3 py-2 text-sm text-ink hover:bg-page/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+            <%= link_to t("nav.info.contacts"), contacts_path, class: "rounded-lg px-3 py-2 text-sm text-ink hover:bg-page/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+          </div>
+        </div>
+      </details>
+
       <% if user_signed_in? %>
-        <%= link_to "Админ",
+        <%= link_to t("nav.admin"),
           admin_root_path,
           class:
-            "font-ui site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 text-xs uppercase tracking-[0.12em] #{"site-nav-link--active" if request.path.start_with?("/admin")}" %>
+            "font-ui site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 text-xs uppercase tracking-[0.12em] #{"site-nav-link--active" if request.path.start_with?("/#{current_locale}/admin")}" %>
       <% end %>
 
       <a
@@ -39,6 +62,18 @@
     </nav>
 
     <div class="flex items-center gap-3">
+      <div class="hidden items-center gap-1 md:flex" aria-label="<%= t("nav.language") %>">
+        <%= link_to t("nav.language_ru"),
+          url_for(locale: :ru),
+          class:
+            "rounded-md px-2 py-2 text-xs font-ui uppercase tracking-[0.14em] #{current_locale == :ru ? "text-cyber-bright" : "text-ink-muted hover:text-cyber-bright"} focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+        <span class="text-ink-muted/50">/</span>
+        <%= link_to t("nav.language_en"),
+          url_for(locale: :en),
+          class:
+            "rounded-md px-2 py-2 text-xs font-ui uppercase tracking-[0.14em] #{current_locale == :en ? "text-cyber-bright" : "text-ink-muted hover:text-cyber-bright"} focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
+      </div>
+
       <details class="relative md:hidden">
         <summary
           class="list-none inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-line bg-page/30 px-3 text-ink transition hover:border-glow hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2"

@@ -34,12 +34,14 @@ module ApplicationHelper
   end
 
   def noindex_page?
-    return true if request.path.start_with?("/admin")
-    return true if request.path == "/cart" || request.path.start_with?("/cart/")
-    return true if request.path == "/wishlist" || request.path.start_with?("/wishlist/")
-    return true if request.path == "/up"
-    return true if request.path.start_with?("/users")
-    return true if request.path == "/inquiries/thanks"
+    path = request.path.sub(%r{\A/(ru|en)(?=/|$)}, "")
+
+    return true if path.start_with?("/admin")
+    return true if path == "/cart" || path.start_with?("/cart/")
+    return true if path == "/wishlist" || path.start_with?("/wishlist/")
+    return true if path == "/up"
+    return true if path.start_with?("/users")
+    return true if path == "/inquiries/thanks"
 
     false
   end
