@@ -6,4 +6,38 @@ class ApplicationController < ActionController::Base
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
+
+  helper_method(
+    :cart_contract,
+    :wishlist_contract,
+    :cart_units_count,
+    :wishlist_count,
+    :in_wishlist?,
+    :cart_qty
+  )
+
+  def cart_contract
+    @cart_contract ||= CartContract.new(session:)
+  end
+
+  def wishlist_contract
+    @wishlist_contract ||= WishlistContract.new(session:)
+  end
+
+  def cart_units_count
+    cart_contract.list.sum { |row| row[:qty].to_i }
+  end
+
+  def wishlist_count
+    wishlist_contract.list.size
+  end
+
+  def in_wishlist?(product_id)
+    wishlist_contract.list.include?(product_id.to_s)
+  end
+
+  def cart_qty(product_id)
+    id = product_id.to_s
+    cart_contract.list.find { |row| row[:product_id] == id }&.fetch(:qty, 0).to_i
+  end
 end

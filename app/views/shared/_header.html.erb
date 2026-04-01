@@ -37,6 +37,33 @@
         </svg>
       </a>
     </nav>
+
+    <div class="flex items-center gap-3">
+      <div class="relative hidden md:block">
+        <%= link_to cart_path,
+          class:
+            "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-line bg-page/30 px-3 font-ui text-xs font-semibold uppercase tracking-[0.16em] text-ink transition hover:border-glow hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" do %>
+          Корзина
+        <% end %>
+
+        <div class="absolute -right-2 -top-2">
+          <%= render "shared/cart_counter" %>
+        </div>
+
+        <div class="absolute right-0 top-full mt-2 w-64">
+          <%= render "cart/popover" %>
+        </div>
+      </div>
+
+      <%= link_to wishlist_path,
+        class:
+          "relative inline-flex min-h-[44px] items-center justify-center rounded-lg border border-line bg-page/30 px-3 font-ui text-xs font-semibold uppercase tracking-[0.16em] text-ink transition hover:border-glow hover:text-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" do %>
+        Избранное
+        <span class="ml-2">
+          <%= render "shared/wishlist_counter" %>
+        </span>
+      <% end %>
+    </div>
   </div>
   <div
     class="h-px w-full bg-gradient-to-r from-transparent via-[var(--color-accent-glow)] to-transparent opacity-70"

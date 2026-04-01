@@ -8,10 +8,9 @@ class WishlistController < ApplicationController
     product_id = normalized_product_id_param
     wishlist_contract.toggle(product_id) if product_id
 
-    if turbo_stream_request?
-      render turbo_stream: []
-    else
-      redirect_to(request.referer || products_path)
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to(request.referer || products_path) }
     end
   end
 

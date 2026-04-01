@@ -1,0 +1,26 @@
+<%= turbo_frame_tag "cart_popover" do %>
+  <div class="rounded-xl border border-line bg-panel/80 p-3 shadow-card">
+    <div class="flex items-center justify-between gap-3">
+      <p class="font-ui text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted">Корзина</p>
+      <%= link_to "Открыть", cart_path, class: "font-ui text-xs uppercase tracking-[0.16em] text-cyber hover:text-glow" %>
+    </div>
+
+    <% items = cart_contract.list %>
+    <% if items.empty? %>
+      <p class="mt-2 text-sm text-ink-muted">Пока пусто.</p>
+    <% else %>
+      <ul class="mt-2 space-y-1">
+        <% items.first(5).each do |row| %>
+          <li class="flex items-center justify-between gap-3 text-sm text-ink">
+            <span class="truncate">#<%= row[:product_id] %></span>
+            <span class="font-mono text-ink-muted"><%= row[:qty] %>×</span>
+          </li>
+        <% end %>
+      </ul>
+
+      <% if items.size > 5 %>
+        <p class="mt-2 text-xs text-ink-faint">И ещё <%= items.size - 5 %>…</p>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

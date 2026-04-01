@@ -7,6 +7,7 @@
 - **Done**: Phase 1 / **1.4 Минимальные unit-tests контрактов**
 - **Done**: Phase 2 / **2.1 Создать контроллеры** (`CartController`, `WishlistController`)
 - **Done**: Phase 2 / **2.2 Экшены и контрактная граница** (валидация параметров, вызов контрактов, Turbo Stream vs HTML redirect fallback)
+- **Done**: Phase 2 / **2.3 Turbo Stream ответ как “единый пакет UI-обновлений”** (turbo_stream templates обновляют header counters / popover / product actions / page containers)
 
 ## Contracts API (фиксировано)
 

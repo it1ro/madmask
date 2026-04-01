@@ -47,10 +47,9 @@ class CartController < ApplicationController
   end
 
   def respond_after_mutation(fallback_path:)
-    if turbo_stream_request?
-      render turbo_stream: []
-    else
-      redirect_to fallback_path
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to fallback_path }
     end
   end
 end

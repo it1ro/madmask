@@ -13,6 +13,16 @@ Rails.application.routes.draw do
   resources :products, only: %i[index show]
   resources :inquiries, only: %i[new create]
 
+  resource :cart, only: :show do
+    post :add
+    post :remove
+    patch :update
+  end
+
+  resource :wishlist, only: :show do
+    post :toggle
+  end
+
   namespace :admin do
     root to: "products#index"
     resources :products, except: :show

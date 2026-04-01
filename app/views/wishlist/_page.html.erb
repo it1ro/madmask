@@ -1,0 +1,33 @@
+<div id="wishlist_page">
+  <div class="rounded-2xl border border-line bg-card p-5 shadow-card">
+    <h1 class="font-heading text-xl font-semibold tracking-wide text-ink">Избранное</h1>
+
+    <% ids = wishlist_contract.list %>
+    <% products_by_id = defined?(@products) ? @products.index_by { |p| p.id.to_s } : {} %>
+
+    <% if ids.empty? %>
+      <p class="mt-3 text-ink-muted">Пока пусто.</p>
+    <% else %>
+      <ul class="mt-4 space-y-3">
+        <% ids.each do |id| %>
+          <% product = products_by_id[id] %>
+          <li class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-page/30 px-4 py-3">
+            <div class="min-w-0">
+              <p class="truncate font-ui text-sm font-semibold text-ink">
+                <%= product ? link_to(product.name, product_path(product), class: "hover:text-glow") : "##{id}" %>
+              </p>
+            </div>
+
+            <%= button_to(
+              "Убрать",
+              wishlist_toggle_path(product_id: id),
+              method: :post,
+              class:
+                "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-line bg-page/40 px-3 font-ui text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted transition hover:border-glow hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2"
+            ) %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</div>
