@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Madmask">
+  <defs>
+    <linearGradient id="mmGlow" x1="32" y1="32" x2="224" y2="224" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#66FCF1" stop-opacity="0.95"/>
+      <stop offset="0.52" stop-color="#B76FE0" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#E85D5D" stop-opacity="0.85"/>
+    </linearGradient>
+    <radialGradient id="mmShade" cx="40%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#1E1528" stop-opacity="0.0"/>
+      <stop offset="1" stop-color="#0A050F" stop-opacity="0.85"/>
+    </radialGradient>
+    <filter id="mmSoftGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer badge -->
+  <path
+    d="M128 18c45.9 0 83.1 37.2 83.1 83.1 0 62.1-36.5 99.7-73.8 127.4-5.7 4.2-12.9 4.2-18.6 0C81.4 200.8 45 163.2 45 101.1 45 55.2 82.1 18 128 18Z"
+    fill="url(#mmShade)"
+    stroke="url(#mmGlow)"
+    stroke-width="6"
+    filter="url(#mmSoftGlow)"
+  />
+
+  <!-- Mask silhouette -->
+  <path
+    d="M128 58c-36 0-64 24.5-64 56.9 0 37.6 20.4 67.5 52.3 82.9 7.2 3.5 15.9 3.5 23.1 0 31.9-15.4 52.3-45.3 52.3-82.9C192 82.5 164 58 128 58Z"
+    fill="#120B1A"
+    stroke="url(#mmGlow)"
+    stroke-width="4"
+  />
+
+  <!-- Eyes -->
+  <path d="M88 120c10-14 22-21 36-21s26 7 36 21c-10 10-22 15-36 15s-26-5-36-15Z" fill="#0A050F" opacity="0.85"/>
+  <path d="M98 118c7-8 15-12 26-12s19 4 26 12c-7 6-15 9-26 9s-19-3-26-9Z" fill="url(#mmGlow)" opacity="0.35"/>
+
+  <!-- Forehead rune -->
+  <path d="M128 78l10 18-10 18-10-18 10-18Z" fill="url(#mmGlow)" opacity="0.55"/>
+  <path d="M128 82l6 11-6 11-6-11 6-11Z" fill="#0A050F" opacity="0.65"/>
+
+  <!-- Bottom split -->
+  <path d="M128 150v54" stroke="url(#mmGlow)" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+</svg>

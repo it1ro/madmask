@@ -6,20 +6,22 @@
     <%= link_to root_path,
       class:
         "header-brand-link group flex min-h-[44px] min-w-[44px] items-center rounded-md px-2 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transition-none" do %>
-      <%= image_tag "/images/madmask-logo.png",
+      <%= image_tag "/images/madmask-logo.svg",
         alt: "Madmask",
-        width: 1024,
-        height: 1024,
+        width: 128,
+        height: 128,
         class:
           "header-brand-logo h-[3.6rem] w-auto shrink-0 object-contain transition-[filter] duration-200 md:h-[4.05rem] group-hover:drop-shadow-[0_0_12px_var(--color-accent-glow)] motion-reduce:transition-none motion-reduce:group-hover:drop-shadow-none" %>
     <% end %>
 
     <nav class="flex flex-wrap items-center gap-2 md:gap-6" aria-label="Основная навигация">
       <%= link_to "Каталог", products_path, class: "site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 #{"site-nav-link--active" if request.path.start_with?("/products")}" %>
-      <%= link_to "Админ",
-        admin_root_path,
-        class:
-          "font-ui site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 text-xs uppercase tracking-[0.12em] #{"site-nav-link--active" if request.path.start_with?("/admin")}" %>
+      <% if user_signed_in? %>
+        <%= link_to "Админ",
+          admin_root_path,
+          class:
+            "font-ui site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 text-xs uppercase tracking-[0.12em] #{"site-nav-link--active" if request.path.start_with?("/admin")}" %>
+      <% end %>
     </nav>
   </div>
   <div

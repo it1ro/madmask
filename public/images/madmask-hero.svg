@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-label="Madmask hero art">
+  <defs>
+    <radialGradient id="bg" cx="45%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#1E1528"/>
+      <stop offset="0.55" stop-color="#120B1A"/>
+      <stop offset="1" stop-color="#0A050F"/>
+    </radialGradient>
+    <linearGradient id="glow" x1="220" y1="180" x2="980" y2="1020" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#66FCF1" stop-opacity="0.85"/>
+      <stop offset="0.55" stop-color="#B76FE0" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#E85D5D" stop-opacity="0.76"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0V60" fill="none" stroke="#66FCF1" stroke-opacity="0.10" stroke-width="2"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <rect width="1200" height="1200" fill="url(#grid)"/>
+
+  <!-- Vignette -->
+  <rect width="1200" height="1200" fill="#0A050F" opacity="0.18"/>
+
+  <!-- Big aura -->
+  <circle cx="600" cy="560" r="360" fill="url(#glow)" opacity="0.18" filter="url(#soft)"/>
+  <circle cx="600" cy="560" r="270" fill="url(#glow)" opacity="0.22" filter="url(#soft)"/>
+
+  <!-- Mask outline -->
+  <path
+    d="M600 190c-210 0-372 147-372 340 0 212 113 384 290 475 51 26 113 26 164 0 177-91 290-263 290-475 0-193-162-340-372-340Z"
+    fill="#120B1A"
+    stroke="url(#glow)"
+    stroke-width="10"
+    filter="url(#soft)"
+  />
+
+  <!-- Inner cut -->
+  <path
+    d="M600 260c-165 0-292 115-292 266 0 173 88 310 227 384 39 21 85 21 124 0 139-74 227-211 227-384 0-151-127-266-286-266Z"
+    fill="#0A050F"
+    opacity="0.88"
+  />
+
+  <!-- Eyes -->
+  <path d="M408 560c48-70 108-106 192-106s144 36 192 106c-52 52-112 78-192 78s-140-26-192-78Z" fill="#120B1A" opacity="0.95"/>
+  <path d="M456 552c34-40 76-60 144-60s110 20 144 60c-40 30-82 46-144 46s-104-16-144-46Z" fill="url(#glow)" opacity="0.28"/>
+
+  <!-- Rune -->
+  <path d="M600 320l44 76-44 76-44-76 44-76Z" fill="url(#glow)" opacity="0.55"/>
+  <path d="M600 338l26 46-26 46-26-46 26-46Z" fill="#0A050F" opacity="0.7"/>
+
+  <!-- Subtle cyber lines -->
+  <path d="M248 860h260" stroke="#66FCF1" stroke-opacity="0.18" stroke-width="6" stroke-linecap="round"/>
+  <path d="M692 860h260" stroke="#B76FE0" stroke-opacity="0.18" stroke-width="6" stroke-linecap="round"/>
+  <path d="M600 680v330" stroke="url(#glow)" stroke-opacity="0.28" stroke-width="8" stroke-linecap="round"/>
+</svg>

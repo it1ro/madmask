@@ -12,6 +12,32 @@
 
 - Изначально итерация задумывалась **без кода**, но правки были внедрены: вариант B реализован с изменением CTA-логики (связь через форму, VK — как медиа-витрина).
 
+## Апдейт (2026-04-01): приоритизация, доверие, SEO, ассеты
+
+### Что изменили (факт, в коде)
+
+- **Hero / визуальная иерархия**:
+  - Снижена высота первого экрана и разложено на 2 колонки на desktop (текст+CTA слева, арт справа): `app/views/pages/home.html.erb`.
+  - Добавлен **trust bar** рядом с CTA: доставка/оплата/сроки (коротко, сканируемо): `app/views/pages/home.html.erb`.
+- **Навигация**:
+  - Ссылка **«Админ» скрыта от гостей** (показывается только при `user_signed_in?`): `app/views/shared/_header.html.erb`.
+- **Копирайт / повторы**:
+  - Убраны дубли про “3D” на главной, оставлена формулировка про осмотр деталей/формы как выгода: `app/views/pages/home.html.erb`.
+- **Производительность**:
+  - Обложки в карточках получили `loading="lazy"` + `decoding="async"` (ниже fold): `app/views/products/_product.html.erb`.
+- **SEO / мета / schema**:
+  - Добавлены `title` + `meta description` + OG/Twitter мета в layout, с возможностью переопределения через `content_for`: `app/views/layouts/application.html.erb`.
+  - На главной добавлен JSON‑LD `Organization`: `app/views/pages/home.html.erb`.
+- **Ассеты (фикс MissingAssetError)**:
+  - Hero/logo SVG продублированы в `public/images/` и подключаются по `/images/...` для надёжности (обход проблемы Propshaft load path):
+    - `public/images/madmask-hero.svg`
+    - `public/images/madmask-logo.svg`
+
+### Метрики (что замерить)
+
+- Lighthouse (mobile+desktop) для `/`: LCP / CLS / INP.
+- Отдельно проверить, что на `/` не грузится Three.js (должно быть только на `products#show`).
+
 ## Реализация (факт, в коде)
 
 - **CTA и контакт**: основной путь “связаться” теперь через **форму обратной связи** на `/` (`#contact`), без “пишите в VK” как основного шага.

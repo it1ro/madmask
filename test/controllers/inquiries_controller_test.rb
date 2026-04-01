@@ -6,6 +6,6 @@ class InquiriesControllerTest < ActionDispatch::IntegrationTest
       post inquiries_url, params: { inquiry: { name: "Test", contact: "test@example.com", message: "Hello" } }
     end
 
-    assert_redirected_to root_url(anchor: "contact")
+    assert_redirected_to new_inquiry_url
   end
 end

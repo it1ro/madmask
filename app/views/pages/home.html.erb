@@ -1,9 +1,28 @@
+<% content_for :title, "Madmask — мастерская масок" %>
+<% content_for :meta_description, "Маски Madmask для сцены, съёмок и косплея. Каталог по жанрам, ручная сборка, доставка по РФ. Осмотри детали товара и оставь заявку." %>
+<% content_for :meta_image, "/images/madmask-hero.svg" %>
+
+<%# Schema.org Organization (minimal) %>
+<% content_for :head do %>
+  <script type="application/ld+json">
+    <%= raw({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Madmask",
+      "url": request.base_url,
+      "sameAs": [
+        "https://vk.com/madmask73"
+      ]
+    }.to_json) %>
+  </script>
+<% end %>
+
 <%# Hero 2b.3 + brand art 2b.4 %>
 <div
   class="relative w-screen max-w-[100vw] shrink-0 ml-[calc(50%-50vw)] mr-[calc(50%-50vw)]"
 >
   <section
-    class="hero-section flex min-h-[72vh] flex-col items-center justify-center px-4 py-16 text-center md:min-h-[80vh] md:px-8 md:py-24"
+    class="hero-section flex min-h-[60vh] flex-col items-center justify-center px-4 py-12 text-center md:min-h-[64vh] md:px-8 md:py-16"
     aria-labelledby="hero-heading"
   >
     <div class="hero-section__layers" aria-hidden="true">
@@ -13,59 +32,95 @@
       <div class="hero-section__vignette"></div>
     </div>
 
-    <div class="relative z-10 mx-auto flex max-w-3xl flex-col items-center gap-5 md:gap-7">
-      <figure class="hero-brand-image">
-        <picture class="mx-auto block w-full">
-          <source srcset="/images/madmask-image.webp" type="image/webp" />
-          <%= image_tag "/images/madmask-image.png",
-            alt: "Madmask — маски в стиле fantasy и cyberpunk",
-            width: 1024,
-            height: 1024,
-            loading: "eager",
-            fetchpriority: "high",
-            decoding: "async",
-            class: "hero-brand-image__img" %>
-        </picture>
-      </figure>
-      <h1
-        id="hero-heading"
-        class="hero-title text-4xl sm:text-5xl md:text-6xl"
-      >
-        Артефакты для&nbsp;образа
-      </h1>
-      <p class="hero-subtitle text-base md:text-lg">
-        Маски Madmask — для сцены, съёмок и&nbsp;косплея. Сначала смотри форму в&nbsp;3D (в карточке товара),
-        затем оставь заявку — подскажем наличие, финиш и&nbsp;сроки.
-      </p>
-      <ul class="hero-proof-list" aria-label="Коротко о Madmask">
-        <li>Ручная сборка, малые серии</li>
-        <li>3D‑просмотр деталей до решения</li>
-        <li>Custom по твоим референсам</li>
-      </ul>
+    <div class="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-8 md:grid-cols-2 md:gap-10 md:text-left">
+      <div class="flex flex-col items-center gap-5 md:items-start md:gap-6">
+        <h1
+          id="hero-heading"
+          class="hero-title text-4xl sm:text-5xl md:text-6xl"
+        >
+          Артефакты для&nbsp;образа
+        </h1>
+        <p class="hero-subtitle text-base md:text-lg">
+          Маски для сцены, съёмок и&nbsp;косплея. Открой товар, осмотри форму и детали — затем оставь заявку.
+        </p>
+        <ul class="hero-proof-list" aria-label="Коротко о Madmask">
+          <li>Ручная сборка, малые серии</li>
+          <li>Осмотр формы и деталей до заявки</li>
+          <li>Custom по твоим референсам</li>
+        </ul>
 
-      <div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
-        <%= link_to products_path,
-          class: "hero-cta",
-          data: { controller: "catalog-flash", action: "mouseenter->catalog-flash#flashOnce" } do %>
-          В каталог
-        <% end %>
+        <div class="flex w-full flex-col items-center justify-center gap-3 sm:flex-row md:justify-start">
+          <%= link_to products_path,
+            class: "hero-cta",
+            data: { controller: "catalog-flash", action: "mouseenter->catalog-flash#flashOnce" } do %>
+            В каталог
+          <% end %>
 
-        <%= link_to new_inquiry_path, class: "hero-cta hero-cta--secondary" do %>
-          Оставить заявку
-        <% end %>
+          <%= link_to new_inquiry_path, class: "hero-cta hero-cta--secondary" do %>
+            Оставить заявку
+          <% end %>
+        </div>
+
+        <dl class="mt-2 grid w-full max-w-xl gap-2 rounded-2xl border border-line bg-card/40 p-4 text-left shadow-card sm:grid-cols-3">
+          <div class="flex items-start gap-2">
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-cyber" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 7h13l5 5v5H3V7Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M7 17a2 2 0 1 0 0.001 0Z" fill="currentColor"/>
+              <path d="M17 17a2 2 0 1 0 0.001 0Z" fill="currentColor"/>
+              <path d="M3 11h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <dt class="font-ui text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">Доставка</dt>
+              <dd class="mt-1 text-xs text-ink">По РФ / самовывоз</dd>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-cyber" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M7 10h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M7 14h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <dt class="font-ui text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">Оплата</dt>
+              <dd class="mt-1 text-xs text-ink">Карта / перевод</dd>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-cyber" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 7v6l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 12a9 9 0 1 1-3.1-6.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M21 5v5h-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <dt class="font-ui text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted">Сроки</dt>
+              <dd class="mt-1 text-xs text-ink">В наличии / под заказ</dd>
+            </div>
+          </div>
+        </dl>
+
+        <p class="text-xs text-ink-muted font-ui tracking-wide">
+          VK — витрина работ и бэкстейдж:
+          <a
+            href="https://vk.com/madmask73"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline decoration-[var(--color-accent-glow)] underline-offset-4 hover:text-cyber-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2"
+          >
+            смотреть
+          </a>
+        </p>
       </div>
 
-      <p class="mt-1 text-xs text-ink-muted font-ui tracking-wide">
-        VK — витрина работ и бэкстейдж:
-        <a
-          href="https://vk.com/madmask73"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="underline decoration-[var(--color-accent-glow)] underline-offset-4 hover:text-cyber-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2"
-        >
-          смотреть
-        </a>
-      </p>
+      <figure class="hero-brand-image mx-auto w-full max-w-[28rem] md:max-w-none">
+        <%= image_tag "/images/madmask-hero.svg",
+          alt: "Madmask — маски в стиле fantasy, horror, sci‑fi и cyberpunk",
+          width: 1200,
+          height: 1200,
+          loading: "eager",
+          fetchpriority: "high",
+          decoding: "async",
+          class: "hero-brand-image__img" %>
+      </figure>
     </div>
   </section>
 </div>
@@ -77,7 +132,7 @@
         Новинки
       </h2>
       <p class="mt-2 font-ui text-sm tracking-wide text-ink-muted">
-        Новые позиции — в реальном масштабе и с&nbsp;3D‑просмотром. Открой карточку и&nbsp;проверь силуэт, фактуру и&nbsp;пропорции.
+        Новые позиции в каталоге. Открой карточку и проверь силуэт, фактуру и пропорции.
       </p>
     </div>
     <div class="flex flex-col gap-5">
@@ -188,7 +243,7 @@
     Как это работает
   </h2>
   <p class="how-it-works__lead">
-    Выбери → проверь в&nbsp;3D → оставь заявку. Мы ответим по наличию, финишу и&nbsp;срокам.
+    Выбери → осмотри детали → оставь заявку. Мы ответим по наличию, финишу и&nbsp;срокам.
   </p>
   <ol class="how-it-works__grid">
     <li class="how-it-works__card" style="--reveal-delay: 0ms">
@@ -221,9 +276,9 @@
           <path d="M12 12l8-4.5M12 12v9M12 12L4 7.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
-      <h3 class="how-it-works__step-title">Вращай в 3D</h3>
+      <h3 class="how-it-works__step-title">Осмотри детали</h3>
       <p class="how-it-works__text">
-        На странице товара открой интерактивный просмотр: осмотри форму и детали со всех сторон.
+        На странице товара осмотри форму и детали со всех сторон, чтобы быстрее принять решение.
       </p>
     </li>
     <li class="how-it-works__card" style="--reveal-delay: 180ms">
@@ -297,7 +352,7 @@
     </h2>
     <p class="brand-story__body">
       Madmask — это малые серии и custom. Мы делаем артефакты под жанр: от тёмного fantasy до неона cyberpunk.
-      В карточке товара ты сначала смотришь форму в 3D, а затем оставляешь заявку — мы подтверждаем наличие, финиш и сроки.
+      В карточке товара ты сначала смотришь форму и детали, а затем оставляешь заявку — мы подтверждаем наличие, финиш и сроки.
       Если нужна уникальная маска — приложи референсы и опиши задачу: сцена/съёмка/косплей.
     </p>
     <figure class="brand-story__quote-wrap">

@@ -11,7 +11,9 @@
       <% if product.cover_image.attached? %>
         <%= image_tag product.cover_image.variant(resize_to_limit: [512, 512]),
           class: "h-full w-full object-cover",
-          alt: product.name %>
+          alt: product.name,
+          loading: "lazy",
+          decoding: "async" %>
       <% else %>
         <div
           class="flex h-full w-full items-center justify-center text-xs text-ink-faint"
