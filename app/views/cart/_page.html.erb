@@ -1,5 +1,6 @@
 <div id="cart_page">
   <% items = cart_contract.list %>
+  <% products = cart_products_by_id %>
   <div class="rounded-2xl border border-line bg-card p-5 shadow-card">
     <h1 class="font-heading text-xl font-semibold tracking-wide text-ink">Корзина</h1>
 
@@ -8,7 +9,7 @@
     <% else %>
       <ul class="mt-4 space-y-3">
         <% items.each do |row| %>
-          <% product = defined?(@products_by_id) ? @products_by_id[row[:product_id]] : nil %>
+          <% product = products[row[:product_id]] %>
           <li class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-page/30 px-4 py-3">
             <div class="min-w-0">
               <p class="truncate font-ui text-sm font-semibold text-ink">
@@ -45,6 +46,13 @@
           </li>
         <% end %>
       </ul>
+
+      <div class="mt-5 flex items-center justify-between rounded-xl border border-line bg-panel/40 px-4 py-3">
+        <p class="font-ui text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted">Итого</p>
+        <p class="font-mono text-base text-ink">
+          <%= number_to_currency(cart_subtotal, unit: "₽", separator: ",", delimiter: " ", format: "%n %u") %>
+        </p>
+      </div>
     <% end %>
   </div>
 </div>

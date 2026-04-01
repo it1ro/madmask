@@ -13,7 +13,9 @@ class ApplicationController < ActionController::Base
     :cart_units_count,
     :wishlist_count,
     :in_wishlist?,
-    :cart_qty
+    :cart_qty,
+    :cart_products_by_id,
+    :cart_subtotal
   )
 
   def cart_contract
@@ -39,5 +41,27 @@ class ApplicationController < ActionController::Base
   def cart_qty(product_id)
     id = product_id.to_s
     cart_contract.list.find { |row| row[:product_id] == id }&.fetch(:qty, 0).to_i
+  end
+
+  def cart_products_by_id
+    return {} if cart_contract.list.empty?
+
+    @cart_products_by_id ||= begin
+      ids = cart_contract.list.map { |row| row[:product_id] }.uniq
+      Product.where(id: ids).index_by { |p| p.id.to_s }
+    end
+  end
+
+  def cart_subtotal
+    items = cart_contract.list
+    return 0 if items.empty?
+
+    products = cart_products_by_id
+    items.sum do |row|
+      product = products[row[:product_id]]
+      next 0 unless product
+
+      product.price.to_i * row[:qty].to_i
+    end
   end
 end
