@@ -8,6 +8,7 @@ class CartController < ApplicationController
   def add
     product_id = normalized_product_id_param
     cart_contract.add(product_id) if product_id
+    prepare_page_state_for_turbo(product_id:)
 
     respond_after_mutation(fallback_path: request.referer || products_path)
   end
@@ -15,6 +16,7 @@ class CartController < ApplicationController
   def remove
     product_id = normalized_product_id_param
     cart_contract.remove(product_id) if product_id
+    prepare_page_state_for_turbo(product_id:)
 
     respond_after_mutation(fallback_path: request.referer || products_path)
   end
@@ -23,6 +25,7 @@ class CartController < ApplicationController
     product_id = normalized_product_id_param
     qty = normalized_qty_param
     cart_contract.update(product_id, qty) if product_id
+    prepare_page_state_for_turbo(product_id:)
 
     respond_after_mutation(fallback_path: request.referer || products_path)
   end
@@ -31,6 +34,13 @@ class CartController < ApplicationController
 
   def cart_contract
     @cart_contract ||= CartContract.new(session:)
+  end
+
+  def prepare_page_state_for_turbo(product_id:)
+    @cart_items = cart_contract.list
+    ids = @cart_items.map { |row| row[:product_id] }
+    @products_by_id = Product.where(id: ids).index_by { |p| p.id.to_s }
+    @product = Product.find_by(id: product_id) if product_id.present?
   end
 
   def normalized_product_id_param

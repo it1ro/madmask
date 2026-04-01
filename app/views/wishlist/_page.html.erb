@@ -20,7 +20,7 @@
 
             <%= button_to(
               "Убрать",
-              wishlist_toggle_path(product_id: id),
+              toggle_wishlist_path(product_id: id),
               method: :post,
               class:
                 "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-line bg-page/40 px-3 font-ui text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted transition hover:border-glow hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2"

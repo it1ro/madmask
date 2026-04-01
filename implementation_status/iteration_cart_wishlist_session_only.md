@@ -9,6 +9,11 @@
 - **Done**: Phase 2 / **2.2 Экшены и контрактная граница** (валидация параметров, вызов контрактов, Turbo Stream vs HTML redirect fallback)
 - **Done**: Phase 2 / **2.3 Turbo Stream ответ как “единый пакет UI-обновлений”** (turbo_stream templates обновляют header counters / popover / product actions / page containers)
 - **Done**: Phase 3 / **3.1 Product card: добавить две CTA‑кнопки** (`products/_actions` + target `product_card_actions_<id>`, add-to-cart + wishlist toggle)
+- **Done**: Phase 3 / **3.4 Страницы `/cart` и `/wishlist`** (`cart/show` + `cart/_page` с qty controls; `wishlist/show` + `wishlist/_page` с toggle)
+
+## Fixups (после первичной сборки)
+- Turbo Stream мутации подготавливают page state (чтобы `cart/_page` и `wishlist/_page` рендерили названия/цены, а не только `#id`).
+- Turbo Stream шаблоны передают в `products/_actions` корректный local `product:` (вместо несуществующего `product_id:`).
 
 ## Contracts API (фиксировано)
 

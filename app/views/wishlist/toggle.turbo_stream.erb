@@ -2,8 +2,8 @@
 <%= turbo_stream.replace "header_wishlist_counter", partial: "shared/wishlist_counter" %>
 <%= turbo_stream.replace "cart_popover", partial: "cart/popover" %>
 
-<% if params[:product_id].present? %>
-  <%= turbo_stream.replace "product_card_actions_#{params[:product_id]}", partial: "products/actions", locals: { product_id: params[:product_id] } %>
+<% if @product %>
+  <%= turbo_stream.replace "product_card_actions_#{@product.id}", partial: "products/actions", locals: { product: @product } %>
 <% end %>
 
 <%= turbo_stream.replace "wishlist_page", partial: "wishlist/page" %>

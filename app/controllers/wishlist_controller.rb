@@ -7,6 +7,7 @@ class WishlistController < ApplicationController
   def toggle
     product_id = normalized_product_id_param
     wishlist_contract.toggle(product_id) if product_id
+    prepare_page_state_for_turbo(product_id:)
 
     respond_to do |format|
       format.turbo_stream
@@ -18,6 +19,12 @@ class WishlistController < ApplicationController
 
   def wishlist_contract
     @wishlist_contract ||= WishlistContract.new(session:)
+  end
+
+  def prepare_page_state_for_turbo(product_id:)
+    @wishlist_product_ids = wishlist_contract.list
+    @products = Product.where(id: @wishlist_product_ids)
+    @product = Product.find_by(id: product_id) if product_id.present?
   end
 
   def normalized_product_id_param

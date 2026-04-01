@@ -23,7 +23,7 @@
 
             <div class="flex items-center gap-2">
               <%= button_to "-",
-                cart_update_path(product_id: row[:product_id], qty: row[:qty].to_i - 1),
+                cart_path(product_id: row[:product_id], qty: row[:qty].to_i - 1),
                 method: :patch,
                 class:
                   "inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-line bg-panel/60 font-ui text-sm font-semibold text-ink transition hover:border-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
@@ -31,13 +31,13 @@
               <span class="min-w-[2.5rem] text-center font-mono text-sm text-ink-muted"><%= row[:qty] %></span>
 
               <%= button_to "+",
-                cart_update_path(product_id: row[:product_id], qty: row[:qty].to_i + 1),
+                cart_path(product_id: row[:product_id], qty: row[:qty].to_i + 1),
                 method: :patch,
                 class:
                   "inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-line bg-panel/60 font-ui text-sm font-semibold text-ink transition hover:border-glow focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
 
               <%= button_to "Удалить",
-                cart_remove_path(product_id: row[:product_id]),
+                remove_cart_path(product_id: row[:product_id]),
                 method: :post,
                 class:
                   "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-line bg-page/40 px-3 font-ui text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted transition hover:border-glow hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2" %>
