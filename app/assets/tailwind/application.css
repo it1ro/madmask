@@ -423,10 +423,37 @@ body {
   height: min(60vh, 32rem);
   margin-inline: 0;
   object-fit: cover;
+  object-position: 35% 50%;
   border-radius: 1.25rem;
   border: 1px solid rgba(183, 111, 224, 0.28);
   background: rgba(10, 5, 15, 0.35);
   filter: drop-shadow(0 0 18px rgba(183, 111, 224, 0.18));
+
+  /* Subtle edge fade to blend into hero background */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    transparent 100%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+@media (width >= 768px) {
+  .hero-brand-image__img {
+    transform: translateX(1.25rem);
+  }
 }
 
 .hero-cta--secondary {
