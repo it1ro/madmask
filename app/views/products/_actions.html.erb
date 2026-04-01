@@ -1,29 +1,83 @@
 <%# locals: product: %>
 <div
   id="product_card_actions_<%= product.id %>"
-  class="flex flex-wrap items-center gap-2"
+  class="flex flex-nowrap items-center gap-2 overflow-x-auto"
 >
-  <%= button_to(
-    "В корзину",
-    add_cart_path(product_id: product.id),
-    method: :post,
+  <%= link_to "Подробнее",
+    product_path(product),
     class:
-      "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-accent px-4 py-2 font-ui text-xs font-semibold uppercase tracking-wide text-ink transition active:scale-[0.98] hover:bg-accent-deep hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
-  ) %>
+      "inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-lg border border-accent px-4 py-2 font-ui text-xs font-medium uppercase tracking-wide text-ink transition active:scale-[0.98] hover:scale-[1.02] hover:shadow-[0_0_18px_var(--color-accent-glow)] hover:bg-accent-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:active:scale-100 motion-reduce:transform-none motion-reduce:transition-none" %>
 
+  <div class="relative shrink-0">
+    <%= button_to(
+      add_cart_path(product_id: product.id),
+      method: :post,
+      aria: { label: "Добавить в корзину" },
+      class:
+        "group inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border border-accent bg-page/30 px-3 text-ink transition active:scale-[0.98] hover:bg-accent-deep hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
+    ) do %>
+      <svg
+        class="h-5 w-5 shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M6 6h15l-2 9H7L6 6Z" />
+        <path d="M6 6 5 3H2" />
+        <circle cx="9" cy="20" r="1" />
+        <circle cx="18" cy="20" r="1" />
+      </svg>
+      <span class="sr-only">Добавить в корзину</span>
+      <span
+        class="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-line bg-page/90 px-2 py-1 font-ui text-[11px] font-semibold tracking-[0.12em] text-ink opacity-0 shadow-card transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+        role="tooltip"
+      >
+        В корзину
+      </span>
+    <% end %>
+  </div>
+
+  <% wishlist_on = in_wishlist?(product.id) %>
   <%= button_to(
-    in_wishlist?(product.id) ? "В избранном" : "В избранное",
     toggle_wishlist_path(product_id: product.id),
     method: :post,
-    aria: { pressed: in_wishlist?(product.id) },
+    aria: { pressed: wishlist_on, label: (wishlist_on ? "Убрать из избранного" : "Добавить в избранное") },
     class:
-      "inline-flex min-h-[44px] items-center justify-center rounded-lg border border-line bg-page/40 px-4 py-2 font-ui text-xs font-semibold uppercase tracking-wide text-ink transition active:scale-[0.98] hover:border-glow hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none"
-  ) %>
+      class_names(
+        "inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg border px-3 transition active:scale-[0.98] hover:shadow-[0_0_18px_var(--color-accent-glow)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 motion-reduce:transform-none motion-reduce:transition-none",
+        wishlist_on ? "border-cyber/70 bg-accent-deep/40 text-cyber" : "border-line bg-page/40 text-ink hover:border-glow hover:text-glow"
+      )
+  ) do %>
+    <svg
+      class="h-5 w-5"
+      viewBox="0 0 24 24"
+      fill="<%= wishlist_on ? "currentColor" : "none" %>"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path
+        d="M20.84 4.61c-1.54-1.34-3.78-1.13-5.12.31L12 8.09 8.28 4.92c-1.34-1.44-3.58-1.65-5.12-.31-1.7 1.48-1.79 4.1-.25 5.7L12 21l9.09-10.69c1.54-1.6 1.45-4.22-.25-5.7Z"
+      />
+    </svg>
+    <span class="sr-only">
+      <%= wishlist_on ? "Убрать из избранного" : "Добавить в избранное" %>
+    </span>
+  <% end %>
 
   <% qty = cart_qty(product.id) %>
   <% if qty.positive? %>
-    <span class="inline-flex min-h-[28px] items-center rounded-full border border-line bg-panel px-2.5 font-ui text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted">
-      В корзине: <%= qty %>
+    <span
+      class="inline-flex min-h-[28px] shrink-0 items-center rounded-full border border-line bg-panel px-2.5 font-ui text-[10px] font-semibold uppercase tracking-[0.16em] text-ink-muted"
+      aria-label="В корзине этого товара: <%= qty %>"
+    >
+      × <%= qty %>
     </span>
   <% end %>
 </div>
