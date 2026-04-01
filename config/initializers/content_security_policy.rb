@@ -17,7 +17,9 @@ Rails.application.configure do
     policy.style_src :self, :unsafe_inline
     policy.font_src :self, :data
     policy.img_src :self, :data, :blob
-    policy.connect_src :self
+    # Three.js / GLTFLoader may create blob: URLs for embedded textures (GLB).
+    # Those are fetched internally, so we must allow blob: in connect-src.
+    policy.connect_src :self, :blob
   end
 
   config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }

@@ -545,6 +545,8 @@ export default class extends Controller {
 
       // Improve reflections readability for typical PBR materials.
       this.#applyEnvMapIntensityToMaterials(root)
+      this.#normalizeGltfMaterials(root)
+      this.#diagnoseTextureMaps(root, absoluteUrl)
 
       this.element.setAttribute("data-webgl-preview-state", "model-loaded")
     } catch (err) {
@@ -553,6 +555,84 @@ export default class extends Controller {
       this.element.setAttribute("data-webgl-preview-state", "load-error")
       this.#showLoadErrorPanel()
     }
+  }
+
+  #diagnoseTextureMaps(object, url) {
+    // Diagnostics for "model loads but textures are missing".
+    // Logged only to console; safe in production (low volume).
+    try {
+      if (!object) return
+
+      let meshCount = 0
+      let materialCount = 0
+      let mapCount = 0
+      let mapReadyCount = 0
+
+      object.traverse((child) => {
+        if (!child || !child.isMesh) return
+        meshCount += 1
+        const materials = Array.isArray(child.material) ? child.material : [child.material]
+        materials.forEach((m) => {
+          if (!m) return
+          materialCount += 1
+          if (m.map) {
+            mapCount += 1
+            const img = m.map.image
+            if (img && (img.complete || img.data || img.width || img.height)) {
+              mapReadyCount += 1
+            }
+          }
+        })
+      })
+
+      console.info("[webgl-preview] texture diagnosis", {
+        url,
+        meshes: meshCount,
+        materials: materialCount,
+        materialsWithMap: mapCount,
+        mapsReady: mapReadyCount
+      })
+    } catch (err) {
+      console.warn("[webgl-preview] texture diagnosis failed", err)
+    }
+  }
+
+  #normalizeGltfMaterials(object) {
+    // Make GLB assets render consistently across export pipelines:
+    // - ensure vertex colors are respected (common for "painted" masks)
+    // - enforce sRGB for albedo/emissive maps
+    // - enforce flipY=false for glTF textures
+    const THREE = this.THREE
+    if (!object || !THREE) return
+
+    object.traverse((child) => {
+      if (!child || !child.isMesh) return
+
+      const materials = Array.isArray(child.material) ? child.material : [child.material]
+      materials.forEach((m) => {
+        if (!m) return
+
+        // If geometry has vertex colors, ensure material uses them.
+        const hasVertexColors = !!(child.geometry && child.geometry.attributes && child.geometry.attributes.color)
+        if (hasVertexColors && m.vertexColors !== true) {
+          m.vertexColors = true
+        }
+
+        // glTF baseColor/emissive should be treated as sRGB textures.
+        if (m.map) {
+          m.map.flipY = false
+          m.map.colorSpace = THREE.SRGBColorSpace
+          m.map.needsUpdate = true
+        }
+        if (m.emissiveMap) {
+          m.emissiveMap.flipY = false
+          m.emissiveMap.colorSpace = THREE.SRGBColorSpace
+          m.emissiveMap.needsUpdate = true
+        }
+
+        m.needsUpdate = true
+      })
+    })
   }
 
   #applyEnvMapIntensityToMaterials(object) {
