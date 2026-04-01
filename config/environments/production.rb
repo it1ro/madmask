@@ -57,22 +57,32 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
 
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "madmask.ilmir.tech") }
 
-  config.action_mailer.smtp_settings = {
-    address: ENV.fetch("SMTP_ADDRESS", "smtp.gmail.com"),
-    port: Integer(ENV.fetch("SMTP_PORT", "587")),
-    domain: ENV["SMTP_DOMAIN"],
-    user_name: ENV.fetch("SMTP_USERNAME"),
-    password: ENV.fetch("SMTP_PASSWORD"),
-    authentication: ENV.fetch("SMTP_AUTHENTICATION", "plain").to_sym,
-    enable_starttls_auto: ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true"
-  }
+  smtp_username = ENV["SMTP_USERNAME"]
+  smtp_password = ENV["SMTP_PASSWORD"]
+
+  if smtp_username.present? && smtp_password.present?
+    config.action_mailer.perform_deliveries = true
+    config.action_mailer.raise_delivery_errors = true
+
+    config.action_mailer.smtp_settings = {
+      address: ENV.fetch("SMTP_ADDRESS", "smtp.gmail.com"),
+      port: Integer(ENV.fetch("SMTP_PORT", "587")),
+      domain: ENV["SMTP_DOMAIN"],
+      user_name: smtp_username,
+      password: smtp_password,
+      authentication: ENV.fetch("SMTP_AUTHENTICATION", "plain").to_sym,
+      enable_starttls_auto: ENV.fetch("SMTP_ENABLE_STARTTLS_AUTO", "true") == "true"
+    }
+  else
+    # Allows image build / assets:precompile without requiring SMTP env.
+    config.action_mailer.perform_deliveries = false
+    config.action_mailer.raise_delivery_errors = false
+  end
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
