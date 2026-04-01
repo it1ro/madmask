@@ -3,6 +3,24 @@ class Product < ApplicationRecord
   has_many_attached :gallery_images
   has_one_attached :model_file
 
+  ASSET_ATTACHMENT_NAMES = %w[cover_image gallery_images model_file].freeze
+
+  scope :order_assets_first, lambda {
+    order(
+      Arel.sql(
+        <<~SQL.squish
+          EXISTS (
+            SELECT 1
+            FROM active_storage_attachments asa
+            WHERE asa.record_type = 'Product'
+              AND asa.record_id = #{table_name}.id
+              AND asa.name IN ('cover_image', 'gallery_images', 'model_file')
+          ) DESC
+        SQL
+      )
+    )
+  }
+
   CATEGORIES = %w[fantasy horror sci-fi cyberpunk].freeze
 
   ALLOWED_MODEL_CONTENT_TYPES = %w[

@@ -9,6 +9,7 @@
 | 7.6.3 Карточка товара в списке (тач‑цели ≥44px, кликабельная обложка, сигнал “3D доступно”) | выполнено | `app/views/products/_product.html.erb` |
 | 7.6.4 Состояние загрузки при смене фильтра/сортировки + `prefers-reduced-motion` | выполнено | `app/views/products/index.html.erb`, `app/javascript/controllers/catalog_loading_controller.js` |
 | 7.6.5 Упростить заголовок каталога (убрать служебный текст/подзаголовок) + ограничить пагинацию до 10 | выполнено | `app/views/products/index.html.erb`, `app/controllers/products_controller.rb` |
+| 7.6.6 Дефолтная сортировка: товары с вложениями (фото/3D) выше | выполнено | `app/models/product.rb`, `app/controllers/products_controller.rb`, `app/controllers/admin/products_controller.rb` |
 
 ## Примечание
 

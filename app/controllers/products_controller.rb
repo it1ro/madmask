@@ -8,6 +8,7 @@ class ProductsController < ApplicationController
     products_scope = Product
       .with_attached_cover_image
       .includes(:model_file_attachment)
+      .order_assets_first
       .order(created_at: :desc)
 
     if @current_category.present?
