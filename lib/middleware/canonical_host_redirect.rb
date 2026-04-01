@@ -19,6 +19,7 @@ module Middleware
     private
 
     def needs_redirect?(req)
+      return false if req.path == "/up"
       @canonical_host.present? && req.host.present? && req.host != @canonical_host
     end
 
