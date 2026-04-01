@@ -6,12 +6,39 @@ module ApplicationHelper
     Rails.configuration.x.canonical_host
   end
 
+  def canonical_host_parts
+    raw = canonical_host.to_s.strip
+    return [ nil, nil ] if raw.blank?
+
+    if raw.match?(/\Ahttps?:\/\//)
+      begin
+        parsed = URI.parse(raw)
+        return [ parsed.host, parsed.port ]
+      rescue URI::Error
+        # fall through to best-effort parsing
+      end
+    end
+
+    if raw.include?(":")
+      host, port_str = raw.split(":", 2)
+      port = Integer(port_str, exception: false)
+      return [ host.presence, port ]
+    end
+
+    [ raw, nil ]
+  end
+
   def canonical_protocol
     "https"
   end
 
   def canonical_base_url
-    "#{canonical_protocol}://#{canonical_host}"
+    host, port = canonical_host_parts
+    return "" if host.blank?
+
+    default_port = canonical_protocol == "https" ? 443 : 80
+    port_part = port.present? && port != default_port ? ":#{port}" : ""
+    "#{canonical_protocol}://#{host}#{port_part}"
   end
 
   def canonical_url
@@ -19,7 +46,10 @@ module ApplicationHelper
 
     uri = URI.parse(request.original_url)
     uri.scheme = canonical_protocol
-    uri.host = canonical_host
+
+    host, port = canonical_host_parts
+    uri.host = host
+    uri.port = port if port.present?
     uri.to_s
   end
 
