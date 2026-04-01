@@ -26,7 +26,7 @@ export default class extends Controller {
   validate() {
     const errors = {}
 
-    if (!this.value(this.nameTarget)) errors.name = "Укажи имя."
+    if (!this.value(this.nameTarget)) errors.name = "Укажите имя."
     if (!this.value(this.messageTarget)) errors.message = "Опиши задачу — хотя бы в пару слов."
 
     const phone = this.value(this.phoneTarget)

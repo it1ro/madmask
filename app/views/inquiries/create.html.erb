@@ -48,22 +48,19 @@
               <div class="mt-4 grid gap-4 md:grid-cols-2">
                 <div class="md:col-span-2">
                   <% name_errors = @inquiry.errors.full_messages_for(:name) %>
-                  <% name_hint_id = "inquiry_name_hint" %>
                   <% name_error_id = "inquiry_name_error" %>
-                  <% name_describedby = [name_hint_id, (name_errors.any? ? name_error_id : nil)].compact.join(" ") %>
+                  <% name_describedby = [(name_errors.any? ? name_error_id : nil)].compact.join(" ") %>
                   <%= f.label :name, "Имя*", class: "block text-xs font-ui uppercase tracking-[0.14em] text-ink-muted" %>
                   <%= f.text_field :name,
                     required: true,
                     autocomplete: "name",
+                    placeholder: "Как к вам обращаться?",
                     maxlength: 100,
                     autofocus: (autofocus_field == :name),
                     "aria-invalid": name_errors.any?,
                     "aria-describedby": name_describedby,
                     data: { inquiry_form_target: "name" },
                     class: "mt-2 w-full rounded-lg border border-line bg-[rgba(10,5,15,0.35)] px-3 py-3 text-sm text-ink outline-none transition focus:border-[var(--color-accent-glow)] focus:ring-2 focus:ring-[rgba(183,111,224,0.25)]" %>
-                  <p id="<%= name_hint_id %>" class="mt-2 text-xs text-ink-muted">
-                    Как к вам обращаться?
-                  </p>
                   <% if name_errors.any? %>
                     <p id="<%= name_error_id %>" class="mt-2 text-xs text-[rgba(255,110,140,0.9)]" data-inquiry-form-target="nameError">
                       <%= name_errors.first %>
