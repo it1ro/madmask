@@ -46,6 +46,8 @@ export default class extends Controller {
       this._animationId = null
     }
 
+    this.#teardownSlowDragBoost()
+
     if (this.resizeObserver) {
       this.resizeObserver.disconnect()
       this.resizeObserver = null
@@ -146,9 +148,12 @@ export default class extends Controller {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.enableDamping = true
-    this.controls.dampingFactor = 0.06
+    // Slightly higher dampingFactor reduces the "rubber band" feel and makes
+    // the start of rotation feel more immediate on desktop.
+    this.controls.dampingFactor = 0.12
     this.controls.target.set(0, 0, 0)
     this.#configureControlsForInputType()
+    this.#setupSlowDragBoost()
 
     this.resizeObserver = new ResizeObserver(() => this.#resize())
     this.resizeObserver.observe(this.element)
@@ -484,7 +489,97 @@ export default class extends Controller {
         ONE: this.THREE.TOUCH.ROTATE,
         TWO: this.THREE.TOUCH.DOLLY_ROTATE
       }
+      return
     }
+
+    // Desktop: slightly faster response than Three defaults.
+    this.controls.rotateSpeed = 4.8
+    this.controls.zoomSpeed = 1.15
+  }
+
+  #setupSlowDragBoost() {
+    // OrbitControls uses a linear mapping from pointer delta -> angle.
+    // For very slow drags (tiny deltas) that can feel like "lost sensitivity".
+    // On desktop, we temporarily boost rotateSpeed when deltas are very small.
+    if (!this.controls || !this.renderer) return
+    if (this.#isTouchPrimaryInput()) return
+
+    this._baseRotateSpeed = this.controls.rotateSpeed
+    this._boostedRotateSpeed = Math.min(9.6, this._baseRotateSpeed * 1.9)
+    this._slowDragEpsPx = 2.25
+
+    this._isPointerDown = false
+    this._lastPointerX = null
+    this._lastPointerY = null
+
+    this._onPointerDown = (e) => {
+      // Primary button only.
+      if (e.button !== 0) return
+      this._isPointerDown = true
+      this._lastPointerX = e.clientX
+      this._lastPointerY = e.clientY
+      // Start responsive immediately.
+      this.controls.rotateSpeed = this._baseRotateSpeed
+    }
+
+    this._onPointerMove = (e) => {
+      if (!this._isPointerDown || !this.controls) return
+      if (this._lastPointerX == null || this._lastPointerY == null) {
+        this._lastPointerX = e.clientX
+        this._lastPointerY = e.clientY
+        return
+      }
+
+      const dx = e.clientX - this._lastPointerX
+      const dy = e.clientY - this._lastPointerY
+      this._lastPointerX = e.clientX
+      this._lastPointerY = e.clientY
+
+      const d = Math.hypot(dx, dy)
+      this.controls.rotateSpeed = d <= this._slowDragEpsPx ? this._boostedRotateSpeed : this._baseRotateSpeed
+    }
+
+    this._onPointerUpOrCancel = () => {
+      this._isPointerDown = false
+      this._lastPointerX = null
+      this._lastPointerY = null
+      if (this.controls && typeof this._baseRotateSpeed === "number") {
+        this.controls.rotateSpeed = this._baseRotateSpeed
+      }
+    }
+
+    const el = this.renderer.domElement
+    el.addEventListener("pointerdown", this._onPointerDown, { passive: true })
+    window.addEventListener("pointermove", this._onPointerMove, { passive: true })
+    window.addEventListener("pointerup", this._onPointerUpOrCancel, { passive: true })
+    window.addEventListener("pointercancel", this._onPointerUpOrCancel, { passive: true })
+    window.addEventListener("blur", this._onPointerUpOrCancel, { passive: true })
+  }
+
+  #teardownSlowDragBoost() {
+    if (!this._onPointerDown && !this._onPointerMove) return
+    try {
+      const el = this.renderer?.domElement
+      if (el && this._onPointerDown) el.removeEventListener("pointerdown", this._onPointerDown)
+      if (this._onPointerMove) window.removeEventListener("pointermove", this._onPointerMove)
+      if (this._onPointerUpOrCancel) {
+        window.removeEventListener("pointerup", this._onPointerUpOrCancel)
+        window.removeEventListener("pointercancel", this._onPointerUpOrCancel)
+        window.removeEventListener("blur", this._onPointerUpOrCancel)
+      }
+    } catch {
+      // no-op
+    }
+
+    this._onPointerDown = null
+    this._onPointerMove = null
+    this._onPointerUpOrCancel = null
+    this._isPointerDown = false
+    this._lastPointerX = null
+    this._lastPointerY = null
+    this._slowDragEpsPx = null
+    this._boostedRotateSpeed = null
+    this._baseRotateSpeed = null
   }
 
   #updateRendererPixelRatio() {
