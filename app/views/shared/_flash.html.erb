@@ -1,0 +1,17 @@
+<% if flash[:notice].present? || flash[:alert].present? %>
+  <div class="mb-6 space-y-3" role="status" aria-live="polite">
+    <% if flash[:notice].present? %>
+      <div class="rounded-xl border border-line bg-card px-4 py-3 text-sm text-ink">
+        <span class="font-ui text-xs uppercase tracking-[0.14em] text-ink-muted">Готово</span>
+        <div class="mt-1"><%= flash[:notice] %></div>
+      </div>
+    <% end %>
+
+    <% if flash[:alert].present? %>
+      <div class="rounded-xl border border-line bg-card px-4 py-3 text-sm text-ink">
+        <span class="font-ui text-xs uppercase tracking-[0.14em] text-ink-muted">Ошибка</span>
+        <div class="mt-1"><%= flash[:alert] %></div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

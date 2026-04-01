@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resources :products, only: %i[index show]
+  resources :inquiries, only: %i[create]
 
   namespace :admin do
     root to: "products#index"
