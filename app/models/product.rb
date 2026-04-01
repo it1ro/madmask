@@ -1,4 +1,6 @@
 class Product < ApplicationRecord
+  include Translatable
+
   has_one_attached :cover_image
   has_many_attached :gallery_images
   has_one_attached :model_file
@@ -40,9 +42,9 @@ class Product < ApplicationRecord
   MAX_GALLERY_IMAGES = 10
   MAX_GALLERY_IMAGE_SIZE = 5.megabytes
 
-  validates :name, presence: true
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :category, presence: true, inclusion: { in: CATEGORIES }
+  validate :must_have_translated_name
   validate :model_file_must_be_gltf_or_glb, if: -> { model_file.attached? }
   validate :validate_gallery_images
 
@@ -80,6 +82,14 @@ class Product < ApplicationRecord
   end
 
   private
+
+  def must_have_translated_name
+    return if translation_for(I18n.default_locale)&.name.present?
+    return if self[:name].present? # legacy fallback while columns still exist
+
+    errors.add(:translations, :blank)
+    errors.add(:base, "Название на языке по умолчанию обязательно")
+  end
 
   def validate_gallery_images
     return unless gallery_images.attached?
