@@ -21,6 +21,7 @@
   - Добавлен **trust bar** рядом с CTA: доставка/оплата/сроки (коротко, сканируемо): `app/views/pages/home.html.erb`.
   - Hero-арт переведён на PNG и перенесён в `public/images/site-hero.png` (также используется как OG/Twitter image по умолчанию): `app/views/pages/home.html.erb`, `app/views/layouts/application.html.erb`.
   - Hero-арт отображается **целиком без обрезки** (под квадрат 1:1): `app/assets/tailwind/application.css` (`object-fit: contain`, `aspect-ratio: 1 / 1`).
+  - Убрана рамка у hero-арта и добавлена круговая маска с прозрачными краями: `app/assets/tailwind/application.css` (CSS `mask-image`/`-webkit-mask-image`).
   - Добавлен CSS fallback для раскладки hero в 2 колонки на desktop в браузерах без поддержки media query range syntax: `app/assets/tailwind/application.css`.
 - **Навигация**:
   - Ссылка **«Админ» скрыта от гостей** (показывается только при `user_signed_in?`): `app/views/shared/_header.html.erb`.
