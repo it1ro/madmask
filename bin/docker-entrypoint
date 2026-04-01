@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mkdir -p /rails/storage /rails/tmp /rails/log
+
+if [ "$(id -u)" = "0" ]; then
+  chown -R rails:rails /rails/storage /rails/tmp /rails/log
+  exec gosu rails:rails "$@"
+fi
+
+exec "$@"
+

@@ -48,6 +48,11 @@ RUN SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 
 FROM base
 
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+      gosu \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN useradd --create-home --uid 1000 rails
 
 COPY --from=build /usr/local/bundle /usr/local/bundle
@@ -55,13 +60,13 @@ COPY --from=build /rails /rails
 
 RUN chown -R rails:rails /rails
 
-USER rails
-
 EXPOSE 3000
 
 ENV RAILS_LOG_TO_STDOUT=true
 
 HEALTHCHECK --interval=5s --timeout=3s --start-period=20s --retries=12 \
   CMD curl -fsS "http://127.0.0.1:3000/up" || exit 1
+
+ENTRYPOINT ["bin/docker-entrypoint"]
 
 CMD ["sh", "-lc", "bin/rails db:prepare && exec bin/rails server -b 0.0.0.0 -p 3000"]
