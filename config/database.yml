@@ -6,8 +6,10 @@
 #
 default: &default
   adapter: sqlite3
+  # Pool size per process; keep equal to Puma RAILS_MAX_THREADS (config/puma.rb).
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
+  # Busy timeout (ms); keep in sync with PRAGMA busy_timeout in config/initializers/sqlite_wal.rb
+  timeout: <%= ENV.fetch("SQLITE_BUSY_TIMEOUT_MS") { 20_000 } %>
 
 development:
   <<: *default
