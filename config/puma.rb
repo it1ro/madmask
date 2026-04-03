@@ -22,11 +22,27 @@
 # The default is set to 3 threads as it's deemed a decent compromise between
 # throughput and latency for the average Rails application.
 #
+# For small servers (1–2 CPU, SQLite), prefer roughly 5–8 threads in production;
+# Kamal sets RAILS_MAX_THREADS in config/deploy.yml.
+#
 # Any libraries that use a connection pool or another resource pool should
 # be configured to provide at least as many connections as the number of
 # threads. This includes Active Record's `pool` parameter in `database.yml`.
-threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
+threads_count = Integer(ENV.fetch("RAILS_MAX_THREADS", 5))
 threads threads_count, threads_count
+
+# Cluster mode only when WEB_CONCURRENCY is set (e.g. Kamal). SQLite: prefer higher threads over many workers.
+if (wc = ENV["WEB_CONCURRENCY"].presence)
+  workers Integer(wc)
+  preload_app!
+  worker_timeout Integer(ENV.fetch("PUMA_WORKER_TIMEOUT", 60))
+  before_fork do
+    ActiveRecord::Base.connection_pool.disconnect! if defined?(ActiveRecord::Base)
+  end
+  on_worker_boot do
+    ActiveRecord::Base.establish_connection if defined?(ActiveRecord::Base)
+  end
+end
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
