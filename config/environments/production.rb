@@ -25,11 +25,18 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  config.assume_ssl = true
+  # Local load testing: plain HTTP for ab/curl (set LOAD_TEST_ALLOW_HTTP=true only on a private bench).
+  load_test_http = ENV["LOAD_TEST_ALLOW_HTTP"] == "true"
+  if load_test_http
+    config.assume_ssl = false
+    config.force_ssl = false
+  else
+    # Assume all access to the app is happening through a SSL-terminating reverse proxy.
+    config.assume_ssl = true
 
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+    # Force all access to the app over SSL, use Strict-Transport-Security, and secure cookies.
+    config.force_ssl = true
+  end
 
   # Skip http-to-https redirect for the default health check endpoint.
   config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
@@ -60,7 +67,7 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
 
-  # Set host to be used by links generated in mailer templates.
+  # Set host to be used for links generated in mailer templates.
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "madmask.ilmir.tech") }
 
   smtp_username = ENV["SMTP_USERNAME"]
@@ -100,12 +107,16 @@ Rails.application.configure do
     "madmask.ilmir.tech",
     "www.madmask.ilmir.tech"
   ]
+  if load_test_http
+    config.hosts << "127.0.0.1"
+    config.hosts << "localhost"
+  end
 
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   canonical_host = config.x.canonical_host
-  if canonical_host.present?
+  if canonical_host.present? && !load_test_http
     config.middleware.insert_before Rack::Runtime, CanonicalHostRedirect, canonical_host: canonical_host
   end
 end
