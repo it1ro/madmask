@@ -1,3 +1,5 @@
+# Tuning under load: reduce threads/processes or set SOLID_QUEUE_IN_PUMA=false and run bin/jobs on a separate host.
+# See config/deploy.yml (JOB_CONCURRENCY, SOLID_QUEUE_IN_PUMA).
 default: &default
   dispatchers:
     - polling_interval: 1
