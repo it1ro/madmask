@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# Apache Bench suite for madmask: GET scenarios, optional Devise POST, DB snapshots.
+# Requires: ab (apache2-utils), curl, optional sqlite3 for queue metrics.
+#
+# Examples:
+#   RAILS_ENV=production LOAD_TEST_ALLOW_HTTP=true bin/rails server -b 0.0.0.0 -p 3000
+#   BASE_URL=http://127.0.0.1:3000 RAILS_ENV=production bin/load_test_ab
+#   LOAD_TEST_USER_EMAIL=u@x.com LOAD_TEST_USER_PASSWORD=secret bin/load_test_ab
+#
+# Docker (ab is preinstalled in Dockerfile.dev via apache2-utils):
+#   docker compose run --rm web bash -lc 'BASE_URL=http://127.0.0.1:3000 bin/load_test_ab'
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+BASE_URL="${BASE_URL:-http://127.0.0.1:3000}"
+RAILS_ENV="${RAILS_ENV:-development}"
+AB_N="${AB_N:-1000}"
+AB_C="${AB_C:-10}"
+AB_N_HEAVY="${AB_N_HEAVY:-5000}"
+AB_C_HEAVY="${AB_C_HEAVY:-30}"
+
+RESULTS_DIR="${ROOT}/tmp/load_test_results/$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$RESULTS_DIR"
+
+export RAILS_ENV
+
+snapshot_db() {
+  ls -lh storage/*.sqlite3 2>/dev/null || echo "(no sqlite3 files in storage/)"
+}
+
+queue_pending() {
+  local db="storage/production_queue.sqlite3"
+  if [[ -f "$db" ]] && command -v sqlite3 >/dev/null 2>&1; then
+    sqlite3 "$db" "SELECT COUNT(*) FROM solid_queue_jobs WHERE finished_at IS NULL;" 2>/dev/null || echo "(sqlite3 query failed)"
+  else
+    echo "(skipped: no $db or sqlite3)"
+  fi
+}
+
+log_meta() {
+  {
+    echo "timestamp=$(date -Iseconds)"
+    echo "BASE_URL=$BASE_URL"
+    echo "RAILS_ENV=$RAILS_ENV"
+    echo "AB_N=$AB_N AB_C=$AB_C"
+    echo "AB_N_HEAVY=$AB_N_HEAVY AB_C_HEAVY=$AB_C_HEAVY"
+    echo "LOAD_TEST_ALLOW_HTTP=${LOAD_TEST_ALLOW_HTTP:-}"
+  } | tee "$RESULTS_DIR/meta.txt"
+}
+
+resolve_product_id() {
+  if [[ -n "${PRODUCT_ID:-}" ]]; then
+    echo "$PRODUCT_ID"
+    return
+  fi
+  bin/rails runner "puts Product.order(:id).first&.id" 2>/dev/null | head -1
+}
+
+run_ab_named() {
+  local name="$1"
+  local url="$2"
+  echo ">>> ab $name: $url" | tee -a "$RESULTS_DIR/console.log"
+  ab -k -n "$AB_N" -c "$AB_C" "$url" | tee "$RESULTS_DIR/ab_${name}.txt"
+}
+
+run_ab_heavy() {
+  local name="$1"
+  local url="$2"
+  echo ">>> ab (heavy) $name: $url" | tee -a "$RESULTS_DIR/console.log"
+  ab -k -n "$AB_N_HEAVY" -c "$AB_C_HEAVY" "$url" | tee "$RESULTS_DIR/ab_${name}_heavy.txt"
+}
+
+build_sign_in_postfile() {
+  ruby -ruri -e 'puts URI.encode_www_form([
+    ["authenticity_token", ARGV[0]],
+    ["user[email]", ARGV[1]],
+    ["user[password]", ARGV[2]],
+    ["commit", "Log in"]
+  ])' "$1" "$2" "$3" > "$4"
+}
+
+command -v ab >/dev/null || { echo "Install apache2-utils (ab)"; exit 1; }
+command -v curl >/dev/null || { echo "Install curl"; exit 1; }
+
+log_meta
+
+echo "=== storage/*.sqlite3 (before) ===" | tee "$RESULTS_DIR/db_before.txt"
+snapshot_db | tee -a "$RESULTS_DIR/db_before.txt"
+echo "=== solid_queue pending (before) ===" | tee -a "$RESULTS_DIR/db_before.txt"
+queue_pending | tee -a "$RESULTS_DIR/db_before.txt"
+
+PROD_ID="$(resolve_product_id)"
+if [[ -z "${PROD_ID}" || "${PROD_ID}" == "" ]]; then
+  echo "No PRODUCT_ID and no products in DB — using PRODUCT_ID=1 for product_show (may 404)." | tee -a "$RESULTS_DIR/console.log"
+  PROD_ID="1"
+fi
+
+run_ab_named "home" "${BASE_URL}/ru/"
+run_ab_named "products" "${BASE_URL}/ru/products"
+run_ab_named "product_show" "${BASE_URL}/ru/products/${PROD_ID}"
+run_ab_heavy "products" "${BASE_URL}/ru/products"
+
+if [[ -n "${LOAD_TEST_USER_EMAIL:-}" && -n "${LOAD_TEST_USER_PASSWORD:-}" ]]; then
+  echo ">>> Fetching CSRF for sign_in" | tee -a "$RESULTS_DIR/console.log"
+  html="$(curl -fsS "${BASE_URL}/ru/users/sign_in")"
+  token="$(echo "$html" | sed -n 's/.*name=\"authenticity_token\" value=\"\([^\"]*\)\".*/\1/p' | head -1)"
+  if [[ -z "$token" ]]; then
+    token="$(echo "$html" | sed -n 's/.*name=\"csrf-token\" content=\"\([^\"]*\)\".*/\1/p' | head -1)"
+  fi
+  if [[ -z "$token" ]]; then
+    echo "Could not extract authenticity_token — skip POST sign_in" | tee -a "$RESULTS_DIR/console.log"
+  else
+    POSTFILE="$RESULTS_DIR/sign_in_post.body"
+    build_sign_in_postfile "$token" "${LOAD_TEST_USER_EMAIL}" "${LOAD_TEST_USER_PASSWORD}" "$POSTFILE"
+    echo ">>> ab sign_in POST" | tee -a "$RESULTS_DIR/console.log"
+    ab -k -n "${AB_SIGN_IN_N:-200}" -c "${AB_SIGN_IN_C:-5}" -p "$POSTFILE" -T application/x-www-form-urlencoded \
+      "${BASE_URL}/ru/users/sign_in" | tee "$RESULTS_DIR/ab_sign_in_post.txt" || true
+  fi
+else
+  echo "Skip POST sign_in (set LOAD_TEST_USER_EMAIL and LOAD_TEST_USER_PASSWORD)" | tee "$RESULTS_DIR/skipped_sign_in.txt"
+fi
+
+if [[ "${RUN_CURL_CART:-}" == "1" ]]; then
+  echo ">>> curl session: GET /ru/cart (10 samples)" | tee -a "$RESULTS_DIR/console.log"
+  : >"$RESULTS_DIR/curl_cart_times.txt"
+  for _i in $(seq 1 10); do
+    curl -fsS -o /dev/null -w "%{time_total}\n" "${BASE_URL}/ru/cart" >>"$RESULTS_DIR/curl_cart_times.txt" || true
+  done
+fi
+
+echo "=== storage/*.sqlite3 (after) ===" | tee "$RESULTS_DIR/db_after.txt"
+snapshot_db | tee -a "$RESULTS_DIR/db_after.txt"
+echo "=== solid_queue pending (after) ===" | tee -a "$RESULTS_DIR/db_after.txt"
+queue_pending | tee -a "$RESULTS_DIR/db_after.txt"
+
+echo "Done. Results: $RESULTS_DIR" | tee -a "$RESULTS_DIR/console.log"

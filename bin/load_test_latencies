@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Approximate p50 / p95 / p99 from repeated curl timings (ab does not report percentiles).
+#
+# Usage:
+#   BASE_URL=http://127.0.0.1:3000 URL_PATH=/ru/products SAMPLES=200 bin/load_test_latencies
+#
+# Docker:
+#   docker compose run --rm web bash -lc 'BASE_URL=http://127.0.0.1:3000 URL_PATH=/ru/products bin/load_test_latencies'
+
+set -euo pipefail
+
+BASE_URL="${BASE_URL:-http://127.0.0.1:3000}"
+URL_PATH="${URL_PATH:-/ru/products}"
+SAMPLES="${SAMPLES:-100}"
+
+url="${BASE_URL}${URL_PATH}"
+tmp="$(mktemp)"
+trap 'rm -f "$tmp"' EXIT
+
+echo "Sampling ${SAMPLES} GET ${url}" >&2
+for _i in $(seq 1 "$SAMPLES"); do
+  curl -fsS -o /dev/null -w "%{time_total}\n" "$url" >>"$tmp" || echo "nan" >>"$tmp"
+done
+
+sort -n "$tmp" -o "$tmp"
+
+awk -v url="$url" '
+function idx_for(p, n) {
+  i = int(p / 100.0 * n)
+  if (i < 1) i = 1
+  if (i > n) i = n
+  return i
+}
+{ a[NR] = $1 + 0 }
+END {
+  n = NR
+  if (n < 1) { print "no samples"; exit 1 }
+  printf "samples=%d url=%s\n", n, url
+  printf "p50=%.6fs p95=%.6fs p99=%.6fs\n", a[idx_for(50, n)], a[idx_for(95, n)], a[idx_for(99, n)]
+}' "$tmp"
