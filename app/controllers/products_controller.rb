@@ -16,7 +16,10 @@ class ProductsController < ApplicationController
       products_scope = products_scope.where(category: @current_category)
     end
 
-    @results_count = products_scope.count
+    count_cache_key = [ "products/index_count", I18n.locale, @current_category || "all" ].join("/")
+    @results_count = Rails.cache.fetch(count_cache_key, expires_in: 2.minutes) do
+      products_scope.count
+    end
     @pagy, @products = pagy(:offset, products_scope, limit: 10, size: [ 1, 2, 2, 1 ])
   end
 
