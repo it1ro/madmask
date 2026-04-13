@@ -46,7 +46,7 @@ Scope: пункт **«1) Технический аудит»** из плана `
 **Риски (High):**
 
 - Дубликаты из-за параметров на каталоге (`/products?category=...`).
-- Дубликаты по хосту (оба `madmask.ilmir.tech` и `www.madmask.ilmir.tech` разрешены).
+- Дубликаты по хосту (оба `madmask.ru` и `www.madmask.ru` разрешены).
 
 **Рекомендации (High):**
 
@@ -60,7 +60,7 @@ Scope: пункт **«1) Технический аудит»** из плана `
 **Факт:**
 
 - В проде включены `config.assume_ssl = true` и `config.force_ssl = true` → редирект на HTTPS есть.
-- Разрешены оба хоста (`madmask.ilmir.tech` и `www.madmask.ilmir.tech`) в `config/environments/production.rb`.
+- Разрешены оба хоста (`madmask.ru` и `www.madmask.ru`) в `config/environments/production.rb`.
 - Политики canonical host (301 `www`→`non-www` или наоборот) в коде не обнаружено.
 
 Файл: `config/environments/production.rb`.

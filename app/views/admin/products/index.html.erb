@@ -4,12 +4,8 @@
   <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
     <div>
       <h1 id="admin-catalog-heading" class="font-heading text-3xl font-semibold tracking-wide text-ink md:text-4xl">
-        Управление каталогом
+        Каталог
       </h1>
-      <p class="mt-2 max-w-xl text-ink-muted">
-        Создание и редактирование товаров. Публичный каталог —
-        <%= link_to "на сайте", products_path, class: "text-cyber underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 rounded-sm" %>.
-      </p>
     </div>
     <%= link_to "Добавить (отдельная страница)",
       new_admin_product_path,

@@ -6,7 +6,7 @@
 | 8.2 `.dockerignore` | выполнено (проверено и уточнено) |
 | 8.3 Установка Kamal | выполнено (gem в `Gemfile`, binstub `bin/kamal`) |
 | 8.4 `kamal init` | выполнено (`config/deploy.yml`, `.kamal/` присутствуют) |
-| 8.5 Правки `config/deploy.yml` | выполнено (сервер `77.105.168.30`, домен `madmask.ilmir.tech`, SSH key `~/.ssh/madmask_ed25519`, registry `ghcr.io/it1ro/madmask`, volume `/var/lib/madmask/storage`) |
+| 8.5 Правки `config/deploy.yml` | выполнено (сервер `77.105.168.30`, домен `madmask.ru`, SSH key `~/.ssh/madmask_ed25519`, registry `ghcr.io/it1ro/madmask`, volume `/var/lib/madmask/storage`) |
 | 8.6 Подготовка сервера (Docker/SSH) | готово (runbook + команды) |
 | 8.7 `kamal setup` | готово к выполнению (команды в runbook) |
 | 8.8 `kamal deploy` | готово к выполнению (команды в runbook) |

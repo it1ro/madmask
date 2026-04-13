@@ -14,7 +14,7 @@
 - Noindex для служебных страниц:
   - добавлен `meta name="robots" content="noindex, follow"` по умолчанию для `/admin`, `/users`, `/cart`, `/wishlist`, `/up`, `/inquiries/thanks`.
 - Canonical host redirect:
-  - добавлен middleware `CanonicalHostRedirect` и включён в `production` для 301 редиректа на `APP_HOST` (по умолчанию `madmask.ilmir.tech`).
+  - добавлен middleware `CanonicalHostRedirect` и включён в `production` для 301 редиректа на `APP_HOST` (по умолчанию `madmask/ru`).
 
 ## Примечания / что проверить вручную
 

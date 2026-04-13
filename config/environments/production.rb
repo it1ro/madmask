@@ -68,7 +68,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
 
   # Set host to be used for links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "madmask.ilmir.tech") }
+  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "madmask.ru") }
 
   smtp_username = ENV["SMTP_USERNAME"]
   smtp_password = ENV["SMTP_PASSWORD"]
@@ -104,8 +104,8 @@ Rails.application.configure do
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   config.hosts = [
-    "madmask.ilmir.tech",
-    "www.madmask.ilmir.tech"
+    "madmask.ru",
+    "www.madmask.ru"
   ]
   if load_test_http
     config.hosts << "127.0.0.1"

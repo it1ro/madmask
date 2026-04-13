@@ -33,7 +33,7 @@ module Madmask
     config.i18n.default_locale = :ru
 
     # SEO: canonical host used for redirects, canonical URLs, and sitemap.
-    default_canonical_host = Rails.env.development? ? "localhost:3000" : "madmask.ilmir.tech"
+    default_canonical_host = Rails.env.development? ? "localhost:3000" : "madmask.ru"
     config.x.canonical_host = ENV.fetch("APP_HOST", default_canonical_host)
   end
 end

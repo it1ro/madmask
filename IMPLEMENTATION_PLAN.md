@@ -286,7 +286,7 @@
 
 3. **CSP и базовые security headers**
    - Включить `config/initializers/content_security_policy.rb` и настроить политику под importmap + Google Fonts + ассеты (и при необходимости HDR в `/public/hdr/*`).
-   - Настроить `config.hosts` / `host_authorization` в `production.rb` под `madmask.ilmir.tech` (и исключение для `/up`, если нужно).
+   - Настроить `config.hosts` / `host_authorization` в `production.rb` под `madmask.ru` (и исключение для `/up`, если нужно).
    - Проверить `filter_parameter_logging.rb` (и добавить специфичные поля, если появятся: `authorization`, `cookie`, и т.п.).
 
 4. **Безопасность зависимостей и CI**

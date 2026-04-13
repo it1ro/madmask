@@ -25,7 +25,7 @@ servers:
 #
 proxy:
   ssl: true
-  host: madmask.ilmir.tech
+  host: madmask.ru
   app_port: 3000
 
 # Where you keep your container images.
@@ -71,7 +71,7 @@ env:
 
     # ActionMailer / inquiries (production)
     INQUIRY_TO_ADDRESS: code.for.func@gmail.com
-    MAIL_FROM: no-reply@madmask.ilmir.tech
+    MAIL_FROM: no-reply@madmask.ru
     SMTP_ADDRESS: smtp.gmail.com
     SMTP_PORT: 587
     SMTP_AUTHENTICATION: plain
