@@ -24,7 +24,7 @@
   - **Готово когда**:
     - `/products` имеет `meta description` (общий).
     - `/products?category=...` имеет `meta description` + (если индексируем) уникальный Title/H1.
-    - `/products/:id` имеет `meta description` (из `translated_description` или шаблона) и `meta_image` (обложка товара), при этом URL/OG остаются каноничными.
+    - `/products/:id` имеет `meta description` (из `description` или шаблона) и `meta_image` (обложка товара), при этом URL/OG остаются каноничными.
 
 - **Политика индексации фильтра `?category=`**
   - **Почему**: сейчас есть отдельные «каталожные» URL по жанрам, но нет зафиксированной стратегии (каноникал/индексация/уникальный контент).

@@ -1,4 +1,4 @@
-<% content_for :title, "#{@product.translated_name} — Madmask" %>
+<% content_for :title, "#{@product.name} — Madmask" %>
 
 <%# Three.js 0.170: pins in config/importmap.rb; Stimulus webgl_preview loads via dynamic import on this page only. %>
 
@@ -21,7 +21,7 @@
       <li aria-hidden="true" class="select-none text-[var(--color-text-muted)]">/</li>
       <li class="min-w-0">
         <span class="block max-w-full truncate text-[var(--color-text-primary)]" aria-current="page">
-          <%= @product.translated_name %>
+          <%= @product.name %>
         </span>
       </li>
     </ol>
@@ -90,7 +90,7 @@
                     sizes: "(max-width: 640px) 100vw, 90vw",
                     class:
                       "pointer-events-none absolute inset-0 block h-full w-full object-cover object-center motion-reduce:transition-none transition-opacity duration-200 group-hover:opacity-95",
-                    alt: @product.translated_name,
+                    alt: @product.name,
                     data: { product_gallery_target: "main" } %>
                 <% else %>
                   <span class="absolute inset-0 flex items-center justify-center px-4 text-center text-sm text-[var(--color-text-muted)]">
@@ -219,15 +219,15 @@
           <%= product_category_label(@product.category) %>
         </p>
         <h1 class="font-heading mt-2 text-3xl font-semibold tracking-wide text-ink md:text-4xl">
-          <%= @product.translated_name %>
+          <%= @product.name %>
         </h1>
         <p class="mt-4 font-mono text-2xl text-price">
           <%= number_to_currency(@product.price, unit: "₽", delimiter: " ", format: "%n %u", precision: 0) %>
         </p>
 
-        <% if @product.translated_description.present? %>
+        <% if @product.description.present? %>
           <div class="mt-6 max-w-prose whitespace-pre-line text-ink-muted leading-relaxed">
-            <%= @product.translated_description %>
+            <%= @product.description %>
           </div>
         <% end %>
 

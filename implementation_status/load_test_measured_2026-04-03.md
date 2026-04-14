@@ -2,6 +2,15 @@
 Date: 2026-04-03T19:45:44+04:00
 Environment: Docker `web`, RAILS_ENV=development (host networking, port 3000)
 
+> Исторический архив замеров до перехода на RU-only URL-схему без префикса.
+> В этом файле сырые логи ApacheBench сохранены в исходном виде (`/ru/...`).
+> Актуальные эквиваленты маршрутов:
+> - `/ru/` -> `/`
+> - `/ru/products` -> `/products`
+> - `/ru/products/:id` -> `/products/:id`
+> - `/ru/cart` -> `/cart`
+> - `/ru/users/sign_in` -> `/users/sign_in`
+
 ## Baseline (curl, single request)
 - `/up`: **0.019835s**
 - `/ru`: **0.389891s**

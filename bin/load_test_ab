@@ -98,14 +98,14 @@ if [[ -z "${PROD_ID}" || "${PROD_ID}" == "" ]]; then
   PROD_ID="1"
 fi
 
-run_ab_named "home" "${BASE_URL}/ru/"
-run_ab_named "products" "${BASE_URL}/ru/products"
-run_ab_named "product_show" "${BASE_URL}/ru/products/${PROD_ID}"
-run_ab_heavy "products" "${BASE_URL}/ru/products"
+run_ab_named "home" "${BASE_URL}/"
+run_ab_named "products" "${BASE_URL}/products"
+run_ab_named "product_show" "${BASE_URL}/products/${PROD_ID}"
+run_ab_heavy "products" "${BASE_URL}/products"
 
 if [[ -n "${LOAD_TEST_USER_EMAIL:-}" && -n "${LOAD_TEST_USER_PASSWORD:-}" ]]; then
   echo ">>> Fetching CSRF for sign_in" | tee -a "$RESULTS_DIR/console.log"
-  html="$(curl -fsS "${BASE_URL}/ru/users/sign_in")"
+  html="$(curl -fsS "${BASE_URL}/users/sign_in")"
   token="$(echo "$html" | sed -n 's/.*name=\"authenticity_token\" value=\"\([^\"]*\)\".*/\1/p' | head -1)"
   if [[ -z "$token" ]]; then
     token="$(echo "$html" | sed -n 's/.*name=\"csrf-token\" content=\"\([^\"]*\)\".*/\1/p' | head -1)"
@@ -117,17 +117,17 @@ if [[ -n "${LOAD_TEST_USER_EMAIL:-}" && -n "${LOAD_TEST_USER_PASSWORD:-}" ]]; th
     build_sign_in_postfile "$token" "${LOAD_TEST_USER_EMAIL}" "${LOAD_TEST_USER_PASSWORD}" "$POSTFILE"
     echo ">>> ab sign_in POST" | tee -a "$RESULTS_DIR/console.log"
     ab -k -n "${AB_SIGN_IN_N:-200}" -c "${AB_SIGN_IN_C:-5}" -p "$POSTFILE" -T application/x-www-form-urlencoded \
-      "${BASE_URL}/ru/users/sign_in" | tee "$RESULTS_DIR/ab_sign_in_post.txt" || true
+      "${BASE_URL}/users/sign_in" | tee "$RESULTS_DIR/ab_sign_in_post.txt" || true
   fi
 else
   echo "Skip POST sign_in (set LOAD_TEST_USER_EMAIL and LOAD_TEST_USER_PASSWORD)" | tee "$RESULTS_DIR/skipped_sign_in.txt"
 fi
 
 if [[ "${RUN_CURL_CART:-}" == "1" ]]; then
-  echo ">>> curl session: GET /ru/cart (10 samples)" | tee -a "$RESULTS_DIR/console.log"
+  echo ">>> curl session: GET /cart (10 samples)" | tee -a "$RESULTS_DIR/console.log"
   : >"$RESULTS_DIR/curl_cart_times.txt"
   for _i in $(seq 1 10); do
-    curl -fsS -o /dev/null -w "%{time_total}\n" "${BASE_URL}/ru/cart" >>"$RESULTS_DIR/curl_cart_times.txt" || true
+    curl -fsS -o /dev/null -w "%{time_total}\n" "${BASE_URL}/cart" >>"$RESULTS_DIR/curl_cart_times.txt" || true
   done
 fi
 

@@ -14,7 +14,7 @@
           <li class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-page/30 px-4 py-3">
             <div class="min-w-0">
               <p class="truncate font-ui text-sm font-semibold text-ink">
-                <%= product ? link_to(product.translated_name, product_path(product), class: "hover:text-glow") : "##{id}" %>
+                <%= product ? link_to(product.name, product_path(product), class: "hover:text-glow") : "##{id}" %>
               </p>
             </div>
 

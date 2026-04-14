@@ -40,8 +40,8 @@ module ProductsHelper
     URI::MailTo.build(
       to: email,
       headers: [
-        [ "subject", "Запрос по товару: #{product.translated_name}" ],
-        [ "body", "#{product_url(product)}\n\n#{product.translated_name}" ]
+        [ "subject", "Запрос по товару: #{product.name}" ],
+        [ "body", "#{product_url(product)}\n\n#{product.name}" ]
       ]
     ).to_s
   end

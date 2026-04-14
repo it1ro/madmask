@@ -9,22 +9,17 @@ module Admin
         .with_attached_gallery_images
         .with_attached_gallery_images_optimized
         .with_attached_model_file
-        .includes(:translations)
         .order_assets_first
         .order(created_at: :desc)
       @pagy, @products = pagy(:offset, products_scope, limit: 20, size: [ 1, 2, 2, 1 ])
       @product = Product.new
-      build_translation_slots(@product)
     end
 
     def new
       @product = Product.new
-      build_translation_slots(@product)
     end
 
-    def edit
-      build_translation_slots(@product)
-    end
+    def edit; end
 
     def create
       @product = Product.new(product_params)
@@ -36,7 +31,6 @@ module Admin
           format.html { redirect_to admin_products_path, notice: "Товар добавлен." }
         end
       else
-        build_translation_slots(@product)
         respond_to do |format|
           format.turbo_stream do
             render turbo_stream: turbo_stream.replace(
@@ -64,7 +58,6 @@ module Admin
           format.html { redirect_to admin_product_path(@product), notice: "Товар обновлён." }
         end
       else
-        build_translation_slots(@product)
         render :edit, status: :unprocessable_entity
       end
     end
@@ -87,13 +80,7 @@ module Admin
         .with_attached_gallery_images
         .with_attached_gallery_images_optimized
         .with_attached_model_file
-        .includes(:translations)
         .find(params[:id])
-    end
-
-    def build_translation_slots(product)
-      product.translation_for(:ru, build: true)
-      product.translation_for(:en, build: true)
     end
 
     def purge_requested_gallery_images
@@ -110,12 +97,13 @@ module Admin
 
     def product_params
       params.require(:product).permit(
+        :name,
+        :description,
         :price,
         :category,
         :cover_image,
         :model_file,
-        gallery_images: [],
-        translations_attributes: %i[id locale name description _destroy]
+        gallery_images: []
       )
     end
 

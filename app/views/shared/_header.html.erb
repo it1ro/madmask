@@ -2,7 +2,6 @@
   class="fixed top-0 z-50 w-full bg-[rgba(10,5,15,0.8)] backdrop-blur-[12px]"
   role="banner"
 >
-  <% current_locale = I18n.locale %>
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
     <%= link_to root_path,
       class:
@@ -19,7 +18,7 @@
       <%= link_to t("nav.catalog"),
         products_path,
         class:
-          "site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 #{"site-nav-link--active" if request.path.start_with?("/#{current_locale}/products")}" %>
+          "site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 #{'site-nav-link--active' if request.path.start_with?('/products')}" %>
 
       <div
         class="relative"
@@ -55,7 +54,7 @@
         <%= link_to t("nav.admin"),
           admin_root_path,
           class:
-            "font-ui site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 text-xs uppercase tracking-[0.12em] #{"site-nav-link--active" if request.path.start_with?("/#{current_locale}/admin")}" %>
+            "font-ui site-nav-link inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 py-2 text-xs uppercase tracking-[0.12em] #{'site-nav-link--active' if request.path.start_with?('/admin')}" %>
       <% end %>
 
       <a
@@ -74,46 +73,6 @@
     </nav>
 
     <div class="flex items-center gap-3">
-      <div
-        class="relative hidden md:block"
-        data-controller="dropdown"
-        data-action="pointerenter->dropdown#show pointerleave->dropdown#scheduleHide focusin->dropdown#show focusout->dropdown#scheduleHide"
-        aria-label="<%= t("nav.language") %>"
-      >
-        <% current_flag = current_locale == :ru ? "🇷🇺" : "🇬🇧" %>
-        <% current_code = current_locale.to_s.upcase %>
-        <button
-          type="button"
-          class="inline-flex min-h-[44px] items-center gap-2 rounded-md px-2 py-2 text-xs font-ui uppercase tracking-[0.14em] #{current_locale ? "text-ink" : "text-ink-muted"} hover:text-cyber-bright focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2"
-          aria-haspopup="menu"
-          data-dropdown-target="trigger"
-          data-action="click->dropdown#toggle"
-        >
-          <span aria-hidden="true" class="text-base leading-none"><%= current_flag %></span>
-          <span><%= current_code %></span>
-        </button>
-        <div
-          class="absolute right-0 top-full z-[200] mt-2 w-44 rounded-xl border border-line bg-card p-2 shadow-card invisible opacity-0 pointer-events-none transition duration-150"
-          data-dropdown-target="panel"
-          role="menu"
-        >
-          <div class="flex flex-col gap-1">
-            <%= link_to url_for(locale: :ru),
-              class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm #{current_locale == :ru ? "text-cyber-bright" : "text-ink"} hover:bg-page/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2",
-              role: "menuitem" do %>
-              <span aria-hidden="true">🇷🇺</span>
-              <span class="font-ui text-xs uppercase tracking-[0.12em]"><%= t("nav.language_ru") %></span>
-            <% end %>
-            <%= link_to url_for(locale: :en),
-              class: "flex items-center gap-2 rounded-lg px-3 py-2 text-sm #{current_locale == :en ? "text-cyber-bright" : "text-ink"} hover:bg-page/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2",
-              role: "menuitem" do %>
-              <span aria-hidden="true">🇬🇧</span>
-              <span class="font-ui text-xs uppercase tracking-[0.12em]"><%= t("nav.language_en") %></span>
-            <% end %>
-          </div>
-        </div>
-      </div>
-
       <%= render "shared/cart_button" %>
       <%= render "shared/wishlist_button" %>
     </div>

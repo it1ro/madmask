@@ -2,15 +2,15 @@
 # Approximate p50 / p95 / p99 from repeated curl timings (ab does not report percentiles).
 #
 # Usage:
-#   BASE_URL=http://127.0.0.1:3000 URL_PATH=/ru/products SAMPLES=200 bin/load_test_latencies
+#   BASE_URL=http://127.0.0.1:3000 URL_PATH=/products SAMPLES=200 bin/load_test_latencies
 #
 # Docker:
-#   docker compose run --rm web bash -lc 'BASE_URL=http://127.0.0.1:3000 URL_PATH=/ru/products bin/load_test_latencies'
+#   docker compose run --rm web bash -lc 'BASE_URL=http://127.0.0.1:3000 URL_PATH=/products bin/load_test_latencies'
 
 set -euo pipefail
 
 BASE_URL="${BASE_URL:-http://127.0.0.1:3000}"
-URL_PATH="${URL_PATH:-/ru/products}"
+URL_PATH="${URL_PATH:-/products}"
 SAMPLES="${SAMPLES:-100}"
 
 url="${BASE_URL}${URL_PATH}"

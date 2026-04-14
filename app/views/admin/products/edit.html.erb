@@ -1,11 +1,11 @@
-<% content_for :title, "Редактировать — #{@product.translated_name} — Madmask" %>
+<% content_for :title, "Редактировать — #{@product.name} — Madmask" %>
 
 <section class="py-4 md:py-8" aria-labelledby="edit-product-heading">
   <h1
     id="edit-product-heading"
     class="sr-only"
   >
-    Редактировать <%= @product.translated_name %>
+    Редактировать <%= @product.name %>
   </h1>
   <p class="mb-6 text-ink-muted">
     <%= link_to "← К админке", admin_products_path, class: "text-cyber underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-glow focus-visible:outline-offset-2 rounded-sm" %>

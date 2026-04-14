@@ -7,8 +7,6 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
-  before_action :set_locale
-
   helper_method(
     :cart_contract,
     :wishlist_contract,
@@ -20,20 +18,7 @@ class ApplicationController < ActionController::Base
     :cart_subtotal
   )
 
-  def default_url_options
-    { locale: I18n.locale }
-  end
-
   private
-
-  def set_locale
-    requested = params[:locale].presence&.to_sym
-    I18n.locale = if requested && I18n.available_locales.include?(requested)
-      requested
-    else
-      I18n.default_locale
-    end
-  end
 
   def cart_contract
     @cart_contract ||= CartContract.new(session:)

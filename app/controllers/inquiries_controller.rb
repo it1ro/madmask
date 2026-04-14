@@ -6,7 +6,7 @@ class InquiriesController < ApplicationController
     if @product.present? && @inquiry.message.blank?
       product_link = "#{request.base_url}#{product_path(@product)}"
       @inquiry.message = <<~TEXT.strip
-        Интересует товар: #{@product.translated_name}
+        Интересует товар: #{@product.name}
         Ссылка: #{product_link}
 
         Вопрос:

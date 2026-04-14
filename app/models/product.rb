@@ -1,6 +1,4 @@
 class Product < ApplicationRecord
-  include Translatable
-
   has_one_attached :cover_image
   has_one_attached :cover_image_optimized
   has_many_attached :gallery_images
@@ -52,10 +50,10 @@ class Product < ApplicationRecord
 
   MIN_DESCRIPTION_CHARS = 200
 
+  validates :name, presence: true
+  validates :description, presence: true, length: { minimum: MIN_DESCRIPTION_CHARS }
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :category, presence: true, inclusion: { in: CATEGORIES }
-  validate :must_have_translated_name
-  validate :must_have_translated_description
   validate :model_file_must_be_gltf_or_glb, if: -> { model_file.attached? }
   validate :validate_gallery_images
 
@@ -117,26 +115,6 @@ class Product < ApplicationRecord
   end
 
   private
-
-  def must_have_translated_name
-    return if translation_for(I18n.default_locale)&.name.present?
-    return if self[:name].present? # legacy fallback while columns still exist
-
-    errors.add(:translations, :blank)
-    errors.add(:base, "Название на языке по умолчанию обязательно")
-  end
-
-  def must_have_translated_description
-    desc = translation_for(I18n.default_locale)&.description.to_s
-    return if desc.present? && desc.length >= MIN_DESCRIPTION_CHARS
-    return if self[:description].to_s.length >= MIN_DESCRIPTION_CHARS # legacy fallback while columns still exist
-
-    errors.add(:translations, :blank)
-    errors.add(
-      :base,
-      "Описание на языке по умолчанию обязательно (минимум #{MIN_DESCRIPTION_CHARS} символов)"
-    )
-  end
 
   def validate_gallery_images
     return unless gallery_images.attachments.any?
