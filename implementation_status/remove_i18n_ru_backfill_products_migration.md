@@ -43,3 +43,11 @@
 
 - Запущен тест-ран в контейнере: `docker compose run --rm web bin/rails test`.
 - Результат: `23 runs, 64 assertions, 0 failures, 0 errors, 0 skips`.
+
+## Финальный аудит полноты (2026-04-14)
+
+- Удалён последний тестовый артефакт переводного слоя: `test/models/translation_test.rb`.
+- Удалены остаточные locale-зависимости в рантайме:
+  - `app/views/layouts/application.html.erb` → `<html lang="ru">`.
+  - `app/controllers/products_controller.rb` → ключ кэша каталога больше не включает `I18n.locale`.
+- Повторная проверка по коду: в `app/`, `config/locales/` и `test/` нет рабочих ссылок на `Translation`, `translated_*`, `scope "(:locale)"`, `params[:locale]`, EN-локали и language-switcher.
