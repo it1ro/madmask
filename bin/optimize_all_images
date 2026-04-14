@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative "../config/environment"
+require "image_processing/vips"
+require "fileutils"
+require "tmpdir"
+
+WEBP_QUALITY = Integer(ENV.fetch("WEBP_QUALITY", "88"))
+MAX_DIMENSION = Integer(ENV.fetch("MAX_DIMENSION", "2000"))
+
+puts "== Product images (Active Storage) =="
+puts "quality=#{WEBP_QUALITY} max_dimension=#{MAX_DIMENSION} force=true"
+
+products_scope = Product
+  .with_attached_cover_image
+  .with_attached_cover_image_optimized
+  .with_attached_gallery_images
+  .with_attached_gallery_images_optimized
+  .order(:id)
+
+total_products = products_scope.count
+processed_products = 0
+
+products_scope.find_each(batch_size: 25) do |product|
+  Products::ImageOptimizer.new(
+    product,
+    webp_quality: WEBP_QUALITY,
+    max_dimension: MAX_DIMENSION,
+    force: true
+  ).call
+  processed_products += 1
+  puts "optimized product ##{product.id} (#{processed_products}/#{total_products})"
+end
+
+puts "== Public images =="
+source_paths = Dir.glob(Rails.root.join("public/images/**/*.{png,jpg,jpeg}").to_s)
+  .reject { |path| File.basename(path).start_with?("favicon-") }
+
+if source_paths.empty?
+  puts "no public source images found"
+else
+  source_paths.sort.each do |source_path|
+    target_path = source_path.sub(/\.(png|jpe?g)\z/i, ".webp")
+    source_size = File.size(source_path)
+
+    Dir.mktmpdir("image-opt") do |tmp_dir|
+      tmp_path = File.join(tmp_dir, File.basename(target_path))
+      ImageProcessing::Vips
+        .source(source_path)
+        .resize_to_limit(MAX_DIMENSION, MAX_DIMENSION)
+        .convert("webp")
+        .saver(quality: WEBP_QUALITY, strip: true)
+        .call(destination: tmp_path)
+
+      optimized_size = File.size(tmp_path)
+
+      if File.exist?(target_path) && File.size(target_path) <= optimized_size
+        puts "skip #{target_path} (existing is smaller or equal)"
+        next
+      end
+
+      FileUtils.cp(tmp_path, target_path)
+      ratio = source_size.positive? ? (optimized_size.to_f / source_size * 100).round(1) : 0
+      puts "write #{target_path} (#{source_size} -> #{optimized_size} bytes, #{ratio}% of source)"
+    end
+  end
+end
+
+puts "done"

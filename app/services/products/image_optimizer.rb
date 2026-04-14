@@ -3,12 +3,13 @@ require "image_processing/vips"
 module Products
   class ImageOptimizer
     DEFAULT_MAX_DIMENSION = 2000
-    DEFAULT_WEBP_QUALITY = 82
+    DEFAULT_WEBP_QUALITY = 88
 
-    def initialize(product, max_dimension: DEFAULT_MAX_DIMENSION, webp_quality: DEFAULT_WEBP_QUALITY)
+    def initialize(product, max_dimension: DEFAULT_MAX_DIMENSION, webp_quality: DEFAULT_WEBP_QUALITY, force: false)
       @product = product
       @max_dimension = max_dimension
       @webp_quality = webp_quality
+      @force = force
     end
 
     def call
@@ -18,13 +19,13 @@ module Products
 
     private
 
-    attr_reader :product, :max_dimension, :webp_quality
+    attr_reader :product, :max_dimension, :webp_quality, :force
 
     def optimize_cover_image
       return unless product.cover_image.attached?
 
       source = product.cover_image.blob
-      return if product.cover_image_optimized.attached? && optimized_from_same_source?(product.cover_image_optimized.blob, source)
+      return if !force && product.cover_image_optimized.attached? && optimized_from_same_source?(product.cover_image_optimized.blob, source)
 
       optimized_blob = build_optimized_webp_blob(source, basename: "cover")
       product.cover_image_optimized.attach(optimized_blob)
@@ -40,7 +41,7 @@ module Products
       can_reuse_all = existing.size == sources.size && existing.zip(sources).all? do |optimized_blob, source_blob|
         optimized_from_same_source?(optimized_blob, source_blob)
       end
-      return if can_reuse_all
+      return if !force && can_reuse_all
 
       product.gallery_images_optimized.purge if product.gallery_images_optimized.attached?
 
