@@ -4,6 +4,13 @@
 
 <%# Schema.org Organization (minimal) %>
 <% content_for :head do %>
+  <%= tag.link rel: "preload",
+    as: "image",
+    type: "image/webp",
+    href: "/images/site-hero-1280.webp",
+    imagesrcset: "/images/site-hero-640.webp 640w, /images/site-hero-1280.webp 1280w, /images/site-hero-1920.webp 1920w",
+    imagesizes: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px",
+    fetchpriority: "high" %>
   <script type="application/ld+json">
     <%= raw({
       "@context": "https://schema.org",
@@ -107,7 +114,7 @@
             srcset="/images/site-hero-640.webp 640w, /images/site-hero-1280.webp 1280w, /images/site-hero-1920.webp 1920w"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px"
           >
-          <%= image_tag "/images/site-hero.png",
+          <%= image_tag "/images/site-hero-640.png",
             alt: "Madmask — маски в стиле fantasy, horror, sci‑fi и cyberpunk",
             loading: "eager",
             fetchpriority: "high",
@@ -115,7 +122,7 @@
             width: 1280,
             height: 960,
             sizes: "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px",
-            srcset: "/images/site-hero-640.png 640w, /images/site-hero-1280.png 1280w, /images/site-hero-1920.png 1920w",
+            srcset: "/images/site-hero-640.png 640w, /images/site-hero-1280.png 1280w",
             class: "hero-brand-image__img" %>
         </picture>
       </figure>

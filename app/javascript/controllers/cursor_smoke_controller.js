@@ -50,6 +50,11 @@ export default class extends Controller {
       return
     }
 
+    if (this.shouldDisableForDevice()) {
+      this.element.style.display = "none"
+      return
+    }
+
     this.ctx = this.element.getContext("2d", { alpha: true })
     if (!this.ctx) return
 
@@ -110,6 +115,15 @@ export default class extends Controller {
 
   prefersReducedMotion() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  }
+
+  shouldDisableForDevice() {
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches
+    const cores = navigator.hardwareConcurrency ?? 4
+    const memory = navigator.deviceMemory ?? 4
+
+    // Avoid expensive full-screen canvas effects on touch/low-end devices.
+    return coarsePointer || cores <= 4 || memory <= 4
   }
 
   readBrandColors() {
