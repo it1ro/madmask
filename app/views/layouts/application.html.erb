@@ -61,11 +61,13 @@
   <body class="relative flex min-h-screen flex-col antialiased">
     <a href="#main-content" class="skip-link"><%= t("nav.skip_to_content") %></a>
 
-    <canvas
-      data-controller="cursor-smoke"
-      class="cursor-smoke-canvas pointer-events-none absolute left-0 top-0 z-[5] h-screen w-screen"
-      aria-hidden="true"
-    ></canvas>
+    <% if controller_name == "pages" && action_name == "home" %>
+      <canvas
+        data-controller="cursor-smoke"
+        class="cursor-smoke-canvas pointer-events-none absolute left-0 top-0 z-[5] h-screen w-screen"
+        aria-hidden="true"
+      ></canvas>
+    <% end %>
 
     <%= render "shared/header" %>
     <main
